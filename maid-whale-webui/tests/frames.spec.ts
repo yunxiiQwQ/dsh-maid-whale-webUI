@@ -95,6 +95,20 @@ describe('frame controller', () => {
     expect(borderlessButton.hasAttribute('data-dsh-frame')).toBe(false)
   })
 
+  it('does not frame bordered inline links inside conversation content', () => {
+    fixture()
+    const sourceLink = document.createElement('a')
+    sourceLink.href = 'https://example.com/source'
+    sourceLink.textContent = 'DeepSeek Open Sources'
+    sourceLink.style.borderBottom = '1px solid currentColor'
+    document.querySelector('main')!.append(sourceLink)
+
+    controller = createFrameController(document.body)
+    controller.sync()
+
+    expect(sourceLink.hasAttribute('data-dsh-frame')).toBe(false)
+  })
+
   it('promotes the nearest bordered composer ancestor to a dedicated shell frame', () => {
     fixture()
     const textarea = document.querySelector('textarea')!
@@ -136,6 +150,35 @@ describe('frame controller', () => {
     expect(assistantReply.querySelector('.reasoning_root')?.hasAttribute('data-dsh-frame')).toBe(false)
     expect(reasoningOnly.hasAttribute('data-dsh-frame')).toBe(false)
     expect(reasoningOnly.hasAttribute('data-dsh-message-role')).toBe(false)
+  })
+
+  it('keeps existing message markers stable across repeated synchronization', async () => {
+    fixture()
+    mountConversationCssModules()
+    const assistantReply = document.createElement('div')
+    assistantReply.className = 'assistant_root'
+    assistantReply.innerHTML = '<div class="assistant_body"><article data-final-reply>Final reply</article></div>'
+    const finalReply = assistantReply.querySelector<HTMLElement>('[data-final-reply]')!
+    document.querySelector('main')!.append(assistantReply)
+    controller = createFrameController(document.body)
+
+    const changedAttributes: string[] = []
+    const observer = new MutationObserver((records) => {
+      changedAttributes.push(...records.flatMap((record) => record.attributeName ?? []))
+    })
+    observer.observe(finalReply, {
+      attributes: true,
+      attributeFilter: ['data-dsh-frame', 'data-dsh-message-role'],
+    })
+
+    controller.sync()
+    controller.sync()
+    await Promise.resolve()
+    observer.disconnect()
+
+    expect(finalReply.dataset.dshFrame).toBe('message')
+    expect(finalReply.dataset.dshMessageRole).toBe('assistant')
+    expect(changedAttributes).toEqual([])
   })
 
   it('ignores hidden targets, nested panels, and unnamed icon-only primary buttons', () => {

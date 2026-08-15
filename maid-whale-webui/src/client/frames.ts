@@ -39,6 +39,8 @@ const INTERACTIVE_FRAME_SELECTOR = [
   '[role="option"]', '[role="combobox"]',
 ].join(', ')
 
+const GENERIC_FRAME_EXCLUSION_SELECTOR = 'a, [role="link"]'
+
 const CONVERSATION_CSS_MODULES = {
   userMessage: '@deepseek-ai/dsh-client-ui-conversation/MessageItem.module.css',
   assistantMessage: '@deepseek-ai/dsh-client-ui-conversation/AssistantMarkdown.module.css',
@@ -55,6 +57,11 @@ function cssModuleClass(document: Document, moduleId: string, exportName: string
 interface MessageTarget {
   target: HTMLElement
   role: 'user' | 'assistant'
+}
+
+interface DesiredFrame {
+  frame: string
+  role?: MessageTarget['role']
 }
 
 function messageTargets(body: HTMLElement): MessageTarget[] {
@@ -182,27 +189,52 @@ export function createFrameController(body: HTMLElement): FrameController {
 
   const sync = (): void => {
     if (disposed) return
-    clearMarkers()
     const targets = selectTargets(body)
+    const desired = new Map<HTMLElement, DesiredFrame>()
     for (const id of FRAME_IDS) {
       targets.get(id)?.forEach((target) => {
-        target.dataset.dshFrame = FRAME_VALUES[id]
+        desired.set(target, { frame: FRAME_VALUES[id] })
       })
     }
     targets.get('composer')?.forEach((target) => {
       const shell = closestBorderedAncestor(target, body)
-      if (shell) shell.dataset.dshFrame = 'composer-shell'
+      if (shell) desired.set(shell, { frame: 'composer-shell' })
     })
     messageTargets(body).forEach(({ target, role }) => {
-      target.dataset.dshFrame = 'message'
-      target.dataset.dshMessageRole = role
+      desired.set(target, { frame: 'message', role })
     })
     body.querySelectorAll<HTMLElement>('*').forEach((target) => {
       if (!(target instanceof HTMLElement)
-        || target.hasAttribute('data-dsh-frame')
+        || desired.has(target)
+        || target.matches(GENERIC_FRAME_EXCLUSION_SELECTOR)
         || !isVisible(target, body)
-        || !hasRenderedBorder(target, body)) return
-      target.dataset.dshFrame = target.matches(INTERACTIVE_FRAME_SELECTOR) ? 'control' : 'surface'
+      ) return
+      const existing = target.dataset.dshFrame
+      if (existing === 'control' || existing === 'surface') {
+        desired.set(target, { frame: existing })
+        return
+      }
+      if (!target.hasAttribute('data-dsh-frame') && hasRenderedBorder(target, body)) {
+        desired.set(target, {
+          frame: target.matches(INTERACTIVE_FRAME_SELECTOR) ? 'control' : 'surface',
+        })
+      }
+    })
+    body.querySelectorAll<HTMLElement>('[data-dsh-frame], [data-dsh-message-role]').forEach((target) => {
+      const next = desired.get(target)
+      if (!next) {
+        target.removeAttribute('data-dsh-frame')
+        target.removeAttribute('data-dsh-message-role')
+        return
+      }
+      if (target.dataset.dshFrame !== next.frame) target.dataset.dshFrame = next.frame
+      if (next.role === undefined) target.removeAttribute('data-dsh-message-role')
+      else if (target.dataset.dshMessageRole !== next.role) target.dataset.dshMessageRole = next.role
+      desired.delete(target)
+    })
+    desired.forEach((next, target) => {
+      target.dataset.dshFrame = next.frame
+      if (next.role !== undefined) target.dataset.dshMessageRole = next.role
     })
   }
 

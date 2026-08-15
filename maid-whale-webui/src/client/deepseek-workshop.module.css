@@ -326,7 +326,9 @@ body[data-dsh-deepseek-workshop] [data-dsh-frame='panel'] {
   border-image-outset: 4px;
   border-radius: 19px 22px 18px 21px;
   background-color: var(--dsw-alias-bg-layer-1);
-  box-shadow: 5px 7px 24px rgba(49, 93, 120, 0.09);
+  box-shadow:
+    inset 2px 0 0 color-mix(in srgb, var(--dsw-static-blue-800) 62%, transparent),
+    5px 7px 24px rgba(49, 93, 120, 0.09);
 }
 
 body[data-dsh-deepseek-workshop] [data-dsh-frame='primary-button'] {
@@ -348,11 +350,16 @@ body[data-dsh-deepseek-workshop] [data-dsh-frame='surface'] {
   border-image-slice: 80 120 90 120 fill;
   border-image-width: 15px;
   border-image-outset: 2px;
+  box-shadow: inset 2px 0 0 color-mix(in srgb, var(--dsw-static-blue-800) 62%, transparent);
 }
 
 body[data-dsh-deepseek-workshop] [data-slot='conversation.session.header'] > [data-dsh-frame='surface'] {
   border-width: 1px;
   border-image-width: 11px;
+}
+
+body[data-dsh-deepseek-workshop] [data-slot='sidebar.settings'] [data-dsh-frame] {
+  border-image-outset: 0;
 }
 
 body[data-dsh-deepseek-workshop] [data-dsh-frame='message'] {
@@ -517,10 +524,15 @@ body[data-dsh-deepseek-workshop] .mascotImage {
     [data-dsh-frame='composer'],
      [data-dsh-frame='dialog'],
      [data-dsh-frame='menu'],
-     [data-dsh-frame='panel'],
      [data-dsh-frame='message']
    ) {
      box-shadow: 0 7px 18px rgba(36, 55, 70, 0.09);
+   }
+
+  body[data-dsh-deepseek-workshop] [data-dsh-frame='panel'] {
+    box-shadow:
+      inset 2px 0 0 color-mix(in srgb, var(--dsw-static-blue-800) 62%, transparent),
+      0 7px 18px rgba(36, 55, 70, 0.09);
    }
 
   body[data-dsh-deepseek-workshop] [data-dsh-message-role='assistant'] {

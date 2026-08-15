@@ -228,6 +228,7 @@ describe('DeepSeek cloud paper skin', () => {
     expect(document.body.style.getPropertyValue('background-attachment')).toBe('scroll')
     expect(document.title).toBe('DeepSeek Harness')
   })
+
 })
 
 describe('DeepSeek cloud paper stylesheet', () => {
@@ -317,6 +318,15 @@ describe('DeepSeek cloud paper stylesheet', () => {
   it('restores the composer shell and conversation header to their original frame thickness', () => {
     expect(stylesheet).toMatch(/\[data-dsh-frame='composer-shell'\][\s\S]*?border-width: 1px;[\s\S]*?border-image-width: 18px/)
     expect(stylesheet).toMatch(/\[data-slot='conversation\.session\.header'\] > \[data-dsh-frame='surface'\][\s\S]*?border-width: 1px;[\s\S]*?border-image-width: 11px/)
+  })
+
+  it('keeps every settings frame inside its clipping containers', () => {
+    expect(stylesheet).toMatch(/\[data-slot='sidebar\.settings'\] \[data-dsh-frame\][\s\S]*?border-image-outset: 0/)
+  })
+
+  it('fills the transparent left edge of panel artwork on panels and surfaces', () => {
+    expect(stylesheet).toMatch(/\[data-dsh-frame='panel'\][^{]*\{[^}]*box-shadow:\s*inset 2px 0 0/)
+    expect(stylesheet).toMatch(/\[data-dsh-frame='surface'\][^{]*\{[^}]*box-shadow:\s*inset 2px 0 0/)
   })
 
   it('layers the generated ocean art only on the discovered sidebar surface', () => {
