@@ -1,0 +1,23 @@
+{
+  "id": "maid-whale-webui",
+  "name": "DeepSeek 云鲸纸面",
+  "nameEn": "DeepSeek Cloud Paper",
+  "author": "yunxi",
+  "tagline": "云白纸页、暮蓝墨色与页边 DeepSeek 角色",
+  "description": "面向 DeepSeek Harness Web UI 的云鲸纸面主题：亮色为纸白、云灰和淡天蓝，暗色为暮蓝纸面与月光蓝墨色，deepseek-drool 角色安静地停在页面边缘。",
+  "tags": [
+    "deepseek",
+    "cloud",
+    "paper",
+    "whale",
+    "mascot"
+  ],
+  "accent": "#5aa7d8",
+  "bodyAttr": "data-dsh-deepseek-workshop",
+  "package": "@dsh-external/dsh-client-ui-skin-maid-whale-webui",
+  "wiring": {
+    "id": "ui-skin-maid-whale-webui",
+    "bundleWired": false
+  },
+  "order": 10
+}

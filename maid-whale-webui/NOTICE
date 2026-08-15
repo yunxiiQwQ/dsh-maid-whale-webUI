@@ -1,0 +1,17 @@
+DeepSeek Cloud Paper skin
+
+The locally installed `deepseek-drool` Codex pet spritesheet was used as the
+character and palette reference for the static mascot and ornament system.
+
+A hand-drawn image supplied by the user was used only as a visual style
+reference for irregular linework, flat color, paper grain, and natural fill
+gaps. This notice does not claim or imply a license or redistribution right for
+that reference image.
+
+The final light and dark ornament artwork shipped in `assets/ornaments` was
+generated with OpenAI ImageGen, then locally separated from its preview
+background and encoded as transparent lossless WebP files. The local processing
+did not redraw or replace the generated ornament designs.
+
+This notice records the immediate development sources. It does not grant or
+imply a license for third-party artwork, names, or marks depicted by them.

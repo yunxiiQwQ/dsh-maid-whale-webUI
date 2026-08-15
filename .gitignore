@@ -1,0 +1,7 @@
+node_modules/
+*.tsbuildinfo
+*.js.map
+.DS_Store
+.tmp-*
+AGENTS.md
+**/AGENTS.md

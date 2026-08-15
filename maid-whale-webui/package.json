@@ -1,0 +1,59 @@
+{
+  "name": "@dsh-external/dsh-client-ui-skin-maid-whale-webui",
+  "description": "Cloud-paper DeepSeek skin for the DSH web GUI with the deepseek-drool character as a quiet page-edge mascot",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./skin.json": "./skin.json",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [],
+      "platform": "web"
+    }
+  },
+  "scripts": {
+    "art:embed": "node scripts/embed-background.mjs && node scripts/embed-ornaments.mjs && node scripts/embed-frames.mjs",
+    "art:embed:background": "node scripts/embed-background.mjs",
+    "art:embed:ornaments": "node scripts/embed-ornaments.mjs",
+    "art:embed:frames": "node scripts/embed-frames.mjs",
+    "build": "tsdown",
+    "watch": "tsdown --watch",
+    "test": "vitest run"
+  },
+  "license": "BSD-3-Clause",
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "jsdom": "29.1.1",
+    "lightningcss": "^1.32.0",
+    "tsdown": "^0.22.2",
+    "vitest": "^4.1.8"
+  },
+  "files": [
+    "lib/index.js",
+    "lib/client.js",
+    "cordis.patch.yml",
+    "skin.json",
+    "assets",
+    "build",
+    "scripts",
+    "src",
+    "tests",
+    "preview",
+    "README.md",
+    "README.zh.md",
+    "LICENSE",
+    "NOTICE"
+  ]
+}
