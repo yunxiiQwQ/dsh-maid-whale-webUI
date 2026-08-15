@@ -2,27 +2,27 @@
 
 [![Awesome DSH Plugin](https://awesome-dsh-plugin.com/badge.svg)](https://awesome-dsh-plugin.com)
 
-English | [中文](README.zh.md)
+[English](README.md) | 中文
 
-A whale-maid theme plugin for the DeepSeek Harness Web UI, featuring light and dark modes, ocean-themed illustrated backgrounds, hand-drawn nine-slice frames, decorative assets, and a persistent pet.
+DeepSeek Harness Web UI 的鲸鱼女仆主题插件，包含亮暗模式、海洋插画背景、手绘九宫格边框、装饰素材与常驻 pet。
 
-## Preview
+## 效果预览
 
-| Light mode | Dark mode |
+| 亮色模式 | 暗色模式 |
 |---|---|
-| [![Light mode](preview/light.webp)](preview/light.webp) | [![Dark mode](preview/dark.webp)](preview/dark.webp) |
+| [![亮色模式](preview/light.webp)](preview/light.webp) | [![暗色模式](preview/dark.webp)](preview/dark.webp) |
 
-## Installation
+## 安装
 
-### Quick install
+### 懒人版
 
-Tell your DSH:
+对你的 DSH 说：
 
 ```text
-Install this skin package: https://github.com/yunxiiQwQ/dsh-maid-whale-webUI/tree/main/maid-whale-webui
+安装一下这个皮肤包：https://github.com/yunxiiQwQ/dsh-maid-whale-webUI/tree/main/maid-whale-webui
 ```
 
-### Manual installation
+### 手动安装
 
 ```powershell
 git clone https://github.com/yunxiiQwQ/dsh-maid-whale-webUI.git
@@ -30,9 +30,9 @@ cd dsh-maid-whale-webUI
 dsh plugin --profile web add ./maid-whale-webui
 ```
 
-Refresh or restart the DeepSeek Harness Web UI after installation. Enabling only one UI theme at a time is recommended.
+安装后刷新或重启 DeepSeek Harness Web UI。同一时间建议只启用一个界面主题。
 
-## Development
+## 开发
 
 ```powershell
 pnpm install
@@ -41,8 +41,8 @@ pnpm test
 pnpm build
 ```
 
-The plugin uses only the official DSH client plugin mechanism. It does not modify the DeepSeek Harness source code or affect model requests.
+插件只使用官方 DSH 客户端插件机制，不修改 DeepSeek Harness 源码，也不影响模型请求。
 
-## License and Disclaimer
+## 许可与声明
 
-The code is licensed under BSD-3-Clause. This is an unofficial community theme whose assets originate from community fan creations. It is not affiliated with DeepSeek.
+代码使用 BSD-3-Clause 许可。本项目是非官方社区主题，素材来源于社区二创，与 DeepSeek 官方无隶属关系。
