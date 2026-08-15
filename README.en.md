@@ -1,5 +1,7 @@
 # dsh-maid-whale-webUI
 
+[![Awesome DSH Plugin](https://awesome-dsh-plugin.com/badge.svg)](https://awesome-dsh-plugin.com)
+
 English | [中文](README.md)
 
 A whale-maid theme plugin for the DeepSeek Harness Web UI, featuring light and dark modes, ocean-themed illustrated backgrounds, hand-drawn nine-slice frames, decorative assets, and a persistent pet.

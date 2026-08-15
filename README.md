@@ -1,5 +1,7 @@
 # dsh-maid-whale-webUI
 
+[![Awesome DSH Plugin](https://awesome-dsh-plugin.com/badge.svg)](https://awesome-dsh-plugin.com)
+
 [English](README.en.md) | 中文
 
 DeepSeek Harness Web UI 的鲸鱼女仆主题插件，包含亮暗模式、海洋插画背景、手绘九宫格边框、装饰素材与常驻 pet。
