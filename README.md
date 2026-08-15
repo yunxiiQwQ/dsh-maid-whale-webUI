@@ -19,7 +19,7 @@ DeepSeek Harness Web UI 的鲸鱼女仆主题插件，包含亮暗模式、海�
 对你的 DSH 说：
 
 ```text
-安装一下这个皮肤包：https://github.com/yunxiiQwQ/dsh-maid-whale-webUI
+安装一下这个皮肤包：https://github.com/yunxiiQwQ/dsh-maid-whale-webUI/tree/main/maid-whale-webui
 ```
 
 ### 手动安装

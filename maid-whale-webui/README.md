@@ -1,14 +1,28 @@
-# Maid Whale Web UI
+# dsh-maid-whale-webUI
+
+[![Awesome DSH Plugin](https://awesome-dsh-plugin.com/badge.svg)](https://awesome-dsh-plugin.com)
 
 English | [中文](README.zh.md)
 
-DeepSeek Cloud Paper is a presentation-only skin for the DeepSeek Harness web UI. It combines warm paper surfaces, mist-blue accents, a dusk-blue dark palette, and the local `deepseek-drool` Codex pet as a quiet, static page-edge mascot.
+A whale-maid theme plugin for the DeepSeek Harness Web UI, featuring light and dark modes, ocean-themed illustrated backgrounds, hand-drawn nine-slice frames, decorative assets, and a persistent pet.
 
-The package uses only the official DSH client plugin mechanism. It does not modify DSH source code, inject services, emit Cordis events, or touch model requests. Every style is scoped to `body[data-dsh-deepseek-workshop]`. Unloading the plugin restores the previous title, favicon, body attributes, inline background styles, mascot, and ornament layer.
+## Preview
 
-## Local installation
+| Light mode | Dark mode |
+|---|---|
+| [![Light mode](preview/light.webp)](preview/light.webp) | [![Dark mode](preview/dark.webp)](preview/dark.webp) |
 
-The repository includes prebuilt artifacts and can be mounted directly:
+## Installation
+
+### Quick install
+
+Tell your DSH:
+
+```text
+Install this skin package: https://github.com/yunxiiQwQ/dsh-maid-whale-webUI/tree/main/maid-whale-webui
+```
+
+### Manual installation
 
 ```powershell
 git clone https://github.com/yunxiiQwQ/dsh-maid-whale-webUI.git
@@ -16,28 +30,19 @@ cd dsh-maid-whale-webUI
 dsh plugin --profile web add ./maid-whale-webui
 ```
 
-The package's `cordis.patch.yml` adds the client row when the plugin is mounted. Keep only one DSH skin active at a time. Restart or refresh the web UI after installation if the current page does not reload automatically.
-
-## Visual behavior
-
-- Light mode uses paper white, cloud gray, and pale sky blue; dark mode uses dusk-blue paper and moonlit blue accents.
-- The static pet rests at the lower-left edge on desktop layouts and does not react to focus or model state.
-- Eight hand-drawn, flat-color ImageGen ornaments attach to semantic UI targets such as navigation, the composer, headings, and settings.
-- Ornament selection is capped at four items. Composer and settings variants are mutually exclusive, while layouts below 960 px degrade to only the bow and headband corner.
-- Navigation, composer, dialogs, menus, selectors, and buttons share the same softly irregular paper treatment.
-- Character ornaments are image assets rather than CSS-drawn motifs. All artwork is embedded as WebP data URLs, so the skin makes no external image requests.
-- The mascot and all ornaments are hidden when printing.
+Refresh or restart the DeepSeek Harness Web UI after installation. Enabling only one UI theme at a time is recommended.
 
 ## Development
 
 ```powershell
+pnpm install
 pnpm art:embed
 pnpm test
 pnpm build
 ```
 
-`pnpm art:embed` reproducibly embeds the backgrounds, light and dark WebP ornaments, and nine-slice frames into the client source. The standalone build preset lives in `build/`, and official `@deepseek-ai/*` SDK types resolve from `devDependencies`.
+The plugin uses only the official DSH client plugin mechanism. It does not modify the DeepSeek Harness source code or affect model requests.
 
-## Model experience
+## License and Disclaimer
 
-None. This package changes browser presentation only and has no effect on prompts, providers, or KV cache behavior.
+The code is licensed under BSD-3-Clause. This is an unofficial community theme whose assets originate from community fan creations. It is not affiliated with DeepSeek.
