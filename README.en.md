@@ -12,6 +12,16 @@ A whale-maid theme plugin for the DeepSeek Harness Web UI, featuring light and d
 
 ## Installation
 
+### Quick install
+
+Tell your DSH:
+
+```text
+Install this skin package: https://github.com/yunxiiQwQ/dsh-maid-whale-webUI
+```
+
+### Manual installation
+
 ```powershell
 git clone https://github.com/yunxiiQwQ/dsh-maid-whale-webUI.git
 cd dsh-maid-whale-webUI
