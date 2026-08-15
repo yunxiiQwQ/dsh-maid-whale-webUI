@@ -39,6 +39,53 @@ const INTERACTIVE_FRAME_SELECTOR = [
   '[role="option"]', '[role="combobox"]',
 ].join(', ')
 
+const CONVERSATION_CSS_MODULES = {
+  userMessage: '@deepseek-ai/dsh-client-ui-conversation/MessageItem.module.css',
+  assistantMessage: '@deepseek-ai/dsh-client-ui-conversation/AssistantMarkdown.module.css',
+  reasoning: '@deepseek-ai/dsh-client-ui-conversation/ReasoningRow.module.css',
+} as const
+
+function cssModuleClass(document: Document, moduleId: string, exportName: string): string | undefined {
+  const style = Array.from(document.querySelectorAll<HTMLStyleElement>('style[data-plugin-css]'))
+    .find((candidate) => candidate.dataset.pluginCss === moduleId)
+  const safeExportName = exportName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  return style?.textContent?.match(new RegExp(`\\.([\\w-]+_${safeExportName})(?=[\\s,{.:#>\\[])`))?.[1]
+}
+
+interface MessageTarget {
+  target: HTMLElement
+  role: 'user' | 'assistant'
+}
+
+function messageTargets(body: HTMLElement): MessageTarget[] {
+  const document = body.ownerDocument
+  const userBubbleClass = cssModuleClass(document, CONVERSATION_CSS_MODULES.userMessage, 'bubble')
+  const assistantRootClass = cssModuleClass(document, CONVERSATION_CSS_MODULES.assistantMessage, 'root')
+  const assistantBodyClass = cssModuleClass(document, CONVERSATION_CSS_MODULES.assistantMessage, 'body')
+  const reasoningRootClass = cssModuleClass(document, CONVERSATION_CSS_MODULES.reasoning, 'root')
+
+  const userMessages = userBubbleClass
+    ? Array.from(body.getElementsByClassName(userBubbleClass)).filter((target): target is HTMLElement => target instanceof HTMLElement)
+    : []
+  const assistantMessages = assistantRootClass && assistantBodyClass
+    ? Array.from(body.getElementsByClassName(assistantRootClass))
+        .filter((target): target is HTMLElement => target instanceof HTMLElement)
+        .flatMap((target) => {
+          const content = Array.from(target.children)
+            .find((child) => child instanceof HTMLElement && child.classList.contains(assistantBodyClass))
+          if (!(content instanceof HTMLElement)) return []
+          return Array.from(content.children)
+            .filter((child): child is HTMLElement => child instanceof HTMLElement)
+            .filter((child) => !reasoningRootClass || !child.classList.contains(reasoningRootClass))
+        })
+    : []
+
+  return [
+    ...userMessages.map((target): MessageTarget => ({ target, role: 'user' })),
+    ...assistantMessages.map((target): MessageTarget => ({ target, role: 'assistant' })),
+  ].filter(({ target }) => isVisible(target, body))
+}
+
 function isVisible(target: HTMLElement, body: HTMLElement): boolean {
   if (target.hidden || target.getAttribute('aria-hidden') === 'true') return false
   const checkVisibility = (target as HTMLElement & {
@@ -121,8 +168,9 @@ export function createFrameController(body: HTMLElement): FrameController {
   const view = body.ownerDocument.defaultView ?? window
 
   const clearMarkers = (): void => {
-    body.querySelectorAll<HTMLElement>('[data-dsh-frame]').forEach((target) => {
+    body.querySelectorAll<HTMLElement>('[data-dsh-frame], [data-dsh-message-role]').forEach((target) => {
       target.removeAttribute('data-dsh-frame')
+      target.removeAttribute('data-dsh-message-role')
     })
   }
 
@@ -144,6 +192,10 @@ export function createFrameController(body: HTMLElement): FrameController {
     targets.get('composer')?.forEach((target) => {
       const shell = closestBorderedAncestor(target, body)
       if (shell) shell.dataset.dshFrame = 'composer-shell'
+    })
+    messageTargets(body).forEach(({ target, role }) => {
+      target.dataset.dshFrame = 'message'
+      target.dataset.dshMessageRole = role
     })
     body.querySelectorAll<HTMLElement>('*').forEach((target) => {
       if (!(target instanceof HTMLElement)

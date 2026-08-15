@@ -267,9 +267,12 @@ describe('DeepSeek cloud paper stylesheet', () => {
   })
 
   it('uses generated nine-slice frames with responsive and printable fallbacks', () => {
-    for (const frame of ['selected-nav', 'composer', 'composer-shell', 'dialog', 'menu', 'panel', 'primary-button', 'control', 'surface']) {
+    for (const frame of ['selected-nav', 'composer', 'composer-shell', 'dialog', 'menu', 'panel', 'primary-button', 'control', 'surface', 'message']) {
       expect(stylesheet).toContain(`[data-dsh-frame='${frame}']`)
     }
+    expect(stylesheet).toContain("[data-dsh-message-role='user']")
+    expect(stylesheet).toContain("[data-dsh-message-role='assistant']")
+    expect(stylesheet).toContain('inset 0 0 0 2px')
     expect(stylesheet).toContain('border-image-source: var(--dsw-frame-selected-nav)')
     expect(stylesheet).toContain('border-image-slice: 90 120 90 120 fill')
     expect(stylesheet).toContain('border-image-slice: 80 120 90 120 fill')
@@ -285,6 +288,35 @@ describe('DeepSeek cloud paper stylesheet', () => {
     expect(stylesheet).toContain('left: calc(var(--dsw-x) + var(--dsw-w) - 2px)')
     expect(stylesheet).toContain('background-position: center, calc(50% + 80px) center, center, center, center !important')
     expect(stylesheet).toContain('background-image: none !important')
+  })
+
+  it('renders interface frames with the approved 35 percent heavier treatment outside targeted rollbacks', () => {
+    const frameWidths = {
+      'selected-nav': 14,
+      composer: 22,
+      'composer-shell': 18,
+      dialog: 22,
+      menu: 16,
+      panel: 22,
+      'primary-button': 14,
+      control: 9,
+      surface: 15,
+      message: 19,
+    }
+
+    for (const [frame, width] of Object.entries(frameWidths)) {
+      expect(stylesheet).toMatch(new RegExp(`\\[data-dsh-frame='${frame}'\\][\\s\\S]*?border-image-width: ${width}px`))
+    }
+
+    expect(stylesheet).not.toContain('border: 1px solid')
+    expect(stylesheet).toContain('border: 2px solid')
+    expect(stylesheet).toContain('inset 0 0 0 2px')
+    expect(stylesheet).toMatch(/@media \(max-width: 959px\)[\s\S]*?\[data-dsh-frame\][\s\S]*?border-image-width: 12px/)
+  })
+
+  it('restores the composer shell and conversation header to their original frame thickness', () => {
+    expect(stylesheet).toMatch(/\[data-dsh-frame='composer-shell'\][\s\S]*?border-width: 1px;[\s\S]*?border-image-width: 18px/)
+    expect(stylesheet).toMatch(/\[data-slot='conversation\.session\.header'\] > \[data-dsh-frame='surface'\][\s\S]*?border-width: 1px;[\s\S]*?border-image-width: 11px/)
   })
 
   it('layers the generated ocean art only on the discovered sidebar surface', () => {

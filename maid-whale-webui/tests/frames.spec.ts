@@ -26,11 +26,26 @@ async function tick(): Promise<void> {
   await new Promise((resolve) => { setTimeout(resolve, 40) })
 }
 
+function mountConversationCssModules(): void {
+  const modules = [
+    ['@deepseek-ai/dsh-client-ui-conversation/MessageItem.module.css', '.message_bubble{background:blue}'],
+    ['@deepseek-ai/dsh-client-ui-conversation/AssistantMarkdown.module.css', '.assistant_root{display:flex}.assistant_body{display:flex}'],
+    ['@deepseek-ai/dsh-client-ui-conversation/ReasoningRow.module.css', '.reasoning_root{display:flex}'],
+  ] as const
+  for (const [id, css] of modules) {
+    const style = document.createElement('style')
+    style.dataset.pluginCss = id
+    style.textContent = css
+    document.head.append(style)
+  }
+}
+
 afterEach(() => {
   controller?.dispose()
   controller = undefined
   document.body.innerHTML = ''
   document.body.style.cssText = ''
+  document.head.querySelectorAll('style[data-plugin-css]').forEach((style) => style.remove())
 })
 
 describe('frame controller', () => {
@@ -93,6 +108,34 @@ describe('frame controller', () => {
 
     expect(textarea.dataset.dshFrame).toBe('composer')
     expect(shell.dataset.dshFrame).toBe('composer-shell')
+  })
+
+  it('frames sent messages and final assistant replies without framing reasoning-only rows', () => {
+    fixture()
+    mountConversationCssModules()
+    const userMessage = document.createElement('div')
+    userMessage.className = 'message_bubble'
+    userMessage.textContent = 'Sent message'
+    const assistantReply = document.createElement('div')
+    assistantReply.className = 'assistant_root'
+    assistantReply.innerHTML = '<div class="assistant_body"><div class="reasoning_root">Think before answering</div><article data-final-reply>Final reply</article></div>'
+    const finalReply = assistantReply.querySelector<HTMLElement>('[data-final-reply]')!
+    const reasoningOnly = document.createElement('div')
+    reasoningOnly.className = 'assistant_root'
+    reasoningOnly.innerHTML = '<div class="assistant_body"><div class="reasoning_root">Think</div></div>'
+    document.querySelector('main')!.append(userMessage, assistantReply, reasoningOnly)
+
+    controller = createFrameController(document.body)
+    controller.sync()
+
+    expect(userMessage.dataset.dshFrame).toBe('message')
+    expect(userMessage.dataset.dshMessageRole).toBe('user')
+    expect(assistantReply.hasAttribute('data-dsh-frame')).toBe(false)
+    expect(finalReply.dataset.dshFrame).toBe('message')
+    expect(finalReply.dataset.dshMessageRole).toBe('assistant')
+    expect(assistantReply.querySelector('.reasoning_root')?.hasAttribute('data-dsh-frame')).toBe(false)
+    expect(reasoningOnly.hasAttribute('data-dsh-frame')).toBe(false)
+    expect(reasoningOnly.hasAttribute('data-dsh-message-role')).toBe(false)
   })
 
   it('ignores hidden targets, nested panels, and unnamed icon-only primary buttons', () => {
