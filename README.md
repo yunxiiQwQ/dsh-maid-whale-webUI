@@ -32,4 +32,4 @@ pnpm build
 
 ## 许可与声明
 
-代码使用 BSD-3-Clause 许可，素材来源与生成方式见 [NOTICE](maid-whale-webui/NOTICE)。本项目是非官方社区主题，与 DeepSeek 官方无隶属或背书关系。
+代码使用 BSD-3-Clause 许可。本项目是非官方社区主题，素材来源于社区二创，与 DeepSeek 官方无隶属关系。
