@@ -644,7 +644,7 @@ window.__ModuleLoader__.load({
 				const haze = dark ? "linear-gradient(rgba(18, 31, 47, 0.52), rgba(18, 31, 47, 0.52))" : "linear-gradient(rgba(255, 254, 249, 0.60), rgba(255, 254, 249, 0.60))";
 				const paper = dark ? PAPER_BACKDROP_DARK : PAPER_BACKDROP_LIGHT;
 				body.style.setProperty("background-image", `${haze}, url("${ILLUSTRATED_BACKGROUND}"), ${paper}`);
-				body.style.setProperty("background-position", "center, calc(50% + 80px) bottom, center, center, center");
+				body.style.setProperty("background-position", "center, calc(50% + 80px) calc(100% - 80px), center, center, center");
 				body.style.setProperty("background-size", "cover, cover, cover, cover, cover");
 				body.style.setProperty("background-attachment", "fixed");
 				body.style.setProperty("background-repeat", "no-repeat");

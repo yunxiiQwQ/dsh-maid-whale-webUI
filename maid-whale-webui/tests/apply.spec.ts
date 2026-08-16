@@ -99,7 +99,7 @@ describe('DeepSeek cloud paper skin', () => {
     expect(lightBackdrop).toContain('data:image/webp;base64,')
     expect(lightBackdrop).toContain('rgba(255, 254, 249, 0.6)')
     expect(document.body.style.getPropertyValue('background-position'))
-      .toBe('center center, calc(50% + 80px) bottom, center center, center center, center center')
+      .toBe('center center, calc(50% + 80px) calc(100% - 80px), center center, center center, center center')
     expect(lightDialog).toContain('data:image/webp;base64,')
 
     document.body.setAttribute('data-ds-dark-theme', '')
