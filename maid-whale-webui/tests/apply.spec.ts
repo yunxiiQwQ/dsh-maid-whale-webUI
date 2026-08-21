@@ -96,22 +96,26 @@ describe('DeepSeek cloud paper skin', () => {
     expect(document.querySelectorAll('[data-dsh-frame]')).toHaveLength(6)
     const lightBackdrop = document.body.style.getPropertyValue('background-image')
     const lightDialog = document.body.style.getPropertyValue('--dsw-frame-dialog')
+    const lightMessage = document.body.style.getPropertyValue('--dsw-frame-message')
     expect(lightBackdrop).toContain('data:image/webp;base64,')
     expect(lightBackdrop).toContain('rgba(255, 254, 249, 0.6)')
     expect(document.body.style.getPropertyValue('background-position'))
       .toBe('center center, calc(50% + 80px) calc(100% - 80px), center center, center center, center center')
     expect(lightDialog).toContain('data:image/webp;base64,')
+    expect(lightMessage).toContain('data:image/webp;base64,')
 
     document.body.setAttribute('data-ds-dark-theme', '')
     await tick()
     expect(document.body.style.getPropertyValue('background-image')).toContain('rgba(18, 31, 47, 0.52)')
     expect(document.body.style.getPropertyValue('--dsw-frame-dialog')).not.toBe(lightDialog)
+    expect(document.body.style.getPropertyValue('--dsw-frame-message')).not.toBe(lightMessage)
     expect(document.querySelectorAll('[data-dsh-frame]')).toHaveLength(6)
 
     await fiber.dispose()
     fiber = undefined
     expect(document.querySelector('[data-dsh-frame]')).toBeNull()
     expect(document.body.style.getPropertyValue('--dsw-frame-dialog')).toBe('')
+    expect(document.body.style.getPropertyValue('--dsw-frame-message')).toBe('')
     expect(document.body.style.getPropertyValue('background-image')).toBe('')
   })
 
@@ -267,17 +271,17 @@ describe('DeepSeek cloud paper stylesheet', () => {
     expect(stylesheet).not.toContain('repeating-linear-gradient')
   })
 
-  it('uses generated nine-slice frames with responsive and printable fallbacks', () => {
+  it('uses the shared redrawn nine-slice frame with responsive and printable fallbacks', () => {
     for (const frame of ['selected-nav', 'composer', 'composer-shell', 'dialog', 'menu', 'panel', 'primary-button', 'control', 'surface', 'message']) {
       expect(stylesheet).toContain(`[data-dsh-frame='${frame}']`)
     }
     expect(stylesheet).toContain("[data-dsh-message-role='user']")
     expect(stylesheet).toContain("[data-dsh-message-role='assistant']")
-    expect(stylesheet).toContain('inset 0 0 0 2px')
     expect(stylesheet).toContain('border-image-source: var(--dsw-frame-selected-nav)')
-    expect(stylesheet).toContain('border-image-slice: 90 120 90 120 fill')
-    expect(stylesheet).toContain('border-image-slice: 80 120 90 120 fill')
-    expect(stylesheet).toContain('border-image-slice: 55 120 55 120 fill')
+    expect(stylesheet).toContain('border-image-slice: 70 95 70 110 fill')
+    expect(stylesheet).not.toContain('border-image-slice: 90 120 90 120 fill')
+    expect(stylesheet).not.toContain('border-image-slice: 80 120 90 120 fill')
+    expect(stylesheet).not.toContain('border-image-slice: 55 120 55 120 fill')
     expect(stylesheet).toContain('left: calc(var(--dsw-x) + var(--dsw-w) - 13px)')
     expect(stylesheet).toContain('transform: rotate(5deg) scaleX(-1)')
     expect(stylesheet).toContain('top: calc(var(--dsw-y) - 11px)')
@@ -302,7 +306,7 @@ describe('DeepSeek cloud paper stylesheet', () => {
       'primary-button': 14,
       control: 9,
       surface: 15,
-      message: 19,
+      message: 30,
     }
 
     for (const [frame, width] of Object.entries(frameWidths)) {
@@ -311,7 +315,6 @@ describe('DeepSeek cloud paper stylesheet', () => {
 
     expect(stylesheet).not.toContain('border: 1px solid')
     expect(stylesheet).toContain('border: 2px solid')
-    expect(stylesheet).toContain('inset 0 0 0 2px')
     expect(stylesheet).toMatch(/@media \(max-width: 959px\)[\s\S]*?\[data-dsh-frame\][\s\S]*?border-image-width: 12px/)
   })
 
@@ -322,6 +325,21 @@ describe('DeepSeek cloud paper stylesheet', () => {
 
   it('keeps every settings frame inside its clipping containers', () => {
     expect(stylesheet).toMatch(/\[data-slot='sidebar\.settings'\] \[data-dsh-frame\][\s\S]*?border-image-outset: 0/)
+  })
+
+  it('keeps text clear of decorative frame artwork', () => {
+    expect(stylesheet).toMatch(/:is\(textarea, \[contenteditable='true'\], input:not\(\[type\]\)\)\[data-dsh-frame='composer'\][^{]*\{[^}]*border-width: 1px[^}]*border-radius: 18px[^}]*border-image-source: none[^}]*box-shadow: none/)
+    expect(stylesheet).toMatch(/:is\(textarea, \[contenteditable='true'\], input:not\(\[type\]\)\)\[data-dsh-frame='composer'\]:focus[^{]*\{[^}]*border-color: var\(--dsw-alias-border-l2\)[^}]*box-shadow: none[^}]*transform: none/)
+    expect(stylesheet).toMatch(/\[data-dsh-frame='composer-shell'\][^{]*\{[^}]*border-image-source: var\(--dsw-frame-composer\)[^}]*border-image-width: 18px[^}]*border-image-outset: 4px/)
+    expect(stylesheet).toMatch(/\[data-dsh-frame='panel'\][^{]*\{[^}]*padding-block: 14px !important[^}]*padding-inline: 24px !important/)
+    expect(stylesheet).toMatch(/\[data-slot='sidebar\.settings'\] \[data-dsh-frame='surface'\] > :first-child[^}]*\{[^}]*padding-inline-start: 16px !important/)
+    expect(stylesheet).toMatch(/\[data-slot='sidebar\.settings'\] \[data-dsh-frame='surface'\]:has\(> span > button\)[^{]*\{[^}]*padding-inline-end: 16px !important/)
+  })
+
+  it('aligns message artwork to the message border box without a second inset outline', () => {
+    expect(stylesheet).toMatch(/\[data-dsh-frame='message'\][^{]*\{[^}]*border-image-source: var\(--dsw-frame-message\)[^}]*border-image-slice: 70 95 70 110 fill[^}]*border-image-width: 30px[^}]*border-image-outset: 10px 8px 8px 7px/)
+    expect(stylesheet).toMatch(/@media \(max-width: 959px\)[\s\S]*?\[data-dsh-frame='message'\][^{]*\{[^}]*border-image-width: 20px[^}]*border-image-outset: 7px 5px 5px 5px/)
+    expect(stylesheet).not.toMatch(/\[data-dsh-frame='message'\]\[data-dsh-message-role='(?:user|assistant)'\][^{]*\{[^}]*inset 0 0 0 2px/)
   })
 
   it('fills the transparent left edge of panel artwork on panels and surfaces', () => {

@@ -10,6 +10,7 @@ const FRAME_PROPERTIES: Record<FrameId, string> = {
   selectedNav: '--dsw-frame-selected-nav',
   composer: '--dsw-frame-composer',
   dialog: '--dsw-frame-dialog',
+  message: '--dsw-frame-message',
   menu: '--dsw-frame-menu',
   panel: '--dsw-frame-panel',
   primaryButton: '--dsw-frame-primary-button',
@@ -19,6 +20,7 @@ const FRAME_VALUES: Record<FrameId, string> = {
   selectedNav: 'selected-nav',
   composer: 'composer',
   dialog: 'dialog',
+  message: 'message',
   menu: 'menu',
   panel: 'panel',
   primaryButton: 'primary-button',
@@ -28,6 +30,7 @@ const SELECTORS: Record<FrameId, string> = {
   selectedNav: '[role="treeitem"][aria-selected="true"]',
   composer: 'textarea, [contenteditable="true"], input:not([type])',
   dialog: '[role="dialog"]',
+  message: ':not(*)',
   menu: '[role="menu"], [role="listbox"], [role="combobox"]',
   panel: 'main > section, [role="main"] > section, [data-settings-section]',
   primaryButton: 'button[type="submit"], button[data-variant="primary"]',
@@ -182,8 +185,9 @@ export function createFrameController(body: HTMLElement): FrameController {
   }
 
   const syncResources = (): void => {
+    const sharedFrame = FRAME_ART[mode].message
     for (const id of FRAME_IDS) {
-      body.style.setProperty(FRAME_PROPERTIES[id], `url("${FRAME_ART[mode][id]}")`)
+      body.style.setProperty(FRAME_PROPERTIES[id], `url("${sharedFrame}")`)
     }
   }
 

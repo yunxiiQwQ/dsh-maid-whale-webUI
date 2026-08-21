@@ -7,11 +7,12 @@ const ids = [
   'selected-nav-frame',
   'composer-frame',
   'dialog-frame',
+  'message-frame',
   'menu-frame',
   'panel-frame',
   'primary-button-frame',
 ]
-const names = ['selectedNav', 'composer', 'dialog', 'menu', 'panel', 'primaryButton']
+const names = ['selectedNav', 'composer', 'dialog', 'message', 'menu', 'panel', 'primaryButton']
 const modes = ['light', 'dark']
 const art = Object.fromEntries(modes.map((mode) => [mode, Object.fromEntries(ids.map((id, index) => {
   const bytes = readFileSync(resolve(root, 'assets', 'frames', mode, `${id}.webp`))

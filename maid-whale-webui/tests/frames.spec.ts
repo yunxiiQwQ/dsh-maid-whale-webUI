@@ -66,9 +66,22 @@ describe('frame controller', () => {
     expect(secondPanel.dataset.dshFrame).toBe('panel')
 
     const lightDialog = document.body.style.getPropertyValue('--dsw-frame-dialog')
+    const lightMessage = document.body.style.getPropertyValue('--dsw-frame-message')
     expect(lightDialog).toContain('data:image/webp;base64,')
+    expect(lightMessage).toContain('data:image/webp;base64,')
+    for (const property of [
+      '--dsw-frame-selected-nav',
+      '--dsw-frame-composer',
+      '--dsw-frame-dialog',
+      '--dsw-frame-menu',
+      '--dsw-frame-panel',
+      '--dsw-frame-primary-button',
+    ]) {
+      expect(document.body.style.getPropertyValue(property)).toBe(lightMessage)
+    }
     controller.setMode('dark')
     expect(document.body.style.getPropertyValue('--dsw-frame-dialog')).not.toBe(lightDialog)
+    expect(document.body.style.getPropertyValue('--dsw-frame-message')).not.toBe(lightMessage)
   })
 
   it('decorates every visible non-semantic element that already has a rendered border', () => {
@@ -233,6 +246,7 @@ describe('frame controller', () => {
       '--dsw-frame-selected-nav',
       '--dsw-frame-composer',
       '--dsw-frame-dialog',
+      '--dsw-frame-message',
       '--dsw-frame-menu',
       '--dsw-frame-panel',
       '--dsw-frame-primary-button',
