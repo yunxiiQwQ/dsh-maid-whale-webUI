@@ -16,9 +16,7 @@
       "patch": "./cordis.patch.yml"
     },
     "client": {
-      "inject": [
-        "@deepseek-ai/dsh-client-ui-settings-plugins"
-      ],
+      "inject": [],
       "platform": "web"
     }
   },
@@ -46,6 +44,7 @@
   "devDependencies": {
     "@biomejs/biome": "^2.5.9",
     "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/schemastery": "^3.18.1",
     "@types/node": "^26.2.0",
     "@types/react": "^18.3.0",
     "jsdom": "29.1.1",
@@ -72,9 +71,7 @@
     "scripts/test-packaged-helper.mjs",
     "requirements.txt"
   ],
-  "dependencies": {
-    "@deepseek-ai/schemastery": "^3.18.1"
-  },
+  "dependencies": {},
   "cpu": [
     "x64"
   ],

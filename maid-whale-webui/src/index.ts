@@ -12,7 +12,7 @@ import { CompanionMessageKind, CompanionState, createMessage } from './host/prot
 
 const PKG_VERSION = '0.1.0'
 
-export const name = 'ui-skin-maid-whale-webui'
+export const name = '@dsh-external/dsh-client-ui-skin-maid-whale-webui'
 // The companion is built on session events, and mounting requires the settings
 // service (used to read live config). Keep the declared inject in sync with
 // those real hard dependencies instead of listing a service that is never
