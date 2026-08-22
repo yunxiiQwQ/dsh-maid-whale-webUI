@@ -8,8 +8,13 @@ import { CompanionMessageKind, createMessage, encodeMessage } from './protocol.j
 // Vendored from QCYTSN/dsh-dafeiyu (MIT). The DSH_DAFEIYU_* environment variable
 // names are the runtime contract read by runtime/helper.py; renaming them here
 // without the Python side would silently drop every configuration flag.
+// This module runs from two layouts: unbundled at src/host/ (package root is
+// two levels up) and bundled into lib/index.js (package root is one level
+// up). Probe for runtime/helper.py so both resolve the same package root.
 const here = dirname(fileURLToPath(import.meta.url))
-const packageRoot = resolve(here, '..', '..')
+const packageRoot =
+  [resolve(here, '..'), resolve(here, '..', '..')].find((root) => existsSync(resolve(root, 'runtime', 'helper.py'))) ??
+  resolve(here, '..')
 const defaultHelperPath = resolve(packageRoot, 'runtime', 'helper.py')
 const bundledHelperPath = resolve(packageRoot, 'runtime', 'bin', 'win32-x64', 'dsw-drool-helper.exe')
 

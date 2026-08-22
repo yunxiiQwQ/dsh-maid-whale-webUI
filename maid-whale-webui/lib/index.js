@@ -1427,7 +1427,7 @@ var CompanionReducer = class {
 //#endregion
 //#region src/host/helper-process.js
 const here = dirname(fileURLToPath(import.meta.url));
-const packageRoot = resolve(here, "..", "..");
+const packageRoot = [resolve(here, ".."), resolve(here, "..", "..")].find((root) => existsSync(resolve(root, "runtime", "helper.py"))) ?? resolve(here, "..");
 const defaultHelperPath = resolve(packageRoot, "runtime", "helper.py");
 const bundledHelperPath = resolve(packageRoot, "runtime", "bin", "win32-x64", "dsw-drool-helper.exe");
 function isWsl() {
