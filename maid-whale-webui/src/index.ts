@@ -21,7 +21,7 @@ export const inject = ['sessions', 'settings']
 export const CONFIG_ENDPOINT = '/plugins/maid-whale-webui/config'
 export const Config = Schema.object({
   enabled: Schema.boolean().default(true).description('启用云鲸桌宠'),
-  scale: Schema.number().min(0.7).max(1.4).step(0.05).default(1).role('slider').description('角色大小'),
+  scale: Schema.number().min(0.5).max(1.4).step(0.05).default(0.65).role('slider').description('角色大小'),
   bubbleScale: Schema.number().min(0.8).max(1.2).step(0.05).default(1).role('slider').description('气泡大小'),
   activityLevel: Schema.union([
     Schema.const('quiet').description('安静'),
@@ -46,7 +46,7 @@ export const Config = Schema.object({
 
 const defaults = Object.freeze({
   enabled: true,
-  scale: 1,
+  scale: 0.65,
   bubbleScale: 1,
   activityLevel: 'normal',
   reducedMotion: false,

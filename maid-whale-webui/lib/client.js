@@ -178,7 +178,7 @@ window.__ModuleLoader__.load({
 					hint: `${Math.round((value.scale ?? 1) * 100)}%`
 				}, h("input", {
 					type: "range",
-					min: .7,
+					min: .5,
 					max: 1.4,
 					step: .05,
 					value: value.scale ?? 1,

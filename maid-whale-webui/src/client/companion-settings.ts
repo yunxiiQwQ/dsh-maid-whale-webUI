@@ -209,7 +209,7 @@ function createCardModule(React: typeof ReactTypes) {
                 { label: '角色大小', hint: `${Math.round((value.scale ?? 1) * 100)}%` },
                 h('input', {
                   type: 'range',
-                  min: 0.7,
+                  min: 0.5,
                   max: 1.4,
                   step: 0.05,
                   value: value.scale ?? 1,
