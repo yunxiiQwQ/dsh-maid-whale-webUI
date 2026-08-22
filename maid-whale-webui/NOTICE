@@ -15,3 +15,13 @@ did not redraw or replace the generated ornament designs.
 
 This notice records the immediate development sources. It does not grant or
 imply a license for third-party artwork, names, or marks depicted by them.
+
+Desktop companion integration
+-----------------------------
+
+The desktop companion in `src/host/`, `src/index.ts`, `runtime/`, and
+`scripts/build-helper.ps1` is vendored from QCYTSN/dsh-dafeiyu (MIT License,
+https://github.com/QCYTSN/dsh-dafeiyu) and rebranded for this skin. The
+companion's animation artwork was fully replaced by the user's local
+`deepseek-drool` 20-action reference pack (transparent PNG cut-outs); none of
+the original dafeiyu character assets are redistributed here.

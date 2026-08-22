@@ -16,7 +16,6 @@ interface Targets {
   composer: HTMLElement | null
   dialog: HTMLElement | null
   heading: HTMLElement | null
-  mascot: HTMLElement | null
 }
 
 function isVisible(target: HTMLElement, body: HTMLElement): boolean {
@@ -64,7 +63,6 @@ const ornamentClasses: Record<OrnamentId, string> = {
   bubbles: css.ornamentBubbles,
   headbandCorner: css.ornamentHeadbandCorner,
   ribbonTab: css.ornamentRibbonTab,
-  cloudTide: css.ornamentCloudTide,
 }
 
 function resolveTargets(body: HTMLElement): Targets {
@@ -76,7 +74,6 @@ function resolveTargets(body: HTMLElement): Targets {
     composer: visibleTarget(body, 'textarea, [contenteditable="true"], input:not([type])'),
     dialog: visibleTarget(body, '[role="dialog"]'),
     heading: visibleTarget(body, 'main h1, main h2, [role="main"] h1, [role="main"] h2'),
-    mascot: visibleTarget(body, '[data-skin-chrome="mascot"]'),
   }
 }
 
@@ -102,8 +99,6 @@ function targetFor(id: OrnamentId, targets: Targets): HTMLElement | null {
       return targets.dialog
     case 'hairWave':
       return targets.heading
-    case 'cloudTide':
-      return targets.mascot
   }
 }
 
@@ -140,7 +135,6 @@ export function createOrnamentController(body: HTMLElement, options: { wide: boo
       dialog: targets.dialog != null,
       composerEngaged,
       heading: targets.heading != null,
-      mascot: targets.mascot != null,
     })
     const selectedSet = new Set<OrnamentId>(selected)
 

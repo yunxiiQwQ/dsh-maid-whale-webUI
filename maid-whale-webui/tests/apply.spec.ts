@@ -65,19 +65,19 @@ afterEach(async () => {
 })
 
 describe('DeepSeek cloud paper skin', () => {
-  it('mounts one mascot, paper backdrop, favicon, and title', async () => {
+  it('mounts the paper backdrop, favicon, and title without an in-page mascot', async () => {
     installMatchMedia(true)
     document.title = 'DeepSeek Harness'
     fiber = await mount()
 
     expect(document.body.hasAttribute('data-dsh-deepseek-workshop')).toBe(true)
-    expect(document.body.querySelectorAll('[data-skin-chrome="mascot"]')).toHaveLength(1)
+    expect(document.body.querySelectorAll('[data-skin-chrome="mascot"]')).toHaveLength(0)
     expect(document.body.style.getPropertyValue('background-image')).toContain('linear-gradient')
     expect(document.head.querySelector('link[data-deepseek-workshop-icon]')).not.toBeNull()
     expect(document.title).toBe('DeepSeek 云鲸纸面')
   })
 
-  it('switches the backdrop and mascot theme without duplicating DOM', async () => {
+  it('switches the backdrop theme without duplicating DOM', async () => {
     installMatchMedia(true)
     fiber = await mount()
     const light = document.body.style.getPropertyValue('background-image')
@@ -85,10 +85,7 @@ describe('DeepSeek cloud paper skin', () => {
     document.body.setAttribute('data-ds-dark-theme', '')
     await tick()
 
-    const mascot = document.body.querySelector<HTMLElement>('[data-skin-chrome="mascot"]')
     expect(document.body.style.getPropertyValue('background-image')).not.toBe(light)
-    expect(mascot?.dataset.theme).toBe('dark')
-    expect(document.body.querySelectorAll('[data-skin-chrome="mascot"]')).toHaveLength(1)
   })
 
   it('mounts the illustrated background and retractable semantic frames in both modes', async () => {
@@ -131,61 +128,33 @@ describe('DeepSeek cloud paper skin', () => {
     expect(document.body.style.getPropertyValue('background-image')).toBe('')
   })
 
-  it('keeps the mascot absent on narrow screens and responds to query changes', async () => {
+  it('never mounts an in-page mascot and survives viewport query changes', async () => {
     const media = installMatchMedia(false)
     fiber = await mount()
     expect(document.body.querySelector('[data-skin-chrome="mascot"]')).toBeNull()
 
     media.set(true)
-    expect(document.body.querySelector('[data-skin-chrome="mascot"]')).not.toBeNull()
+    expect(document.body.querySelector('[data-skin-chrome="mascot"]')).toBeNull()
     media.set(false)
     expect(document.body.querySelector('[data-skin-chrome="mascot"]')).toBeNull()
   })
 
-  it('keeps the mascot static and integrates one light-dark ornament layer', async () => {
+  it('integrates one light-dark ornament layer', async () => {
     installMatchMedia(true)
     document.body.innerHTML = `
       <nav role="tree"><button role="treeitem" aria-selected="true">Chat</button></nav>
       <main><h1>DeepSeek Harness</h1><textarea></textarea></main>
     `
     fiber = await mount()
-    const mascot = document.body.querySelector<HTMLElement>('[data-skin-chrome="mascot"]')
     const lightBow = document.body.querySelector<HTMLImageElement>('[data-dsh-ornament="bow"]')?.src
 
     window.dispatchEvent(new Event('focus'))
     window.dispatchEvent(new Event('blur'))
-    expect(mascot?.hasAttribute('data-state')).toBe(false)
     expect(document.querySelectorAll('[data-skin-chrome="ornaments"]')).toHaveLength(1)
 
     document.body.setAttribute('data-ds-dark-theme', '')
     await tick()
     expect(document.body.querySelector<HTMLImageElement>('[data-dsh-ornament="bow"]')?.src).not.toBe(lightBow)
-  })
-
-  it('anchors the mascot to the workspace tree right edge and follows resizes', async () => {
-    installMatchMedia(true)
-    document.body.innerHTML = '<nav role="tree"><button role="treeitem">Chat</button></nav>'
-    const tree = document.querySelector<HTMLElement>('[role="tree"]')!
-    let right = 320
-    tree.getBoundingClientRect = vi.fn(() => ({
-      x: 0,
-      y: 100,
-      left: 0,
-      top: 100,
-      right,
-      bottom: 780,
-      width: right,
-      height: 680,
-      toJSON: () => ({}),
-    }))
-
-    fiber = await mount()
-    const mascot = document.body.querySelector<HTMLElement>('[data-skin-chrome="mascot"]')!
-    expect(mascot.style.left).toBe('160px')
-
-    right = 400
-    window.dispatchEvent(new Event('resize'))
-    expect(mascot.style.left).toBe('240px')
   })
 
   it('mounts the ocean art on the full sidebar surface and retracts it', async () => {
@@ -291,8 +260,8 @@ describe('DeepSeek cloud paper stylesheet', () => {
     expect(stylesheet).toContain('--dsw-alias-bg-layer-1: rgba(28, 45, 66, 0.98)')
   })
 
-  it('keeps the mascot and generated ornament layer responsive', () => {
-    expect(stylesheet).toContain('.mascot')
+  it('keeps the generated ornament layer responsive', () => {
+    expect(stylesheet).not.toContain('.mascot')
     expect(stylesheet).toContain('.ornamentLayer')
     expect(stylesheet).toContain('.ornamentBow')
     expect(stylesheet).toContain('.ornamentWhaleTail')
@@ -301,7 +270,6 @@ describe('DeepSeek cloud paper stylesheet', () => {
     expect(stylesheet).toContain('.ornamentBubbles')
     expect(stylesheet).toContain('.ornamentHeadbandCorner')
     expect(stylesheet).toContain('.ornamentRibbonTab')
-    expect(stylesheet).toContain('.ornamentCloudTide')
     expect(stylesheet).toContain('@media (max-width: 959px), print')
   })
 
@@ -347,8 +315,6 @@ describe('DeepSeek cloud paper stylesheet', () => {
     expect(stylesheet).toContain('left: calc(var(--dsw-x) + var(--dsw-w) + 7px)')
     expect(stylesheet).toContain('width: 48px')
     expect(stylesheet).toContain('height: 43px')
-    expect(stylesheet).toContain('top: calc(var(--dsw-y) + var(--dsw-h) - 90px)')
-    expect(stylesheet).toContain('left: calc(var(--dsw-x) - 19px)')
     expect(stylesheet).toContain('left: calc(var(--dsw-x) + var(--dsw-w) - 2px)')
     expect(stylesheet).toMatch(
       /background-position:\s*center,\s*calc\(50% \+ 80px\) center,\s*center,\s*center,\s*center\s*!important/,

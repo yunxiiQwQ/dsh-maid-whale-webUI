@@ -10,9 +10,8 @@ describe('ornament policy', () => {
         dialog: false,
         composerEngaged: false,
         heading: true,
-        mascot: true,
       }),
-    ).toEqual(['whaleTail', 'bow', 'bubbles', 'hairWave', 'cloudTide'])
+    ).toEqual(['whaleTail', 'bow', 'bubbles', 'hairWave'])
   })
 
   it('makes composer and settings ornaments mutually exclusive', () => {
@@ -23,9 +22,8 @@ describe('ornament policy', () => {
         dialog: true,
         composerEngaged: true,
         heading: true,
-        mascot: true,
       }),
-    ).toEqual(['whaleTail', 'bow', 'ribbonTab', 'apronCrest', 'cloudTide'])
+    ).toEqual(['whaleTail', 'bow', 'ribbonTab', 'apronCrest'])
   })
 
   it('keeps the whale tail, bow, and headband corner on narrow screens', () => {
@@ -36,7 +34,6 @@ describe('ornament policy', () => {
         dialog: true,
         composerEngaged: false,
         heading: true,
-        mascot: true,
       }),
     ).toEqual(['whaleTail', 'bow', 'headbandCorner'])
   })
@@ -49,7 +46,6 @@ describe('ornament policy', () => {
         dialog: false,
         composerEngaged: true,
         heading: false,
-        mascot: false,
       }),
     ).toEqual(['whaleTail', 'ribbonTab'])
   })

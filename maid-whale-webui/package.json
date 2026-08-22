@@ -16,7 +16,9 @@
       "patch": "./cordis.patch.yml"
     },
     "client": {
-      "inject": [],
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-settings-plugins"
+      ],
       "platform": "web"
     }
   },
@@ -31,7 +33,10 @@
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "typecheck": "tsc -p tsconfig.vitest.json --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "build:helper:windows": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-helper.ps1",
+    "test:helper:packaged": "node scripts/test-packaged-helper.mjs",
+    "test:python": "py -3 -m unittest discover -s runtime/tests -t ."
   },
   "license": "BSD-3-Clause",
   "packageManager": "pnpm@11.21.0",
@@ -42,8 +47,10 @@
     "@biomejs/biome": "^2.5.9",
     "@deepseek-ai/cordis": "^4.0.1",
     "@types/node": "^26.2.0",
+    "@types/react": "^18.3.0",
     "jsdom": "29.1.1",
     "lightningcss": "^1.32.0",
+    "react": "^18.0.0",
     "tsdown": "^0.22.2",
     "typescript": "^5.9.3",
     "vitest": "^4.1.8"
@@ -57,6 +64,21 @@
     "README.md",
     "README.en.md",
     "LICENSE",
-    "NOTICE"
-  ]
+    "NOTICE",
+    "runtime/",
+    "assets/pet/",
+    "assets/pet-manifest.json",
+    "scripts/build-helper.ps1",
+    "scripts/test-packaged-helper.mjs",
+    "requirements.txt"
+  ],
+  "dependencies": {
+    "@deepseek-ai/schemastery": "^3.18.1"
+  },
+  "cpu": [
+    "x64"
+  ],
+  "engines": {
+    "node": ">=22.19"
+  }
 }

@@ -10,9 +10,9 @@ describe('hand-drawn ornament assets', () => {
     if (!existsSync(generatedPath)) return
 
     const source = readFileSync(generatedPath, 'utf8')
-    const ids = ['bow', 'whaleTail', 'apronCrest', 'hairWave', 'bubbles', 'headbandCorner', 'ribbonTab', 'cloudTide']
+    const ids = ['bow', 'whaleTail', 'apronCrest', 'hairWave', 'bubbles', 'headbandCorner', 'ribbonTab']
     for (const id of ids) expect(source).toContain(`"${id}"`)
-    expect(source.match(/data:image\/webp;base64,/g)).toHaveLength(16)
+    expect(source.match(/data:image\/webp;base64,/g)).toHaveLength(14)
     expect(source).toContain("export type OrnamentMode = 'light' | 'dark'")
   })
 })

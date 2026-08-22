@@ -11,7 +11,8 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "types": ["node"],
-    "noEmit": true
+    "noEmit": true,
+    "allowJs": true
   },
   "include": ["src", "tests"]
 }

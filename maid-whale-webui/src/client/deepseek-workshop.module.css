@@ -460,34 +460,6 @@ body[data-dsh-deepseek-workshop] .ornamentRibbonTab {
   transform: rotate(-2deg);
 }
 
-body[data-dsh-deepseek-workshop] .ornamentCloudTide {
-  top: calc(var(--dsw-y) + var(--dsw-h) - 90px);
-  left: calc(var(--dsw-x) - 19px);
-  width: 126px;
-  height: 62px;
-  transform: rotate(-2deg);
-}
-
-body[data-dsh-deepseek-workshop] .mascot {
-  position: fixed;
-  bottom: max(20px, env(safe-area-inset-bottom));
-  left: max(18px, env(safe-area-inset-left));
-  z-index: 8;
-  width: 148px;
-  height: 160px;
-  opacity: 0.96;
-  pointer-events: none;
-}
-
-body[data-dsh-deepseek-workshop] .mascotImage {
-  display: block;
-  width: 148px;
-  height: 160px;
-  object-fit: contain;
-  object-position: center bottom;
-  filter: drop-shadow(0 8px 10px rgba(49, 93, 120, 0.16));
-}
-
 @media (max-width: 959px) {
   body[data-dsh-deepseek-workshop] {
     background-position:
@@ -529,12 +501,10 @@ body[data-dsh-deepseek-workshop] .mascotImage {
 }
 
 @media (max-width: 959px), print {
-  body[data-dsh-deepseek-workshop] .mascot,
   body[data-dsh-deepseek-workshop] .ornamentApronCrest,
   body[data-dsh-deepseek-workshop] .ornamentHairWave,
   body[data-dsh-deepseek-workshop] .ornamentBubbles,
-  body[data-dsh-deepseek-workshop] .ornamentRibbonTab,
-  body[data-dsh-deepseek-workshop] .ornamentCloudTide {
+  body[data-dsh-deepseek-workshop] .ornamentRibbonTab {
     display: none;
   }
 }

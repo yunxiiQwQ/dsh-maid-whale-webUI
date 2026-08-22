@@ -49,3 +49,7 @@ The plugin uses only the official DSH client plugin mechanism. It does not modif
 ## License and Disclaimer
 
 The code is licensed under BSD-3-Clause. This is an unofficial community theme whose assets originate from community fan creations. It is not affiliated with DeepSeek.
+
+## Desktop companion (cloud whale pet)
+
+The plugin also bundles a DSH-driven desktop companion that starts with DSH, exits with DSH, and keeps rendering as a transparent always-on-top window while the WebUI is minimized. The character is the deepseek-drool 20-action pack; states follow real agent events (idle, thinking, working with per-activity poses, waiting, success, error), with drag / head-pat / poke interactions and a settings card under DSH Settings -> Plugins. The helper executable is frozen with the assets via PyInstaller; rebuild it with `pnpm build:helper:windows` after changing `assets/pet/`. Node-side companion code and the Python runtime are vendored from QCYTSN/dsh-dafeiyu (MIT), see NOTICE.

@@ -3,7 +3,7 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
-const ids = ['bow', 'whale-tail', 'apron-crest', 'hair-wave', 'bubbles', 'headband-corner', 'ribbon-tab', 'cloud-tide']
+const ids = ['bow', 'whale-tail', 'apron-crest', 'hair-wave', 'bubbles', 'headband-corner', 'ribbon-tab']
 const camel = (id) => id.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase())
 const modes = ['light', 'dark']
 const art = Object.fromEntries(

@@ -4,7 +4,7 @@
 
 [English](README.en.md) | 中文
 
-DeepSeek Harness Web UI 的鲸鱼女仆主题插件，包含亮暗模式、海洋插画背景、手绘九宫格边框与页边角色装饰。
+DeepSeek Harness Web UI 的鲸鱼女仆主题插件，包含亮暗模式、海洋插画背景、手绘九宫格边框，并附带随 DSH 启停、置顶桌面的云鲸桌宠（详见 maid-whale-webui/README.md）。
 
 ## 效果预览
 

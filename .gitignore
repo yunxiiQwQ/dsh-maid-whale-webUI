@@ -6,3 +6,4 @@ node_modules/
 .claude/
 AGENTS.md
 **/AGENTS.md
+.build/

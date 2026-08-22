@@ -1,6 +1,15 @@
 {
   "files": {
-    "includes": ["**", "!**/lib", "!**/node_modules", "!**/*.generated.ts", "!**/assets", "!**/preview", "!**/.tmp-*"]
+    "includes": [
+      "**",
+      "!**/.build",
+      "!**/lib",
+      "!**/node_modules",
+      "!**/*.generated.ts",
+      "!**/assets",
+      "!**/preview",
+      "!**/.tmp-*"
+    ]
   },
   "formatter": {
     "enabled": true,

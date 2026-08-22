@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      '@deepseek-ai/schemastery':
+        specifier: ^3.18.1
+        version: 3.18.1
     devDependencies:
       '@biomejs/biome':
         specifier: ^2.5.9
@@ -17,12 +21,18 @@ importers:
       '@types/node':
         specifier: ^26.2.0
         version: 26.2.0
+      '@types/react':
+        specifier: ^18.3.0
+        version: 18.3.31
       jsdom:
         specifier: 29.1.1
         version: 29.1.1
       lightningcss:
         specifier: ^1.32.0
         version: 1.33.0
+      react:
+        specifier: ^18.0.0
+        version: 18.0.0
       tsdown:
         specifier: ^0.22.2
         version: 0.22.14(typescript@5.9.3)
@@ -162,6 +172,9 @@ packages:
   '@deepseek-ai/cosmokit@1.8.2':
     resolution: {integrity: sha512-muBOKtSrUKU5m/xpq8ZXWL6hQ/jgd4PhU2PqH97bcxIiLEJfNwZOGQEx4t/aS/GgxRAR+ra9pMHPMtTHU4sqqA==}
 
+  '@deepseek-ai/schemastery@3.18.1':
+    resolution: {integrity: sha512-Qn0FCSwCQnpnj6SB31I6i2sIKgKWnkbJM8O0EU91Gv2UsYVvtZTl6IA0sCwk2e2MZf5S8w5hpq9QkeVvK9qwxg==}
+
   '@exodus/bytes@1.15.1':
     resolution: {integrity: sha512-S6mL0yNB/Abt9Ei4tq8gDhcczc4S3+vQ4ra7vxnAf+YHC02srtqxKKZghx2Dq6p0e66THKwR6r8N6P95wEty7Q==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
@@ -287,6 +300,12 @@ packages:
 
   '@types/node@26.2.0':
     resolution: {integrity: sha512-5IviulTZeRNp2vAJ514cc/HUlY5nZ9fCbq9DMyC52BrhFZACo3nI0R7qBxhQmo/d27NFe96ur/b7Wwxklda+kg==}
+
+  '@types/prop-types@15.7.15':
+    resolution: {integrity: sha512-F6bEyamV9jKGAFBEmlQnesRPGOQqS2+Uwi0Em15xenOxHaf2hv6L8YCVn3rPdPJOiJfPiCnLIRyvwVaqMY3MIw==}
+
+  '@types/react@18.3.31':
+    resolution: {integrity: sha512-vfEqpXTvwT91yhmwdfouStN2hSKwTvyRs8qpLfADyrq/kxDw0hZM7Wk9Ug1FELj8hIby+S/+kQCSRFF32nv2Qw==}
 
   '@vitest/expect@4.1.10':
     resolution: {integrity: sha512-YsCn+qAk1GWjQOWFEsEcL2gNQ0zmVmQu3T03qP6UyjhtmdtwtbuI+DASn/7iQB3HGTXkdBwGddzxPlmiql5vlA==}
@@ -478,6 +497,9 @@ packages:
     resolution: {integrity: sha512-X7sjQzceUhu1u7Y/ylrRZFU2FS6LRiFVp6rKLPg23y3x3c3DOKAwuXGDp+PAGjh6CSnCjYeAul8pcT8bAl+lSA==}
     engines: {node: ^10 || ^12.20.0 || ^14.13.0 || >=15.0.0}
 
+  csstype@3.2.3:
+    resolution: {integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==}
+
   data-urls@7.0.0:
     resolution: {integrity: sha512-23XHcCF+coGYevirZceTVD7NdJOqVn+49IHyxgszm+JIiHLoB2TkmPtsYkNWT1pvRSGkc35L6NHs0yHkN2SumA==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
@@ -550,6 +572,9 @@ packages:
 
   is-potential-custom-element-name@1.0.1:
     resolution: {integrity: sha512-bCYeRA2rVibKZd+s2625gGnGF/t7DSqDs4dP7CrLA1m7jKWz6pps0LpYLJN8Q64HtmPKJ1hrN3nzPNKFEKOUiQ==}
+
+  js-tokens@3.0.0:
+    resolution: {integrity: sha512-poXEQHPMmTrYZuJgNRll2sbc3kJsSU1m/g1Q93IE6txNj3p6xOOOmdj1G/zCVGawYSPzTkSoWGg1otqbeqKJeg==}
 
   jsdom@29.1.1:
     resolution: {integrity: sha512-ECi4Fi2f7BdJtUKTflYRTiaMxIB0O6zfR1fX0GXpUrf6flp8QIYn1UT20YQqdSOfk2dfkCwS8LAFoJDEppNK5Q==}
@@ -634,6 +659,10 @@ packages:
     resolution: {integrity: sha512-WkUDrojuJs0xkgGf2udWxa3yGBRxPtxUkB79i6aCZLRgc7PM8fZe9TosfPDcvEpQZbuFASnHYmRLBLUbmLOIIA==}
     engines: {node: '>= 12.0.0'}
 
+  loose-envify@1.4.0:
+    resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}
+    hasBin: true
+
   lru-cache@11.5.2:
     resolution: {integrity: sha512-4pfM1Ff0x50o0tQwb5ucw/RzNyD0/YJME6IVcStalZuMWxdt3sR3huStTtxz4PUmvZfRguvDejasvQ2kifR11g==}
     engines: {node: 20 || >=22}
@@ -676,6 +705,10 @@ packages:
 
   quansync@1.0.0:
     resolution: {integrity: sha512-5xZacEEufv3HSTPQuchrvV6soaiACMFnq1H8wkVioctoH3TRha9Sz66lOxRwPK/qZj7HPiSveih9yAyh98gvqA==}
+
+  react@18.0.0:
+    resolution: {integrity: sha512-x+VL6wbT4JRVPm7EGxXhZ8w8LTROaxPXOqhlGyVSrv0sB1jkyFGgXxJ8LVoPRLvPR6/CIZGFmfzqUa2NYeMr2A==}
+    engines: {node: '>=0.10.0'}
 
   require-from-string@2.0.2:
     resolution: {integrity: sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==}
@@ -1028,6 +1061,11 @@ snapshots:
 
   '@deepseek-ai/cosmokit@1.8.2': {}
 
+  '@deepseek-ai/schemastery@3.18.1':
+    dependencies:
+      '@deepseek-ai/cosmokit': 1.8.2
+      '@standard-schema/spec': 1.1.0
+
   '@exodus/bytes@1.15.1': {}
 
   '@jridgewell/sourcemap-codec@1.5.5': {}
@@ -1096,6 +1134,13 @@ snapshots:
   '@types/node@26.2.0':
     dependencies:
       undici-types: 8.3.0
+
+  '@types/prop-types@15.7.15': {}
+
+  '@types/react@18.3.31':
+    dependencies:
+      '@types/prop-types': 15.7.15
+      csstype: 3.2.3
 
   '@vitest/expect@4.1.10':
     dependencies:
@@ -1231,6 +1276,8 @@ snapshots:
       mdn-data: 2.27.1
       source-map-js: 1.2.1
 
+  csstype@3.2.3: {}
+
   data-urls@7.0.0:
     dependencies:
       whatwg-mimetype: 5.0.0
@@ -1280,6 +1327,8 @@ snapshots:
   import-without-cache@0.4.0: {}
 
   is-potential-custom-element-name@1.0.1: {}
+
+  js-tokens@3.0.0: {}
 
   jsdom@29.1.1:
     dependencies:
@@ -1356,6 +1405,10 @@ snapshots:
       lightningcss-win32-arm64-msvc: 1.33.0
       lightningcss-win32-x64-msvc: 1.33.0
 
+  loose-envify@1.4.0:
+    dependencies:
+      js-tokens: 3.0.0
+
   lru-cache@11.5.2: {}
 
   magic-string@0.30.21:
@@ -1387,6 +1440,10 @@ snapshots:
   punycode@2.3.1: {}
 
   quansync@1.0.0: {}
+
+  react@18.0.0:
+    dependencies:
+      loose-envify: 1.4.0
 
   require-from-string@2.0.2: {}
 

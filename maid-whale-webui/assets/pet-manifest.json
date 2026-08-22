@@ -1,0 +1,214 @@
+{
+  "formatVersion": 1,
+  "characterId": "deepseek-drool",
+  "baseSize": 238,
+  "maxFrameWidth": 238,
+  "maxFrameHeight": 260,
+  "clips": {
+    "idle": {
+      "frames": [
+        "01-idle.png"
+      ],
+      "frameMs": 180,
+      "loop": true,
+      "motion": "breathe"
+    },
+    "sleeping": {
+      "frames": [
+        "16-sleeping.png"
+      ],
+      "frameMs": 180,
+      "loop": true,
+      "motion": "breathe"
+    },
+    "thinking": {
+      "frames": [
+        "03-thinking.png"
+      ],
+      "frameMs": 180,
+      "loop": true,
+      "motion": "think"
+    },
+    "working": {
+      "frames": [
+        "06-working.png"
+      ],
+      "frameMs": 180,
+      "loop": true,
+      "motion": "work"
+    },
+    "working_search": {
+      "frames": [
+        "07-loading.png"
+      ],
+      "frameMs": 180,
+      "loop": true
+    },
+    "working_command": {
+      "frames": [
+        "12-uploading.png"
+      ],
+      "frameMs": 180,
+      "loop": true
+    },
+    "working_testing": {
+      "frames": [
+        "14-playing.png"
+      ],
+      "frameMs": 180,
+      "loop": true
+    },
+    "walk_start_left": {
+      "frames": [
+        "01-idle.png",
+        "01-idle.png"
+      ],
+      "frameMs": 118,
+      "loop": false
+    },
+    "walk_stop_left": {
+      "frames": [
+        "01-idle.png",
+        "01-idle.png"
+      ],
+      "frameMs": 135,
+      "loop": false
+    },
+    "walk_start_right": {
+      "frames": [
+        "01-idle.png",
+        "01-idle.png"
+      ],
+      "frameMs": 118,
+      "loop": false
+    },
+    "walk_stop_right": {
+      "frames": [
+        "01-idle.png",
+        "01-idle.png"
+      ],
+      "frameMs": 135,
+      "loop": false
+    },
+    "waiting": {
+      "frames": [
+        "18-please.png"
+      ],
+      "frameMs": 180,
+      "loop": true,
+      "motion": "wait"
+    },
+    "success": {
+      "frames": [
+        "08-success.png"
+      ],
+      "frameMs": 180,
+      "loop": true,
+      "motion": "bounce"
+    },
+    "error": {
+      "frames": [
+        "09-error.png"
+      ],
+      "frameMs": 180,
+      "loop": true,
+      "motion": "shake"
+    },
+    "error_dizzy": {
+      "frames": [
+        "04-confused.png"
+      ],
+      "frameMs": 180,
+      "loop": true,
+      "motion": "dizzy"
+    },
+    "dragging": {
+      "frames": [
+        "11-dragging.png"
+      ],
+      "frameMs": 180,
+      "loop": true
+    },
+    "head_pat": {
+      "frames": [
+        "02-happy.png",
+        "02-happy.png",
+        "02-happy.png",
+        "02-happy.png",
+        "02-happy.png",
+        "02-happy.png"
+      ],
+      "frameMs": 180,
+      "loop": false
+    },
+    "poke": {
+      "frames": [
+        "05-surprised.png",
+        "05-surprised.png",
+        "05-surprised.png",
+        "05-surprised.png"
+      ],
+      "frameMs": 170,
+      "loop": false
+    },
+    "tail": {
+      "frames": [
+        "17-angry.png",
+        "17-angry.png",
+        "17-angry.png",
+        "17-angry.png"
+      ],
+      "frameMs": 220,
+      "loop": false
+    },
+    "surprised": {
+      "frames": [
+        "05-surprised.png",
+        "05-surprised.png",
+        "05-surprised.png"
+      ],
+      "frameMs": 200,
+      "loop": false
+    },
+    "confused": {
+      "frames": [
+        "04-confused.png",
+        "04-confused.png",
+        "04-confused.png"
+      ],
+      "frameMs": 200,
+      "loop": false
+    },
+    "eating": {
+      "frames": [
+        "20-eating.png",
+        "20-eating.png",
+        "20-eating.png",
+        "20-eating.png"
+      ],
+      "frameMs": 220,
+      "loop": false
+    }
+  },
+  "stateMap": {
+    "IDLE": "idle",
+    "THINKING": "thinking",
+    "WORKING": "working",
+    "WAITING": "waiting",
+    "SUCCESS": "success",
+    "ERROR": "error",
+    "DISCONNECTED": "sleeping"
+  },
+  "workingActivityMap": {
+    "searching": "working_search",
+    "commanding": "working_command",
+    "editing": "working",
+    "testing": "working_testing",
+    "using-tool": "working"
+  },
+  "idleMicroClips": [
+    "surprised",
+    "confused",
+    "eating"
+  ]
+}

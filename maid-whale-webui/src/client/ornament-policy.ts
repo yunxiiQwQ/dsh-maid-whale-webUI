@@ -6,7 +6,6 @@ export interface OrnamentState {
   dialog: boolean
   composerEngaged: boolean
   heading: boolean
-  mascot: boolean
 }
 
 export function chooseOrnaments(state: OrnamentState): OrnamentId[] {
@@ -22,7 +21,6 @@ export function chooseOrnaments(state: OrnamentState): OrnamentId[] {
   selected.push(state.composerEngaged ? 'ribbonTab' : 'bubbles')
   if (state.dialog) selected.push('apronCrest')
   else if (state.heading) selected.push('hairWave')
-  if (state.mascot) selected.push('cloudTide')
 
   return selected
 }

@@ -13,7 +13,6 @@ function fixture(): HTMLTextAreaElement {
       <h1>DeepSeek Harness</h1>
       <textarea aria-label="Message"></textarea>
     </main>
-    <div data-skin-chrome="mascot"></div>
   `
   return document.querySelector('textarea')!
 }
@@ -36,12 +35,12 @@ describe('ornament controller', () => {
     controller = createOrnamentController(document.body, { wide: true })
 
     controller.sync()
-    expect(document.querySelectorAll('img[data-dsh-ornament]')).toHaveLength(5)
+    expect(document.querySelectorAll('img[data-dsh-ornament]')).toHaveLength(4)
     expect(document.querySelector('[data-dsh-ornament="bubbles"]')).not.toBeNull()
-    expect(document.querySelectorAll('img[data-dsh-ornament][aria-hidden="true"]')).toHaveLength(5)
+    expect(document.querySelectorAll('img[data-dsh-ornament][aria-hidden="true"]')).toHaveLength(4)
 
     controller.sync()
-    expect(document.querySelectorAll('img[data-dsh-ornament]')).toHaveLength(5)
+    expect(document.querySelectorAll('img[data-dsh-ornament]')).toHaveLength(4)
 
     input.focus()
     input.dispatchEvent(new InputEvent('input', { bubbles: true }))
@@ -54,7 +53,7 @@ describe('ornament controller', () => {
     document.body.append(dialog)
     await tick()
     expect(document.querySelector('[data-dsh-ornament="apronCrest"]')).not.toBeNull()
-    expect(document.querySelectorAll('img[data-dsh-ornament]')).toHaveLength(5)
+    expect(document.querySelectorAll('img[data-dsh-ornament]')).toHaveLength(4)
 
     const before = document.querySelector<HTMLImageElement>('[data-dsh-ornament="bow"]')!.src
     controller.setMode('dark')
