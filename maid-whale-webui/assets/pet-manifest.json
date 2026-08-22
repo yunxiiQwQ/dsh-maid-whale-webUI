@@ -11,7 +11,8 @@
       ],
       "frameMs": 180,
       "loop": true,
-      "motion": "breathe"
+      "motion": "breathe",
+      "scale": 0.95
     },
     "sleeping": {
       "frames": [

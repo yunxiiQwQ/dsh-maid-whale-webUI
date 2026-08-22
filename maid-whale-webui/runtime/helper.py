@@ -873,6 +873,10 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
             if clip_name in ("working_search", "working_command"):
                 offset_y = -abs(math.sin(phase * 4.5)) * 5
                 angle = math.sin(phase * 9.0) * 2.5
+            # Per-clip render scale (manifest "scale"): the base idle pose reads
+            # slightly larger than the action poses, so clips can be trimmed
+            # without resampling their pixels.
+            scale_extra *= self.model.active_clip.scale
 
             # Scale procedural offsets with the character while retaining subpixel motion.
             offset_x = offset_x * self.scale

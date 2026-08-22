@@ -35,6 +35,7 @@ class Clip:
     frame_ms: int
     loop: bool
     motion: str | None = None
+    scale: float = 1.0
 
 
 class AnimationModel:
@@ -46,6 +47,7 @@ class AnimationModel:
                 frame_ms=int(value["frameMs"]),
                 loop=bool(value["loop"]),
                 motion=value.get("motion"),
+                scale=float(value.get("scale", 1.0)),
             )
             for name, value in manifest["clips"].items()
         }
