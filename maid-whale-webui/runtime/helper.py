@@ -226,7 +226,7 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
             if not self.reduced_motion:
                 self._schedule_micro()
             self.snapshot_saved = False
-            self.setWindowTitle("DSH 大肥鱼")
+            self.setWindowTitle("云鲸桌宠")
             self.setWindowFlags(
                 Qt.WindowType.FramelessWindowHint
                 | Qt.WindowType.WindowStaysOnTopHint
@@ -1037,7 +1037,7 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
 
 def main() -> int:
     configure_stdio()
-    parser = argparse.ArgumentParser(description="DSH BigFish native helper")
+    parser = argparse.ArgumentParser(description="DSH cloud whale companion helper")
     parser.add_argument("--headless", action="store_true", help="validate the protocol without opening a window")
     parser.add_argument("--event-log", type=Path, help="append received protocol messages to a JSONL file")
     parser.add_argument("--snapshot", type=Path, help="save one diagnostic visual frame after the first message")
