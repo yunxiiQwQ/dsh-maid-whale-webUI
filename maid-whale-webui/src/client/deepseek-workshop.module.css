@@ -4,7 +4,7 @@ body[data-dsh-deepseek-workshop] {
   color: #243746;
   background-color: #eef6f8;
   background-blend-mode: normal, normal, soft-light, normal, normal;
-  font-family: "LXGW WenKai Screen", "Microsoft YaHei UI", sans-serif;
+  font-family: 'LXGW WenKai Screen', 'Microsoft YaHei UI', sans-serif;
   --dsw-static-blue-50: #f2f8fa;
   --dsw-static-blue-100: #deeff4;
   --dsw-static-blue-300: #a8d1df;
@@ -62,7 +62,7 @@ body[data-dsh-deepseek-workshop] {
   --dsw-alias-button-elevated-fill: #fffef9;
   --dsw-alias-button-floating-fill: #fffef9;
   --dsw-alias-button-floating-hover: #edf5f6;
-  --dsw-alias-interactive-bg-hover: rgba(90, 167, 216, 0.10);
+  --dsw-alias-interactive-bg-hover: rgba(90, 167, 216, 0.1);
   --dsw-alias-interactive-bg-hover-accent: rgba(90, 167, 216, 0.16);
   --dsw-alias-interactive-bg-active: rgba(90, 167, 216, 0.17);
   --dsw-alias-markdown-code-block: rgba(239, 246, 247, 0.98);
@@ -79,6 +79,7 @@ body[data-dsh-deepseek-workshop] {
   --dsw-specific-menu: rgba(251, 250, 245, 0.99);
   --dsw-specific-input-major: rgba(255, 255, 252, 0.98);
   --dsw-specific-selector: rgba(235, 244, 246, 0.98);
+  --dsw-specific-command-token: #3aaef0;
 }
 
 body[data-dsh-deepseek-workshop] [id='root'] {
@@ -86,7 +87,7 @@ body[data-dsh-deepseek-workshop] [id='root'] {
 }
 
 body[data-dsh-deepseek-workshop] :is(code, pre, kbd, samp) {
-  font-family: "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+  font-family: 'Cascadia Code', 'JetBrains Mono', Consolas, monospace;
 }
 
 body[data-dsh-deepseek-workshop][data-ds-dark-theme] {
@@ -147,7 +148,7 @@ body[data-dsh-deepseek-workshop][data-ds-dark-theme] {
   --dsw-alias-button-elevated-fill: #22384f;
   --dsw-alias-button-floating-fill: #1c2d42;
   --dsw-alias-button-floating-hover: #29435d;
-  --dsw-alias-interactive-bg-hover: rgba(131, 188, 220, 0.10);
+  --dsw-alias-interactive-bg-hover: rgba(131, 188, 220, 0.1);
   --dsw-alias-interactive-bg-hover-accent: rgba(131, 188, 220, 0.16);
   --dsw-alias-interactive-bg-active: rgba(131, 188, 220, 0.18);
   --dsw-alias-markdown-code-block: rgba(28, 45, 66, 0.98);
@@ -164,6 +165,7 @@ body[data-dsh-deepseek-workshop][data-ds-dark-theme] {
   --dsw-specific-menu: rgba(34, 56, 79, 0.99);
   --dsw-specific-input-major: rgba(23, 36, 53, 0.99);
   --dsw-specific-selector: rgba(41, 66, 91, 0.98);
+  --dsw-specific-command-token: #7cc8f2;
 }
 
 body[data-dsh-deepseek-workshop] [role='tree'] {
@@ -172,23 +174,26 @@ body[data-dsh-deepseek-workshop] [role='tree'] {
 
 body[data-dsh-deepseek-workshop] [data-dsh-sidebar-surface] {
   background-image:
-    linear-gradient(rgba(247, 250, 249, 0.44), rgba(247, 250, 249, 0.44)),
-    var(--dsw-sidebar-ocean-background);
-  background-position: center, center bottom;
+    linear-gradient(rgba(247, 250, 249, 0.44), rgba(247, 250, 249, 0.44)), var(--dsw-sidebar-ocean-background);
+  background-position:
+    center,
+    center bottom;
   background-size: cover, cover;
   background-repeat: no-repeat;
 }
 
 body[data-dsh-deepseek-workshop][data-ds-dark-theme] [data-dsh-sidebar-surface] {
   background-image:
-    linear-gradient(rgba(18, 31, 47, 0.58), rgba(18, 31, 47, 0.58)),
-    var(--dsw-sidebar-ocean-background);
+    linear-gradient(rgba(18, 31, 47, 0.58), rgba(18, 31, 47, 0.58)), var(--dsw-sidebar-ocean-background);
 }
 
 body[data-dsh-deepseek-workshop] [role='treeitem'] {
   border: 2px solid transparent;
   border-radius: 13px 16px 12px 15px;
-  transition: color 140ms ease, background-color 140ms ease, border-color 140ms ease;
+  transition:
+    color 140ms ease,
+    background-color 140ms ease,
+    border-color 140ms ease;
 }
 
 body[data-dsh-deepseek-workshop] [role='treeitem']:hover {
@@ -198,7 +203,9 @@ body[data-dsh-deepseek-workshop] [role='treeitem']:hover {
 body[data-dsh-deepseek-workshop] [role='treeitem'][aria-selected='true'] {
   border-color: var(--dsw-alias-border-l1);
   background-color: var(--dsw-specific-sidebar-nav-item-active);
-  box-shadow: inset 3px 0 0 var(--dsw-specific-sidebar-nav-item-active-accent), 0 4px 12px rgba(49, 93, 120, 0.07);
+  box-shadow:
+    inset 3px 0 0 var(--dsw-specific-sidebar-nav-item-active-accent),
+    0 4px 12px rgba(49, 93, 120, 0.07);
   color: var(--dsw-alias-brand-text);
   font-weight: 650;
 }
@@ -208,14 +215,21 @@ body[data-dsh-deepseek-workshop] :is(textarea, [contenteditable='true'], input:n
   border-radius: 20px 23px 19px 22px;
   outline: none;
   background-color: var(--dsw-specific-input-major);
-  box-shadow: 0 10px 26px rgba(49, 93, 120, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.32);
+  box-shadow:
+    0 10px 26px rgba(49, 93, 120, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.32);
   color: var(--dsw-alias-label-primary);
-  transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    transform 150ms ease;
 }
 
 body[data-dsh-deepseek-workshop] :is(textarea, [contenteditable='true'], input:not([type])):focus {
   border-color: var(--dsw-static-blue-400);
-  box-shadow: 0 12px 30px rgba(49, 93, 120, 0.13), 0 0 0 3px rgba(90, 167, 216, 0.10);
+  box-shadow:
+    0 12px 30px rgba(49, 93, 120, 0.13),
+    0 0 0 3px rgba(90, 167, 216, 0.1);
   transform: translateY(-1px);
 }
 
@@ -223,7 +237,9 @@ body[data-dsh-deepseek-workshop] [role='dialog'] {
   border: 2px solid var(--dsw-alias-border-l2);
   border-radius: 24px 27px 22px 25px;
   background-color: var(--dsw-alias-bg-overlay);
-  box-shadow: 0 24px 72px rgba(36, 55, 70, 0.20), 0 3px 0 rgba(90, 167, 216, 0.07);
+  box-shadow:
+    0 24px 72px rgba(36, 55, 70, 0.2),
+    0 3px 0 rgba(90, 167, 216, 0.07);
 }
 
 body[data-dsh-deepseek-workshop] [role='menu'] {
@@ -241,7 +257,11 @@ body[data-dsh-deepseek-workshop] :is([role='listbox'], [role='combobox']) {
 
 body[data-dsh-deepseek-workshop] button {
   border-radius: 12px 14px 11px 13px;
-  transition: color 130ms ease, background-color 130ms ease, border-color 130ms ease, transform 130ms ease;
+  transition:
+    color 130ms ease,
+    background-color 130ms ease,
+    border-color 130ms ease,
+    transform 130ms ease;
 }
 
 body[data-dsh-deepseek-workshop] button:hover:not(:disabled) {
@@ -261,7 +281,7 @@ body[data-dsh-deepseek-workshop] :is(button[type='submit'], button[data-variant=
 
 body[data-dsh-deepseek-workshop] :is(main, [role='main']) :is(h1, h2) {
   color: var(--dsw-alias-label-primary);
-  font-family: "LXGW WenKai Screen", "STKaiti", "Microsoft YaHei UI", sans-serif;
+  font-family: 'LXGW WenKai Screen', 'STKaiti', 'Microsoft YaHei UI', sans-serif;
   font-weight: 650;
   letter-spacing: 0.015em;
 }
@@ -274,13 +294,13 @@ body[data-dsh-deepseek-workshop] [data-dsh-frame] {
   border-image-repeat: stretch;
   border-image-slice: 70 95 70 110 fill;
   border-image-width: 19px;
-  border-image-outset: 3px;
+  border-image-outset: 8px 4px 8px 5px;
 }
 
 body[data-dsh-deepseek-workshop] [data-dsh-frame='selected-nav'] {
   border-image-source: var(--dsw-frame-selected-nav);
   border-image-width: 14px;
-  border-image-outset: 2px;
+  border-image-outset: 6px 3px 6px 4px;
 }
 
 body[data-dsh-deepseek-workshop] :is(textarea, [contenteditable='true'], input:not([type]))[data-dsh-frame='composer'] {
@@ -293,9 +313,55 @@ body[data-dsh-deepseek-workshop] :is(textarea, [contenteditable='true'], input:n
   border-image-outset: 0;
   background-color: var(--dsw-specific-input-major);
   box-shadow: none;
+  color: var(--dsw-alias-label-primary) !important;
+  -webkit-text-fill-color: var(--dsw-alias-label-primary) !important;
 }
 
-body[data-dsh-deepseek-workshop] :is(textarea, [contenteditable='true'], input:not([type]))[data-dsh-frame='composer']:focus {
+/* DSH renders recognised slash commands in nested editor nodes and a mirrored input backdrop;
+   flatten those to ink while keeping the *_hlToken command spans on their bright accent. */
+body[data-dsh-deepseek-workshop] [data-dsh-frame='composer'],
+body[data-dsh-deepseek-workshop] [data-dsh-frame='composer'] *:not([class*='_hlToken']) {
+  color: var(--dsw-alias-label-primary) !important;
+}
+
+body[data-dsh-deepseek-workshop] [data-input-scroll]:has([data-dsh-frame='composer']) [data-input-backdrop],
+body[data-dsh-deepseek-workshop]
+  [data-input-scroll]:has([data-dsh-frame='composer'])
+  [data-input-backdrop]
+  *:not([class*='_hlToken']),
+body[data-dsh-deepseek-workshop] [data-dsh-frame='composer']::placeholder {
+  color: var(--dsw-alias-label-primary) !important;
+  -webkit-text-fill-color: var(--dsw-alias-label-primary) !important;
+}
+
+body[data-dsh-deepseek-workshop] :is([data-input-backdrop], [data-dsh-frame='composer']) [class*='_hlToken'] {
+  color: var(--dsw-specific-command-token) !important;
+  -webkit-text-fill-color: var(--dsw-specific-command-token) !important;
+}
+
+/* DSH mirrors the composer text into a [data-input-backdrop] below the input; over that mirror
+   the input must keep both its background and glyphs transparent so the backdrop's ink text and
+   command accents show through, with the caret alone staying visible. */
+body[data-dsh-deepseek-workshop]
+  [data-input-scroll]:has([data-input-backdrop])
+  :is(textarea, input:not([type]))[data-dsh-frame='composer'] {
+  background-color: transparent !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  caret-color: var(--dsw-alias-label-primary) !important;
+}
+
+/* A shell that wraps only the input sits between the mirror and the eye; drop its own fill so
+   the mirror shows through, while shells containing the backdrop keep the paper fill. */
+body[data-dsh-deepseek-workshop]
+  [data-input-scroll]:has([data-input-backdrop])
+  [data-dsh-frame='composer-shell']:not(:has([data-input-backdrop])) {
+  background-color: transparent !important;
+  border-image-slice: 70 95 70 110;
+}
+
+body[data-dsh-deepseek-workshop]
+  :is(textarea, [contenteditable='true'], input:not([type]))[data-dsh-frame='composer']:focus {
   border-color: var(--dsw-alias-border-l2);
   box-shadow: none;
   transform: none;
@@ -307,7 +373,7 @@ body[data-dsh-deepseek-workshop] [data-dsh-frame='composer-shell'] {
   border-image-source: var(--dsw-frame-composer);
   border-image-slice: 70 95 70 110 fill;
   border-image-width: 18px;
-  border-image-outset: 4px;
+  border-image-outset: 7px 4px 7px 5px;
   border-radius: 18px 21px 17px 20px;
   background-color: var(--dsw-specific-input-major);
   box-shadow: 0 12px 30px rgba(49, 93, 120, 0.12);
@@ -316,15 +382,15 @@ body[data-dsh-deepseek-workshop] [data-dsh-frame='composer-shell'] {
 body[data-dsh-deepseek-workshop] [data-dsh-frame='dialog'] {
   border-image-source: var(--dsw-frame-dialog);
   border-image-width: 22px;
-  border-image-outset: 4px;
+  border-image-outset: 9px 5px 9px 6px;
   background-color: var(--dsw-alias-bg-overlay);
-  box-shadow: 0 25px 72px rgba(36, 55, 70, 0.22), 4px 5px 0 rgba(90, 167, 216, 0.07);
+  box-shadow: 0 25px 72px rgba(36, 55, 70, 0.22);
 }
 
 body[data-dsh-deepseek-workshop] [data-dsh-frame='menu'] {
   border-image-source: var(--dsw-frame-menu);
   border-image-width: 16px;
-  border-image-outset: 3px;
+  border-image-outset: 7px 4px 6px 4px;
   background-color: var(--dsw-specific-menu);
   box-shadow: 0 15px 36px rgba(36, 55, 70, 0.16);
 }
@@ -334,12 +400,10 @@ body[data-dsh-deepseek-workshop] [data-dsh-frame='panel'] {
   border-image-source: var(--dsw-frame-panel);
   border-image-slice: 70 95 70 110 fill;
   border-image-width: 22px;
-  border-image-outset: 4px;
+  border-image-outset: 9px 5px 9px 6px;
   border-radius: 19px 22px 18px 21px;
   background-color: var(--dsw-alias-bg-layer-1);
-  box-shadow:
-    inset 2px 0 0 color-mix(in srgb, var(--dsw-static-blue-800) 62%, transparent),
-    5px 7px 24px rgba(49, 93, 120, 0.09);
+  box-shadow: 5px 7px 24px rgba(49, 93, 120, 0.09);
   padding-block: 14px !important;
   padding-inline: 24px !important;
 }
@@ -348,22 +412,21 @@ body[data-dsh-deepseek-workshop] [data-dsh-frame='primary-button'] {
   border-image-source: var(--dsw-frame-primary-button);
   border-image-slice: 70 95 70 110 fill;
   border-image-width: 14px;
-  border-image-outset: 2px;
+  border-image-outset: 6px 3px 6px 4px;
 }
 
 body[data-dsh-deepseek-workshop] [data-dsh-frame='control'] {
   border-image-source: var(--dsw-frame-primary-button);
   border-image-slice: 70 95 70 110 fill;
   border-image-width: 9px;
-  border-image-outset: 1px;
+  border-image-outset: 4px 2px 4px 2px;
 }
 
 body[data-dsh-deepseek-workshop] [data-dsh-frame='surface'] {
   border-image-source: var(--dsw-frame-panel);
   border-image-slice: 70 95 70 110 fill;
   border-image-width: 15px;
-  border-image-outset: 2px;
-  box-shadow: inset 2px 0 0 color-mix(in srgb, var(--dsw-static-blue-800) 62%, transparent);
+  border-image-outset: 6px 3px 6px 4px;
 }
 
 body[data-dsh-deepseek-workshop] [data-slot='conversation.session.header'] > [data-dsh-frame='surface'] {
@@ -371,8 +434,18 @@ body[data-dsh-deepseek-workshop] [data-slot='conversation.session.header'] > [da
   border-image-width: 11px;
 }
 
-body[data-dsh-deepseek-workshop] [data-slot='sidebar.settings'] [data-dsh-frame] {
+body[data-dsh-deepseek-workshop] [data-slot='sidebar.settings'] [data-dsh-frame]:not([data-dsh-frame='dialog']) {
   border-image-outset: 0;
+}
+
+body[data-dsh-deepseek-workshop] [data-slot='sidebar.settings'] [data-dsh-control-row] {
+  gap: 16px !important;
+  padding-inline: 10px !important;
+}
+
+body[data-dsh-deepseek-workshop] [data-slot='sidebar.settings'] [data-dsh-control-row] > [data-dsh-frame='control'] {
+  flex-basis: 0 !important;
+  min-width: 0 !important;
 }
 
 body[data-dsh-deepseek-workshop] [data-slot='sidebar.settings'] [data-dsh-frame='surface'] > :first-child {
@@ -396,7 +469,7 @@ body[data-dsh-deepseek-workshop] [data-dsh-frame='message'] {
   border-image-source: var(--dsw-frame-message);
   border-image-slice: 70 95 70 110 fill;
   border-image-width: 30px;
-  border-image-outset: 10px 8px 8px 7px;
+  border-image-outset: 12px 7px 12px 8px;
   background-clip: padding-box;
   overflow-wrap: anywhere;
 }
@@ -404,14 +477,14 @@ body[data-dsh-deepseek-workshop] [data-dsh-frame='message'] {
 body[data-dsh-deepseek-workshop] [data-dsh-frame='message'][data-dsh-message-role='user'] {
   border-radius: 30px 33px 28px 32px;
   background-color: var(--dsw-specific-bubble);
-  box-shadow: 3px 5px 16px rgba(49, 93, 120, 0.10);
+  box-shadow: 3px 5px 16px rgba(49, 93, 120, 0.1);
   padding: 10px 16px;
 }
 
 body[data-dsh-deepseek-workshop] [data-dsh-frame='message'][data-dsh-message-role='assistant'] {
   border-radius: 30px 34px 29px 33px;
   background-color: color-mix(in srgb, var(--dsw-alias-bg-layer-1) 88%, transparent);
-  box-shadow: 4px 6px 22px rgba(49, 93, 120, 0.10);
+  box-shadow: 4px 6px 22px rgba(49, 93, 120, 0.1);
   margin-block: 5px 11px;
   padding: 18px 21px 20px;
 }
@@ -529,7 +602,12 @@ body[data-dsh-deepseek-workshop] .mascotImage {
 
 @media (max-width: 959px) {
   body[data-dsh-deepseek-workshop] {
-    background-position: center, calc(50% + 80px) center, center, center, center !important;
+    background-position:
+      center,
+      calc(50% + 80px) center,
+      center,
+      center,
+      center !important;
   }
 
   body[data-dsh-deepseek-workshop] [data-dsh-frame] {
@@ -539,31 +617,23 @@ body[data-dsh-deepseek-workshop] .mascotImage {
 
   body[data-dsh-deepseek-workshop] [data-dsh-frame='message'] {
     border-image-width: 20px;
-    border-image-outset: 7px 5px 5px 5px;
+    border-image-outset: 8px 4px 8px 5px;
   }
 
-  body[data-dsh-deepseek-workshop] :is(
-    [data-dsh-frame='composer-shell'],
-    [data-slot='conversation.session.header'] > [data-dsh-frame='surface']
-  ) {
+  body[data-dsh-deepseek-workshop]
+    :is([data-dsh-frame='composer-shell'], [data-slot='conversation.session.header'] > [data-dsh-frame='surface']) {
     border-width: 1px;
     border-image-width: 9px;
   }
 
-  body[data-dsh-deepseek-workshop] :is(
-    [data-dsh-frame='composer'],
-     [data-dsh-frame='dialog'],
-     [data-dsh-frame='menu'],
-     [data-dsh-frame='message']
-   ) {
-     box-shadow: 0 7px 18px rgba(36, 55, 70, 0.09);
-   }
+  body[data-dsh-deepseek-workshop]
+    :is([data-dsh-frame='composer'], [data-dsh-frame='dialog'], [data-dsh-frame='menu'], [data-dsh-frame='message']) {
+    box-shadow: 0 7px 18px rgba(36, 55, 70, 0.09);
+  }
 
   body[data-dsh-deepseek-workshop] [data-dsh-frame='panel'] {
-    box-shadow:
-      inset 2px 0 0 color-mix(in srgb, var(--dsw-static-blue-800) 62%, transparent),
-      0 7px 18px rgba(36, 55, 70, 0.09);
-   }
+    box-shadow: 0 7px 18px rgba(36, 55, 70, 0.09);
+  }
 
   body[data-dsh-deepseek-workshop] [data-dsh-message-role='assistant'] {
     padding: 14px 15px 16px;

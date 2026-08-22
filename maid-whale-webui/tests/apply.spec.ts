@@ -14,14 +14,18 @@ async function mount(): Promise<Fiber> {
 }
 
 async function tick(): Promise<void> {
-  await new Promise((resolve) => { setTimeout(resolve, 0) })
+  await new Promise((resolve) => {
+    setTimeout(resolve, 0)
+  })
 }
 
 function installMatchMedia(initial: boolean): { set: (next: boolean) => void } {
   let matches = initial
   const listeners = new Set<(event: MediaQueryListEvent) => void>()
   const query = {
-    get matches() { return matches },
+    get matches() {
+      return matches
+    },
     media: '(min-width: 960px)',
     onchange: null,
     addEventListener: (_type: string, listener: (event: MediaQueryListEvent) => void) => listeners.add(listener),
@@ -30,12 +34,17 @@ function installMatchMedia(initial: boolean): { set: (next: boolean) => void } {
     addListener: (listener: (event: MediaQueryListEvent) => void) => listeners.add(listener),
     removeListener: (listener: (event: MediaQueryListEvent) => void) => listeners.delete(listener),
   } as unknown as MediaQueryList
-  vi.stubGlobal('matchMedia', vi.fn(() => query))
+  vi.stubGlobal(
+    'matchMedia',
+    vi.fn(() => query),
+  )
   return {
     set(next) {
       matches = next
       const event = { matches, media: query.media } as MediaQueryListEvent
-      listeners.forEach((listener) => listener(event))
+      listeners.forEach((listener) => {
+        listener(event)
+      })
     },
   }
 }
@@ -49,7 +58,9 @@ afterEach(async () => {
   document.body.style.cssText = ''
   document.body.removeAttribute('data-dsh-deepseek-workshop')
   document.body.removeAttribute('data-ds-dark-theme')
-  document.head.querySelectorAll('link[data-deepseek-workshop-icon]').forEach((node) => node.remove())
+  document.head.querySelectorAll('link[data-deepseek-workshop-icon]').forEach((node) => {
+    node.remove()
+  })
   document.title = ''
 })
 
@@ -99,8 +110,9 @@ describe('DeepSeek cloud paper skin', () => {
     const lightMessage = document.body.style.getPropertyValue('--dsw-frame-message')
     expect(lightBackdrop).toContain('data:image/webp;base64,')
     expect(lightBackdrop).toContain('rgba(255, 254, 249, 0.6)')
-    expect(document.body.style.getPropertyValue('background-position'))
-      .toBe('center center, calc(50% + 80px) calc(100% - 80px), center center, center center, center center')
+    expect(document.body.style.getPropertyValue('background-position')).toBe(
+      'center center, calc(50% + 80px) calc(100% - 80px), center center, center center, center center',
+    )
     expect(lightDialog).toContain('data:image/webp;base64,')
     expect(lightMessage).toContain('data:image/webp;base64,')
 
@@ -156,7 +168,14 @@ describe('DeepSeek cloud paper skin', () => {
     const tree = document.querySelector<HTMLElement>('[role="tree"]')!
     let right = 320
     tree.getBoundingClientRect = vi.fn(() => ({
-      x: 0, y: 100, left: 0, top: 100, right, bottom: 780, width: right, height: 680,
+      x: 0,
+      y: 100,
+      left: 0,
+      top: 100,
+      right,
+      bottom: 780,
+      width: right,
+      height: 680,
       toJSON: () => ({}),
     }))
 
@@ -184,19 +203,47 @@ describe('DeepSeek cloud paper skin', () => {
     const sidebar = document.querySelector<HTMLElement>('[data-test-sidebar]')!
     const frame = document.querySelector<HTMLElement>('[data-test-frame]')!
     tree.getBoundingClientRect = vi.fn(() => ({
-      x: 10, y: 160, left: 10, top: 160, right: 280, bottom: 850, width: 270, height: 690,
+      x: 10,
+      y: 160,
+      left: 10,
+      top: 160,
+      right: 280,
+      bottom: 850,
+      width: 270,
+      height: 690,
       toJSON: () => ({}),
     }))
     treeWrapper.getBoundingClientRect = vi.fn(() => ({
-      x: 10, y: 120, left: 10, top: 120, right: 280, bottom: 850, width: 270, height: 730,
+      x: 10,
+      y: 120,
+      left: 10,
+      top: 120,
+      right: 280,
+      bottom: 850,
+      width: 270,
+      height: 730,
       toJSON: () => ({}),
     }))
     sidebar.getBoundingClientRect = vi.fn(() => ({
-      x: 0, y: 0, left: 0, top: 0, right: 280, bottom: 900, width: 280, height: 900,
+      x: 0,
+      y: 0,
+      left: 0,
+      top: 0,
+      right: 280,
+      bottom: 900,
+      width: 280,
+      height: 900,
       toJSON: () => ({}),
     }))
     frame.getBoundingClientRect = vi.fn(() => ({
-      x: 0, y: 0, left: 0, top: 0, right: 1440, bottom: 900, width: 1440, height: 900,
+      x: 0,
+      y: 0,
+      left: 0,
+      top: 0,
+      right: 1440,
+      bottom: 900,
+      width: 1440,
+      height: 900,
       toJSON: () => ({}),
     }))
 
@@ -232,7 +279,6 @@ describe('DeepSeek cloud paper skin', () => {
     expect(document.body.style.getPropertyValue('background-attachment')).toBe('scroll')
     expect(document.title).toBe('DeepSeek Harness')
   })
-
 })
 
 describe('DeepSeek cloud paper stylesheet', () => {
@@ -264,7 +310,9 @@ describe('DeepSeek cloud paper stylesheet', () => {
     expect(stylesheet).toContain("body[data-dsh-deepseek-workshop] [role='treeitem'][aria-selected='true']")
     expect(stylesheet).toContain("body[data-dsh-deepseek-workshop] [role='menu']")
     expect(stylesheet).toContain('body[data-dsh-deepseek-workshop] button')
-    expect(stylesheet).toContain("body[data-dsh-deepseek-workshop] :is(textarea, [contenteditable='true'], input:not([type]))")
+    expect(stylesheet).toContain(
+      "body[data-dsh-deepseek-workshop] :is(textarea, [contenteditable='true'], input:not([type]))",
+    )
     expect(stylesheet).not.toContain('@keyframes deepseekCloudPaperFloat')
     expect(stylesheet).not.toContain('.cloud')
     expect(stylesheet).not.toContain('clip-path')
@@ -272,7 +320,18 @@ describe('DeepSeek cloud paper stylesheet', () => {
   })
 
   it('uses the shared redrawn nine-slice frame with responsive and printable fallbacks', () => {
-    for (const frame of ['selected-nav', 'composer', 'composer-shell', 'dialog', 'menu', 'panel', 'primary-button', 'control', 'surface', 'message']) {
+    for (const frame of [
+      'selected-nav',
+      'composer',
+      'composer-shell',
+      'dialog',
+      'menu',
+      'panel',
+      'primary-button',
+      'control',
+      'surface',
+      'message',
+    ]) {
       expect(stylesheet).toContain(`[data-dsh-frame='${frame}']`)
     }
     expect(stylesheet).toContain("[data-dsh-message-role='user']")
@@ -291,7 +350,9 @@ describe('DeepSeek cloud paper stylesheet', () => {
     expect(stylesheet).toContain('top: calc(var(--dsw-y) + var(--dsw-h) - 90px)')
     expect(stylesheet).toContain('left: calc(var(--dsw-x) - 19px)')
     expect(stylesheet).toContain('left: calc(var(--dsw-x) + var(--dsw-w) - 2px)')
-    expect(stylesheet).toContain('background-position: center, calc(50% + 80px) center, center, center, center !important')
+    expect(stylesheet).toMatch(
+      /background-position:\s*center,\s*calc\(50% \+ 80px\) center,\s*center,\s*center,\s*center\s*!important/,
+    )
     expect(stylesheet).toContain('background-image: none !important')
   })
 
@@ -319,40 +380,118 @@ describe('DeepSeek cloud paper stylesheet', () => {
   })
 
   it('restores the composer shell and conversation header to their original frame thickness', () => {
-    expect(stylesheet).toMatch(/\[data-dsh-frame='composer-shell'\][\s\S]*?border-width: 1px;[\s\S]*?border-image-width: 18px/)
-    expect(stylesheet).toMatch(/\[data-slot='conversation\.session\.header'\] > \[data-dsh-frame='surface'\][\s\S]*?border-width: 1px;[\s\S]*?border-image-width: 11px/)
+    expect(stylesheet).toMatch(
+      /\[data-dsh-frame='composer-shell'\][\s\S]*?border-width: 1px;[\s\S]*?border-image-width: 18px/,
+    )
+    expect(stylesheet).toMatch(
+      /\[data-slot='conversation\.session\.header'\] > \[data-dsh-frame='surface'\][\s\S]*?border-width: 1px;[\s\S]*?border-image-width: 11px/,
+    )
   })
 
-  it('keeps every settings frame inside its clipping containers', () => {
-    expect(stylesheet).toMatch(/\[data-slot='sidebar\.settings'\] \[data-dsh-frame\][\s\S]*?border-image-outset: 0/)
+  it('keeps inner settings frames un-outset while the dialog itself hugs its boundary', () => {
+    expect(stylesheet).toMatch(
+      /\[data-slot='sidebar\.settings'\] \[data-dsh-frame\]:not\(\[data-dsh-frame='dialog'\]\)[\s\S]*?border-image-outset: 0/,
+    )
+    expect(stylesheet).not.toMatch(
+      /\[data-slot='sidebar\.settings'\] \[data-dsh-frame\] \{[^}]*border-image-outset: 0[^}]*\}[\s\S]*?\[data-dsh-frame='dialog'\][^{]*\{[^}]*border-image-outset: 0/,
+    )
+  })
+
+  it('keeps settings control artwork while spacing framed rows apart', () => {
+    expect(stylesheet).toMatch(
+      /\[data-slot='sidebar\.settings'\] \[data-dsh-control-row\][^{]*\{[^}]*gap: 16px !important[^}]*padding-inline: 10px !important/,
+    )
+    expect(stylesheet).toMatch(
+      /\[data-slot='sidebar\.settings'\] \[data-dsh-control-row\] > \[data-dsh-frame='control'\][^{]*\{[^}]*flex-basis: 0 !important[^}]*min-width: 0 !important/,
+    )
+    expect(stylesheet).not.toMatch(
+      /\[data-slot='sidebar\.settings'\] \[data-dsh-frame='control'\][^{]*\{[^}]*margin-inline/,
+    )
   })
 
   it('keeps text clear of decorative frame artwork', () => {
-    expect(stylesheet).toMatch(/:is\(textarea, \[contenteditable='true'\], input:not\(\[type\]\)\)\[data-dsh-frame='composer'\][^{]*\{[^}]*border-width: 1px[^}]*border-radius: 18px[^}]*border-image-source: none[^}]*box-shadow: none/)
-    expect(stylesheet).toMatch(/:is\(textarea, \[contenteditable='true'\], input:not\(\[type\]\)\)\[data-dsh-frame='composer'\]:focus[^{]*\{[^}]*border-color: var\(--dsw-alias-border-l2\)[^}]*box-shadow: none[^}]*transform: none/)
-    expect(stylesheet).toMatch(/\[data-dsh-frame='composer-shell'\][^{]*\{[^}]*border-image-source: var\(--dsw-frame-composer\)[^}]*border-image-width: 18px[^}]*border-image-outset: 4px/)
-    expect(stylesheet).toMatch(/\[data-dsh-frame='panel'\][^{]*\{[^}]*padding-block: 14px !important[^}]*padding-inline: 24px !important/)
-    expect(stylesheet).toMatch(/\[data-slot='sidebar\.settings'\] \[data-dsh-frame='surface'\] > :first-child[^}]*\{[^}]*padding-inline-start: 16px !important/)
-    expect(stylesheet).toMatch(/\[data-slot='sidebar\.settings'\] \[data-dsh-frame='surface'\]:has\(> span > button\)[^{]*\{[^}]*padding-inline-end: 16px !important/)
+    expect(stylesheet).toMatch(
+      /:is\(textarea, \[contenteditable='true'\], input:not\(\[type\]\)\)\[data-dsh-frame='composer'\][^{]*\{[^}]*border-width: 1px[^}]*border-radius: 18px[^}]*border-image-source: none[^}]*box-shadow: none/,
+    )
+    expect(stylesheet).toMatch(
+      /:is\(textarea, \[contenteditable='true'\], input:not\(\[type\]\)\)\[data-dsh-frame='composer'\]:focus[^{]*\{[^}]*border-color: var\(--dsw-alias-border-l2\)[^}]*box-shadow: none[^}]*transform: none/,
+    )
+    expect(stylesheet).toMatch(
+      /\[data-dsh-frame='composer-shell'\][^{]*\{[^}]*border-image-source: var\(--dsw-frame-composer\)[^}]*border-image-width: 18px[^}]*border-image-outset: 7px 4px 7px 5px/,
+    )
+    expect(stylesheet).toMatch(
+      /\[data-dsh-frame='panel'\][^{]*\{[^}]*padding-block: 14px !important[^}]*padding-inline: 24px !important/,
+    )
+    expect(stylesheet).toMatch(
+      /\[data-slot='sidebar\.settings'\] \[data-dsh-frame='surface'\] > :first-child[^}]*\{[^}]*padding-inline-start: 16px !important/,
+    )
+    expect(stylesheet).toMatch(
+      /\[data-slot='sidebar\.settings'\] \[data-dsh-frame='surface'\]:has\(> span > button\)[^{]*\{[^}]*padding-inline-end: 16px !important/,
+    )
   })
 
   it('aligns message artwork to the message border box without a second inset outline', () => {
-    expect(stylesheet).toMatch(/\[data-dsh-frame='message'\][^{]*\{[^}]*border-image-source: var\(--dsw-frame-message\)[^}]*border-image-slice: 70 95 70 110 fill[^}]*border-image-width: 30px[^}]*border-image-outset: 10px 8px 8px 7px/)
-    expect(stylesheet).toMatch(/@media \(max-width: 959px\)[\s\S]*?\[data-dsh-frame='message'\][^{]*\{[^}]*border-image-width: 20px[^}]*border-image-outset: 7px 5px 5px 5px/)
-    expect(stylesheet).not.toMatch(/\[data-dsh-frame='message'\]\[data-dsh-message-role='(?:user|assistant)'\][^{]*\{[^}]*inset 0 0 0 2px/)
+    expect(stylesheet).toMatch(
+      /\[data-dsh-frame='message'\][^{]*\{[^}]*border-image-source: var\(--dsw-frame-message\)[^}]*border-image-slice: 70 95 70 110 fill[^}]*border-image-width: 30px[^}]*border-image-outset: 12px 7px 12px 8px/,
+    )
+    expect(stylesheet).toMatch(
+      /@media \(max-width: 959px\)[\s\S]*?\[data-dsh-frame='message'\][^{]*\{[^}]*border-image-width: 20px[^}]*border-image-outset: 8px 4px 8px 5px/,
+    )
+    expect(stylesheet).not.toMatch(
+      /\[data-dsh-frame='message'\]\[data-dsh-message-role='(?:user|assistant)'\][^{]*\{[^}]*inset 0 0 0 2px/,
+    )
   })
 
-  it('fills the transparent left edge of panel artwork on panels and surfaces', () => {
-    expect(stylesheet).toMatch(/\[data-dsh-frame='panel'\][^{]*\{[^}]*box-shadow:\s*inset 2px 0 0/)
-    expect(stylesheet).toMatch(/\[data-dsh-frame='surface'\][^{]*\{[^}]*box-shadow:\s*inset 2px 0 0/)
+  it('calibrates frame outset to the normalized artwork rectangle without legacy compensation', () => {
+    expect(stylesheet).toMatch(
+      /\[data-dsh-frame\][^{]*\{[^}]*border-image-width: 19px[^}]*border-image-outset: 8px 4px 8px 5px/,
+    )
+    expect(stylesheet).toMatch(
+      /\[data-dsh-frame='dialog'\][^{]*\{[^}]*border-image-width: 22px[^}]*border-image-outset: 9px 5px 9px 6px/,
+    )
+    expect(stylesheet).toMatch(
+      /\[data-dsh-frame='panel'\][^{]*\{[^}]*border-image-width: 22px[^}]*border-image-outset: 9px 5px 9px 6px/,
+    )
+    expect(stylesheet).toMatch(/\[data-dsh-frame='surface'\][^{]*\{[^}]*border-image-outset: 6px 3px 6px 4px/)
+    expect(stylesheet).toMatch(/\[data-dsh-frame='control'\][^{]*\{[^}]*border-image-outset: 4px 2px 4px 2px/)
+    expect(stylesheet).not.toContain('inset 2px 0 0')
+    expect(stylesheet).not.toContain('4px 5px 0')
   })
 
   it('layers the generated ocean art only on the discovered sidebar surface', () => {
-    expect(stylesheet).toContain("[data-dsh-sidebar-surface]")
+    expect(stylesheet).toContain('[data-dsh-sidebar-surface]')
     expect(stylesheet).toContain('var(--dsw-sidebar-ocean-background)')
     expect(stylesheet).toContain('center bottom')
-    expect(stylesheet).toContain("[data-ds-dark-theme] [data-dsh-sidebar-surface]")
+    expect(stylesheet).toContain('[data-ds-dark-theme] [data-dsh-sidebar-surface]')
     expect(stylesheet).toContain('--dsw-specific-sidebar-fill: rgba(246, 249, 247, 0.36)')
     expect(stylesheet).toContain('--dsw-specific-sidebar-fill: rgba(28, 45, 66, 0.48)')
+  })
+
+  it('keeps slash commands readable in the composer', () => {
+    expect(stylesheet).toMatch(
+      /\[data-input-scroll\]:has\(\[data-dsh-frame='composer'\]\) \[data-input-backdrop\][\s\S]*?color: var\(--dsw-alias-label-primary\) !important/,
+    )
+    expect(stylesheet).toMatch(
+      /\[data-dsh-frame='composer'\]::placeholder[\s\S]*?color: var\(--dsw-alias-label-primary\) !important/,
+    )
+    expect(stylesheet).toMatch(
+      /:is\(textarea, \[contenteditable='true'\], input:not\(\[type\]\)\)\[data-dsh-frame='composer'\][^{]*\{[^}]*color: var\(--dsw-alias-label-primary\) !important[^}]*-webkit-text-fill-color: var\(--dsw-alias-label-primary\) !important/,
+    )
+    expect(stylesheet).toMatch(/\[data-dsh-frame='composer'\] \*:not\(\[class\*='_hlToken'\]\)/)
+    expect(stylesheet).toMatch(/\[data-input-backdrop\]\s+\*:not\(\[class\*='_hlToken'\]\)/)
+    expect(stylesheet).toMatch(
+      /:is\(\[data-input-backdrop\], \[data-dsh-frame='composer'\]\) \[class\*='_hlToken'\]\s*\{[^}]*color: var\(--dsw-specific-command-token\) !important[^}]*-webkit-text-fill-color: var\(--dsw-specific-command-token\) !important/,
+    )
+    expect(stylesheet).toContain('--dsw-specific-command-token: #3aaef0')
+    expect(stylesheet).toContain('--dsw-specific-command-token: #7cc8f2')
+  })
+
+  it('keeps the composer transparent over its mirrored input backdrop', () => {
+    expect(stylesheet).toMatch(
+      /\[data-input-scroll\]:has\(\[data-input-backdrop\]\)\s+:is\(textarea, input:not\(\[type\]\)\)\[data-dsh-frame='composer'\][^{]*\{[^}]*background-color: transparent !important[^}]*color: transparent !important[^}]*-webkit-text-fill-color: transparent !important[^}]*caret-color: var\(--dsw-alias-label-primary\) !important/,
+    )
+    expect(stylesheet).toMatch(
+      /\[data-input-scroll\]:has\(\[data-input-backdrop\]\)\s+\[data-dsh-frame='composer-shell'\]:not\(:has\(\[data-input-backdrop\]\)\)[^{]*\{[^}]*background-color: transparent !important[^}]*border-image-slice: 70 95 70 110;/,
+    )
   })
 })

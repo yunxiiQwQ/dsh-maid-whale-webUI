@@ -19,7 +19,9 @@ function fixture(): HTMLTextAreaElement {
 }
 
 async function tick(): Promise<void> {
-  await new Promise((resolve) => { setTimeout(resolve, 40) })
+  await new Promise((resolve) => {
+    setTimeout(resolve, 40)
+  })
 }
 
 afterEach(() => {
@@ -74,8 +76,12 @@ describe('ornament controller', () => {
 
     controller.setWide(false)
 
-    expect(Array.from(document.querySelectorAll<HTMLImageElement>('img[data-dsh-ornament]'), (image) => image.dataset.dshOrnament))
-      .toEqual(['whaleTail', 'bow', 'headbandCorner'])
+    expect(
+      Array.from(
+        document.querySelectorAll<HTMLImageElement>('img[data-dsh-ornament]'),
+        (image) => image.dataset.dshOrnament,
+      ),
+    ).toEqual(['whaleTail', 'bow', 'headbandCorner'])
   })
 
   it('anchors the whale tail to the workspace label immediately before the tree area', () => {
@@ -106,7 +112,11 @@ describe('ornament controller', () => {
 
     controller.sync()
 
-    expect(Array.from(document.querySelectorAll<HTMLImageElement>('img[data-dsh-ornament]'), (image) => image.dataset.dshOrnament))
-      .toEqual(['whaleTail', 'bow'])
+    expect(
+      Array.from(
+        document.querySelectorAll<HTMLImageElement>('img[data-dsh-ornament]'),
+        (image) => image.dataset.dshOrnament,
+      ),
+    ).toEqual(['whaleTail', 'bow'])
   })
 })

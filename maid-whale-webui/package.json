@@ -25,19 +25,27 @@
     "art:embed:background": "node scripts/embed-background.mjs",
     "art:embed:ornaments": "node scripts/embed-ornaments.mjs",
     "art:embed:frames": "node scripts/embed-frames.mjs",
+    "art:embed:check": "node scripts/check-embedded-art.mjs",
     "build": "tsdown",
     "watch": "tsdown --watch",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "typecheck": "tsc -p tsconfig.vitest.json --noEmit",
     "test": "vitest run"
   },
   "license": "BSD-3-Clause",
+  "packageManager": "pnpm@11.21.0",
   "peerDependencies": {
     "@deepseek-ai/cordis": "^4.0.1"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.5.9",
     "@deepseek-ai/cordis": "^4.0.1",
+    "@types/node": "^26.2.0",
     "jsdom": "29.1.1",
     "lightningcss": "^1.32.0",
     "tsdown": "^0.22.2",
+    "typescript": "^5.9.3",
     "vitest": "^4.1.8"
   },
   "files": [
@@ -45,14 +53,9 @@
     "lib/client.js",
     "cordis.patch.yml",
     "skin.json",
-    "assets",
-    "build",
-    "scripts",
-    "src",
-    "tests",
     "preview",
     "README.md",
-    "README.zh.md",
+    "README.en.md",
     "LICENSE",
     "NOTICE"
   ]

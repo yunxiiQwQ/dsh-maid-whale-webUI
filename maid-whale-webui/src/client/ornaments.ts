@@ -21,9 +21,11 @@ interface Targets {
 
 function isVisible(target: HTMLElement, body: HTMLElement): boolean {
   if (target.hidden || target.getAttribute('aria-hidden') === 'true') return false
-  const checkVisibility = (target as HTMLElement & {
-    checkVisibility?: (options?: { checkOpacity?: boolean, checkVisibilityCSS?: boolean }) => boolean
-  }).checkVisibility
+  const checkVisibility = (
+    target as HTMLElement & {
+      checkVisibility?: (options?: { checkOpacity?: boolean; checkVisibilityCSS?: boolean }) => boolean
+    }
+  ).checkVisibility
   if (checkVisibility && !checkVisibility.call(target, { checkOpacity: true, checkVisibilityCSS: true })) return false
 
   const view = body.ownerDocument.defaultView
@@ -46,7 +48,9 @@ function workspaceLabelForTree(tree: HTMLElement | null, body: HTMLElement): HTM
   for (let current: HTMLElement | null = tree; current && current !== body; current = current.parentElement) {
     const header = current.previousElementSibling
     if (!(header instanceof HTMLElement) || !isVisible(header, body)) continue
-    const label = Array.from(header.querySelectorAll<HTMLElement>('span')).find((candidate) => isVisible(candidate, body))
+    const label = Array.from(header.querySelectorAll<HTMLElement>('span')).find((candidate) =>
+      isVisible(candidate, body),
+    )
     return label ?? header
   }
   return null
@@ -86,14 +90,20 @@ function hasComposerContent(composer: HTMLElement | null): boolean {
 
 function targetFor(id: OrnamentId, targets: Targets): HTMLElement | null {
   switch (id) {
-    case 'bow': return targets.selectedNav
-    case 'whaleTail': return targets.workspaceLabel ?? targets.tree
+    case 'bow':
+      return targets.selectedNav
+    case 'whaleTail':
+      return targets.workspaceLabel ?? targets.tree
     case 'bubbles':
-    case 'ribbonTab': return targets.composer
+    case 'ribbonTab':
+      return targets.composer
     case 'apronCrest':
-    case 'headbandCorner': return targets.dialog
-    case 'hairWave': return targets.heading
-    case 'cloudTide': return targets.mascot
+    case 'headbandCorner':
+      return targets.dialog
+    case 'hairWave':
+      return targets.heading
+    case 'cloudTide':
+      return targets.mascot
   }
 }
 
@@ -110,9 +120,7 @@ export function createOrnamentController(body: HTMLElement, options: { wide: boo
   layer.setAttribute('aria-hidden', 'true')
   body.append(layer)
 
-  const resizeObserver = typeof ResizeObserver === 'undefined'
-    ? undefined
-    : new ResizeObserver(() => schedule())
+  const resizeObserver = typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(() => schedule())
 
   const clearTargetMarkers = () => {
     body.querySelectorAll<HTMLElement>('[data-dsh-ornament-target]').forEach((target) => {
@@ -123,9 +131,9 @@ export function createOrnamentController(body: HTMLElement, options: { wide: boo
   const sync = () => {
     if (disposed) return
     targets = resolveTargets(body)
-    const composerEngaged = targets.composer != null && (
-      targets.composer === body.ownerDocument.activeElement || hasComposerContent(targets.composer)
-    )
+    const composerEngaged =
+      targets.composer != null &&
+      (targets.composer === body.ownerDocument.activeElement || hasComposerContent(targets.composer))
     const selected = chooseOrnaments({
       wide,
       selectedNav: targets.selectedNav != null,
@@ -196,7 +204,9 @@ export function createOrnamentController(body: HTMLElement, options: { wide: boo
   })
 
   const eventTypes = ['focusin', 'focusout', 'input', 'transitionend'] as const
-  eventTypes.forEach((type) => body.addEventListener(type, schedule))
+  eventTypes.forEach((type) => {
+    body.addEventListener(type, schedule)
+  })
   window.addEventListener('scroll', schedule, true)
   window.addEventListener('resize', schedule)
 
@@ -216,7 +226,9 @@ export function createOrnamentController(body: HTMLElement, options: { wide: boo
       if (frame != null) cancelFrame(frame)
       mutationObserver.disconnect()
       resizeObserver?.disconnect()
-      eventTypes.forEach((type) => body.removeEventListener(type, schedule))
+      eventTypes.forEach((type) => {
+        body.removeEventListener(type, schedule)
+      })
       window.removeEventListener('scroll', schedule, true)
       window.removeEventListener('resize', schedule)
       clearTargetMarkers()

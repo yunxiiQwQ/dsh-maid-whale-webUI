@@ -95,9 +95,7 @@ export function clientBundle(
   const lib = clientLibraryConfig(id, libEntry, options.lib, options.libExternal)
   return ({ env }) => {
     const face = buildFace(env?.DSH_BUILD_FACE)
-    const client = clientConfig(id, face === undefined
-      ? 'src/client/index.ts'
-      : 'lib/types/client/index.js')
+    const client = clientConfig(id, face === undefined ? 'src/client/index.ts' : 'lib/types/client/index.js')
     const node = [lib, ...(options.companions ?? [])]
     if (face === 'host') return options.hostPhase === true ? node : [SKIP_WORKSPACE_BUILD]
     if (face === 'client') return options.hostPhase === true ? [client] : [...node, client]
@@ -134,21 +132,23 @@ export function mobileBundle(id: string, entry: string): UserConfig {
       'import.meta.env.MODE': JSON.stringify(process.env.NODE_ENV ?? 'production'),
       'import.meta.env': JSON.stringify({ MODE: process.env.NODE_ENV ?? 'production' }),
     },
-    plugins: [{
-      // Wire contracts resolve through node_modules (the exports map lands on
-      // the real runtime values) instead of the tsconfig paths' declaration
-      // files, which would miss every value export.
-      name: 'dsh-mobile-value-resolution',
-      resolveId(source: string) {
-        const match = /^@deepseek-ai\/dsh-host-apiproxy\/api(?:\/.*)?$/.exec(source)
-        if (match === null) return null
-        try {
-          return mobileRequire.resolve(source)
-        } catch {
-          return null
-        }
+    plugins: [
+      {
+        // Wire contracts resolve through node_modules (the exports map lands on
+        // the real runtime values) instead of the tsconfig paths' declaration
+        // files, which would miss every value export.
+        name: 'dsh-mobile-value-resolution',
+        resolveId(source: string) {
+          const match = /^@deepseek-ai\/dsh-host-apiproxy\/api(?:\/.*)?$/.exec(source)
+          if (match === null) return null
+          try {
+            return mobileRequire.resolve(source)
+          } catch {
+            return null
+          }
+        },
       },
-    }],
+    ],
     outputOptions: {
       entryFileNames: 'mobile.js',
     },
@@ -238,69 +238,74 @@ function clientConfig(id: string, entry: string): UserConfig {
     // guaranteed runtime throw, so the rule is the table list itself: no
     // opinion for table entries (external above wins), bundle everything else.
     noExternal: (id: string) => (CLIENT_EXTERNALS.includes(id) ? undefined : true),
-    plugins: [{
-      // Bundle purity gate (build-time mirror of the module-edge rules):
-      // platform seed entries stay external, inline-safe wire layers inline,
-      // and every other @deepseek-ai value import is a build error — a
-      // cross-plugin value import either inlines a duplicate runtime instance
-      // or requires a specifier the frozen module table cannot answer.
-      // Cross-plugin collaboration goes through cordis services instead.
-      name: 'dsh-client-bundle-purity',
-      resolveId(source: string) {
-        if (!source.startsWith('@deepseek-ai/')) return null
-        if (CLIENT_EXTERNALS.includes(source)) return null // platform module: external wins
-        if (INLINE_SAFE.test(source) || GENERATED_REMOTE.test(source)) return null // wire contribution: inline is the point
-        throw new Error(
-          `client bundle purity: "${source}" is not a platform module (CLIENT_EXTERNALS), an inline-safe wire layer, or a generated /remote contribution — `
-          + 'cross-plugin value imports are forbidden; collaborate through cordis services (type-only imports are erased and never reach this gate)',
-        )
+    plugins: [
+      {
+        // Bundle purity gate (build-time mirror of the module-edge rules):
+        // platform seed entries stay external, inline-safe wire layers inline,
+        // and every other @deepseek-ai value import is a build error — a
+        // cross-plugin value import either inlines a duplicate runtime instance
+        // or requires a specifier the frozen module table cannot answer.
+        // Cross-plugin collaboration goes through cordis services instead.
+        name: 'dsh-client-bundle-purity',
+        resolveId(source: string) {
+          if (!source.startsWith('@deepseek-ai/')) return null
+          if (CLIENT_EXTERNALS.includes(source)) return null // platform module: external wins
+          if (INLINE_SAFE.test(source) || GENERATED_REMOTE.test(source)) return null // wire contribution: inline is the point
+          throw new Error(
+            `client bundle purity: "${source}" is not a platform module (CLIENT_EXTERNALS), an inline-safe wire layer, or a generated /remote contribution — ` +
+              'cross-plugin value imports are forbidden; collaborate through cordis services (type-only imports are erased and never reach this gate)',
+          )
+        },
       },
-    }, {
-      name: 'dsh-css-modules-inline',
-      resolveId(source: string, importer: string | undefined) {
-        if (!source.endsWith('.module.css')) return null
-        const abs = importer !== undefined ? sourceAssetPath(source, importer) : source
-        const repositoryId = relative(REPOSITORY_ROOT, abs).split(sep).join('/')
-        if (repositoryId.startsWith('../')) {
-          throw new Error(`CSS module is outside the repository: ${source}`)
-        }
-        return CSS_VIRTUAL_PREFIX + repositoryId + CSS_VIRTUAL_SUFFIX
+      {
+        name: 'dsh-css-modules-inline',
+        resolveId(source: string, importer: string | undefined) {
+          if (!source.endsWith('.module.css')) return null
+          const abs = importer !== undefined ? sourceAssetPath(source, importer) : source
+          const repositoryId = relative(REPOSITORY_ROOT, abs).split(sep).join('/')
+          if (repositoryId.startsWith('../')) {
+            throw new Error(`CSS module is outside the repository: ${source}`)
+          }
+          return CSS_VIRTUAL_PREFIX + repositoryId + CSS_VIRTUAL_SUFFIX
+        },
+        async load(virtualId: string) {
+          if (!virtualId.startsWith(CSS_VIRTUAL_PREFIX)) return null
+          const repositoryId = virtualId.slice(CSS_VIRTUAL_PREFIX.length, -CSS_VIRTUAL_SUFFIX.length)
+          const fileId = resolvePath(REPOSITORY_ROOT, repositoryId)
+          // The virtual id otherwise hides the physical stylesheet from Rolldown's watch graph.
+          this.addWatchFile(fileId)
+          const source = await readFile(fileId)
+          const { code, exports: cssExports } = transform({
+            filename: fileId,
+            code: source,
+            cssModules: { pattern: '[hash]_[local]' },
+            minify: true,
+          })
+          const classMap: Record<string, string> = {}
+          // Sort deterministically: lightningcss's cssExports iteration order is
+          // process-dependent (hash-map seeds), which would otherwise churn the
+          // emitted lib/client.js on every rebuild.
+          for (const [local, exp] of Object.entries(cssExports ?? {}).sort(([a], [b]) =>
+            a < b ? -1 : a > b ? 1 : 0,
+          )) {
+            classMap[local] = exp.name
+          }
+          // One <style data-plugin> per module file; idempotent under re-evaluation.
+          return [
+            `const css = ${JSON.stringify(code.toString())};`,
+            `const tagId = ${JSON.stringify(`${id}/${basename(fileId)}`)};`,
+            "if (typeof document !== 'undefined' && document.querySelector('style[data-plugin-css=' + JSON.stringify(tagId) + ']') === null) {",
+            "  const tag = document.createElement('style');",
+            `  tag.dataset.plugin = ${JSON.stringify(id)};`,
+            '  tag.dataset.pluginCss = tagId;',
+            '  tag.textContent = css;',
+            '  document.head.appendChild(tag);',
+            '}',
+            `export default ${JSON.stringify(classMap)};`,
+          ].join('\n')
+        },
       },
-      async load(virtualId: string) {
-        if (!virtualId.startsWith(CSS_VIRTUAL_PREFIX)) return null
-        const repositoryId = virtualId.slice(CSS_VIRTUAL_PREFIX.length, -CSS_VIRTUAL_SUFFIX.length)
-        const fileId = resolvePath(REPOSITORY_ROOT, repositoryId)
-        // The virtual id otherwise hides the physical stylesheet from Rolldown's watch graph.
-        this.addWatchFile(fileId)
-        const source = await readFile(fileId)
-        const { code, exports: cssExports } = transform({
-          filename: fileId,
-          code: source,
-          cssModules: { pattern: '[hash]_[local]' },
-          minify: true,
-        })
-        const classMap: Record<string, string> = {}
-        // Sort deterministically: lightningcss's cssExports iteration order is
-        // process-dependent (hash-map seeds), which would otherwise churn the
-        // emitted lib/client.js on every rebuild.
-        for (const [local, exp] of Object.entries(cssExports ?? {}).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0)) {
-          classMap[local] = exp.name
-        }
-        // One <style data-plugin> per module file; idempotent under re-evaluation.
-        return [
-          `const css = ${JSON.stringify(code.toString())};`,
-          `const tagId = ${JSON.stringify(`${id}/${basename(fileId)}`)};`,
-          'if (typeof document !== \'undefined\' && document.querySelector(\'style[data-plugin-css=\' + JSON.stringify(tagId) + \']\') === null) {',
-          '  const tag = document.createElement(\'style\');',
-          `  tag.dataset.plugin = ${JSON.stringify(id)};`,
-          '  tag.dataset.pluginCss = tagId;',
-          '  tag.textContent = css;',
-          '  document.head.appendChild(tag);',
-          '}',
-          `export default ${JSON.stringify(classMap)};`,
-        ].join('\n')
-      },
-    }],
+    ],
     outputOptions: {
       entryFileNames: 'client.js',
       // The map is served from /plugins/<scoped-package>/client.js.map. The

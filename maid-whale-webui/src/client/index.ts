@@ -1,5 +1,5 @@
 import type { Context } from '@deepseek-ai/cordis'
-import { PAPER_BACKDROP_DARK, PAPER_BACKDROP_LIGHT, PET_ART } from './art.ts'
+import { MASCOT_ART, PAPER_BACKDROP_DARK, PAPER_BACKDROP_LIGHT } from './art.ts'
 import { ILLUSTRATED_BACKGROUND, SIDEBAR_OCEAN_BACKGROUND } from './background-art.generated.ts'
 import css from './deepseek-workshop.module.css'
 import { createFrameController } from './frames.ts'
@@ -39,7 +39,7 @@ export function apply(ctx: Context): void {
 
   const image = document.createElement('img')
   image.className = cls('mascotImage')
-  image.src = PET_ART
+  image.src = MASCOT_ART
   image.alt = ''
   image.setAttribute('aria-hidden', 'true')
   mascot.append(image)
@@ -47,7 +47,7 @@ export function apply(ctx: Context): void {
   const favicon = document.createElement('link')
   favicon.rel = 'icon'
   favicon.type = 'image/webp'
-  favicon.href = PET_ART
+  favicon.href = MASCOT_ART
   favicon.dataset.deepseekWorkshopIcon = ''
   document.head.append(favicon)
 
@@ -140,21 +140,24 @@ export function apply(ctx: Context): void {
   observer.observe(body, { attributes: true, attributeFilter: ['data-ds-dark-theme'] })
   media?.addEventListener('change', syncViewport)
 
-  ctx.effect(() => () => {
-    frames.dispose()
-    ornaments.dispose()
-    observer.disconnect()
-    mascotObserver.disconnect()
-    media?.removeEventListener('change', syncViewport)
-    window.removeEventListener('resize', syncChrome)
-    clearSidebarSurface()
-    body.removeAttribute(BODY_ATTR)
-    mascot.remove()
-    favicon.remove()
-    for (const [property, value] of previous) {
-      if (value === '') body.style.removeProperty(property)
-      else body.style.setProperty(property, value)
-    }
-    if (document.title === SKIN_TITLE) document.title = originalTitle
-  }, 'ui-skin-maid-whale-webui: cloud paper surface')
+  ctx.effect(
+    () => () => {
+      frames.dispose()
+      ornaments.dispose()
+      observer.disconnect()
+      mascotObserver.disconnect()
+      media?.removeEventListener('change', syncViewport)
+      window.removeEventListener('resize', syncChrome)
+      clearSidebarSurface()
+      body.removeAttribute(BODY_ATTR)
+      mascot.remove()
+      favicon.remove()
+      for (const [property, value] of previous) {
+        if (value === '') body.style.removeProperty(property)
+        else body.style.setProperty(property, value)
+      }
+      if (document.title === SKIN_TITLE) document.title = originalTitle
+    },
+    'ui-skin-maid-whale-webui: cloud paper surface',
+  )
 }

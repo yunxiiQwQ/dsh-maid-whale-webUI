@@ -2,9 +2,9 @@
 
 [![Awesome DSH Plugin](https://awesome-dsh-plugin.com/badge.svg)](https://awesome-dsh-plugin.com)
 
-English | [中文](README.zh.md)
+English | [中文](README.md)
 
-A whale-maid theme plugin for the DeepSeek Harness Web UI, featuring light and dark modes, ocean-themed illustrated backgrounds, hand-drawn nine-slice frames, decorative assets, and a persistent pet.
+A whale-maid theme plugin for the DeepSeek Harness Web UI, featuring light and dark modes, ocean-themed illustrated backgrounds, hand-drawn nine-slice frames, and decorative page-edge character art.
 
 ## Preview
 
@@ -37,6 +37,9 @@ Refresh or restart the DeepSeek Harness Web UI after installation. Enabling only
 ```powershell
 pnpm install
 pnpm art:embed
+pnpm art:embed:check
+pnpm lint
+pnpm typecheck
 pnpm test
 pnpm build
 ```

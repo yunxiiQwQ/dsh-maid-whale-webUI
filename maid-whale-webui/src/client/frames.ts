@@ -37,12 +37,19 @@ const SELECTORS: Record<FrameId, string> = {
 }
 
 const INTERACTIVE_FRAME_SELECTOR = [
-  'button', 'input', 'select', 'textarea', '[contenteditable="true"]',
-  '[role="button"]', '[role="treeitem"]', '[role="menuitem"]',
-  '[role="option"]', '[role="combobox"]',
+  'button',
+  'input',
+  'select',
+  'textarea',
+  '[contenteditable="true"]',
+  '[role="button"]',
+  '[role="treeitem"]',
+  '[role="menuitem"]',
+  '[role="option"]',
+  '[role="combobox"]',
 ].join(', ')
 
-const GENERIC_FRAME_EXCLUSION_SELECTOR = 'a, [role="link"]'
+const FRAME_EXCLUSION_SELECTOR = 'a, [role="link"], .mkts, .mkts *'
 
 const CONVERSATION_CSS_MODULES = {
   userMessage: '@deepseek-ai/dsh-client-ui-conversation/MessageItem.module.css',
@@ -51,8 +58,9 @@ const CONVERSATION_CSS_MODULES = {
 } as const
 
 function cssModuleClass(document: Document, moduleId: string, exportName: string): string | undefined {
-  const style = Array.from(document.querySelectorAll<HTMLStyleElement>('style[data-plugin-css]'))
-    .find((candidate) => candidate.dataset.pluginCss === moduleId)
+  const style = Array.from(document.querySelectorAll<HTMLStyleElement>('style[data-plugin-css]')).find(
+    (candidate) => candidate.dataset.pluginCss === moduleId,
+  )
   const safeExportName = exportName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
   return style?.textContent?.match(new RegExp(`\\.([\\w-]+_${safeExportName})(?=[\\s,{.:#>\\[])`))?.[1]
 }
@@ -75,20 +83,24 @@ function messageTargets(body: HTMLElement): MessageTarget[] {
   const reasoningRootClass = cssModuleClass(document, CONVERSATION_CSS_MODULES.reasoning, 'root')
 
   const userMessages = userBubbleClass
-    ? Array.from(body.getElementsByClassName(userBubbleClass)).filter((target): target is HTMLElement => target instanceof HTMLElement)
+    ? Array.from(body.getElementsByClassName(userBubbleClass)).filter(
+        (target): target is HTMLElement => target instanceof HTMLElement,
+      )
     : []
-  const assistantMessages = assistantRootClass && assistantBodyClass
-    ? Array.from(body.getElementsByClassName(assistantRootClass))
-        .filter((target): target is HTMLElement => target instanceof HTMLElement)
-        .flatMap((target) => {
-          const content = Array.from(target.children)
-            .find((child) => child instanceof HTMLElement && child.classList.contains(assistantBodyClass))
-          if (!(content instanceof HTMLElement)) return []
-          return Array.from(content.children)
-            .filter((child): child is HTMLElement => child instanceof HTMLElement)
-            .filter((child) => !reasoningRootClass || !child.classList.contains(reasoningRootClass))
-        })
-    : []
+  const assistantMessages =
+    assistantRootClass && assistantBodyClass
+      ? Array.from(body.getElementsByClassName(assistantRootClass))
+          .filter((target): target is HTMLElement => target instanceof HTMLElement)
+          .flatMap((target) => {
+            const content = Array.from(target.children).find(
+              (child) => child instanceof HTMLElement && child.classList.contains(assistantBodyClass),
+            )
+            if (!(content instanceof HTMLElement)) return []
+            return Array.from(content.children)
+              .filter((child): child is HTMLElement => child instanceof HTMLElement)
+              .filter((child) => !reasoningRootClass || !child.classList.contains(reasoningRootClass))
+          })
+      : []
 
   return [
     ...userMessages.map((target): MessageTarget => ({ target, role: 'user' })),
@@ -98,9 +110,11 @@ function messageTargets(body: HTMLElement): MessageTarget[] {
 
 function isVisible(target: HTMLElement, body: HTMLElement): boolean {
   if (target.hidden || target.getAttribute('aria-hidden') === 'true') return false
-  const checkVisibility = (target as HTMLElement & {
-    checkVisibility?: (options?: { checkOpacity?: boolean, checkVisibilityCSS?: boolean }) => boolean
-  }).checkVisibility
+  const checkVisibility = (
+    target as HTMLElement & {
+      checkVisibility?: (options?: { checkOpacity?: boolean; checkVisibilityCSS?: boolean }) => boolean
+    }
+  ).checkVisibility
   if (checkVisibility && !checkVisibility.call(target, { checkOpacity: true, checkVisibilityCSS: true })) return false
 
   const view = body.ownerDocument.defaultView
@@ -114,15 +128,14 @@ function isVisible(target: HTMLElement, body: HTMLElement): boolean {
 }
 
 function visibleCandidates(body: HTMLElement, id: FrameId): HTMLElement[] {
-  return Array.from(body.querySelectorAll<HTMLElement>(SELECTORS[id]))
-    .filter((target) => isVisible(target, body))
+  return Array.from(body.querySelectorAll<HTMLElement>(SELECTORS[id])).filter(
+    (target) => !target.matches(FRAME_EXCLUSION_SELECTOR) && isVisible(target, body),
+  )
 }
 
 function hasAccessibleName(button: HTMLElement): boolean {
   return Boolean(
-    button.getAttribute('aria-label')?.trim()
-    || button.getAttribute('title')?.trim()
-    || button.textContent?.trim(),
+    button.getAttribute('aria-label')?.trim() || button.getAttribute('title')?.trim() || button.textContent?.trim(),
   )
 }
 
@@ -155,11 +168,12 @@ function selectTargets(body: HTMLElement): Map<FrameId, HTMLElement[]> {
   const dialogs = visibleCandidates(body, 'dialog')
   const menus = visibleCandidates(body, 'menu')
   const reserved = [...composer, ...dialogs, ...menus]
-  const panelCandidates = visibleCandidates(body, 'panel')
-    .filter((panel) => reserved.every((target) => !related(panel, target)))
-  const panels = panelCandidates.filter((panel) => (
-    panelCandidates.every((candidate) => candidate === panel || !candidate.contains(panel))
-  ))
+  const panelCandidates = visibleCandidates(body, 'panel').filter((panel) =>
+    reserved.every((target) => !related(panel, target)),
+  )
+  const panels = panelCandidates.filter((panel) =>
+    panelCandidates.every((candidate) => candidate === panel || !candidate.contains(panel)),
+  )
   const primaryButtons = visibleCandidates(body, 'primaryButton').filter(hasAccessibleName)
 
   result.set('selectedNav', selectedNav)
@@ -178,10 +192,13 @@ export function createFrameController(body: HTMLElement): FrameController {
   const view = body.ownerDocument.defaultView ?? window
 
   const clearMarkers = (): void => {
-    body.querySelectorAll<HTMLElement>('[data-dsh-frame], [data-dsh-message-role]').forEach((target) => {
-      target.removeAttribute('data-dsh-frame')
-      target.removeAttribute('data-dsh-message-role')
-    })
+    body
+      .querySelectorAll<HTMLElement>('[data-dsh-frame], [data-dsh-message-role], [data-dsh-control-row]')
+      .forEach((target) => {
+        target.removeAttribute('data-dsh-frame')
+        target.removeAttribute('data-dsh-message-role')
+        target.removeAttribute('data-dsh-control-row')
+      })
   }
 
   const syncResources = (): void => {
@@ -208,11 +225,13 @@ export function createFrameController(body: HTMLElement): FrameController {
       desired.set(target, { frame: 'message', role })
     })
     body.querySelectorAll<HTMLElement>('*').forEach((target) => {
-      if (!(target instanceof HTMLElement)
-        || desired.has(target)
-        || target.matches(GENERIC_FRAME_EXCLUSION_SELECTOR)
-        || !isVisible(target, body)
-      ) return
+      if (
+        !(target instanceof HTMLElement) ||
+        desired.has(target) ||
+        target.matches(FRAME_EXCLUSION_SELECTOR) ||
+        !isVisible(target, body)
+      )
+        return
       const existing = target.dataset.dshFrame
       if (existing === 'control' || existing === 'surface') {
         desired.set(target, { frame: existing })
@@ -240,6 +259,26 @@ export function createFrameController(body: HTMLElement): FrameController {
       target.dataset.dshFrame = next.frame
       if (next.role !== undefined) target.dataset.dshMessageRole = next.role
     })
+    syncControlRows()
+  }
+
+  const syncControlRows = (): void => {
+    const counts = new Map<HTMLElement, number>()
+    body.querySelectorAll<HTMLElement>('[data-dsh-frame="control"]').forEach((control) => {
+      const parent = control.parentElement
+      if (parent && parent !== body) counts.set(parent, (counts.get(parent) ?? 0) + 1)
+    })
+    const qualified = new Set<HTMLElement>()
+    counts.forEach((count, parent) => {
+      if (count >= 2) qualified.add(parent)
+    })
+    body.querySelectorAll<HTMLElement>('[data-dsh-control-row]').forEach((row) => {
+      if (qualified.has(row)) qualified.delete(row)
+      else row.removeAttribute('data-dsh-control-row')
+    })
+    qualified.forEach((row) => {
+      row.setAttribute('data-dsh-control-row', '')
+    })
   }
 
   const requestFrame = (callback: FrameRequestCallback): number => {
@@ -262,8 +301,16 @@ export function createFrameController(body: HTMLElement): FrameController {
   observer.observe(body, {
     attributes: true,
     attributeFilter: [
-      'aria-hidden', 'aria-selected', 'class', 'data-variant', 'disabled',
-      'hidden', 'open', 'role', 'style', 'type',
+      'aria-hidden',
+      'aria-selected',
+      'class',
+      'data-variant',
+      'disabled',
+      'hidden',
+      'open',
+      'role',
+      'style',
+      'type',
     ],
     childList: true,
     characterData: true,

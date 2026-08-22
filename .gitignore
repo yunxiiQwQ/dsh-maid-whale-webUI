@@ -3,5 +3,6 @@ node_modules/
 *.js.map
 .DS_Store
 .tmp-*
+.claude/
 AGENTS.md
 **/AGENTS.md

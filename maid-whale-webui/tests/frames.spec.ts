@@ -4,7 +4,7 @@ import { createFrameController, type FrameController } from '../src/client/frame
 
 let controller: FrameController | undefined
 
-function fixture(): { dialog: HTMLElement, firstPanel: HTMLElement, secondPanel: HTMLElement } {
+function fixture(): { dialog: HTMLElement; firstPanel: HTMLElement; secondPanel: HTMLElement } {
   document.body.innerHTML = `
     <nav role="tree"><button role="treeitem" aria-selected="true">Chat</button></nav>
     <main>
@@ -23,13 +23,18 @@ function fixture(): { dialog: HTMLElement, firstPanel: HTMLElement, secondPanel:
 }
 
 async function tick(): Promise<void> {
-  await new Promise((resolve) => { setTimeout(resolve, 40) })
+  await new Promise((resolve) => {
+    setTimeout(resolve, 40)
+  })
 }
 
 function mountConversationCssModules(): void {
   const modules = [
     ['@deepseek-ai/dsh-client-ui-conversation/MessageItem.module.css', '.message_bubble{background:blue}'],
-    ['@deepseek-ai/dsh-client-ui-conversation/AssistantMarkdown.module.css', '.assistant_root{display:flex}.assistant_body{display:flex}'],
+    [
+      '@deepseek-ai/dsh-client-ui-conversation/AssistantMarkdown.module.css',
+      '.assistant_root{display:flex}.assistant_body{display:flex}',
+    ],
     ['@deepseek-ai/dsh-client-ui-conversation/ReasoningRow.module.css', '.reasoning_root{display:flex}'],
   ] as const
   for (const [id, css] of modules) {
@@ -45,7 +50,9 @@ afterEach(() => {
   controller = undefined
   document.body.innerHTML = ''
   document.body.style.cssText = ''
-  document.head.querySelectorAll('style[data-plugin-css]').forEach((style) => style.remove())
+  document.head.querySelectorAll('style[data-plugin-css]').forEach((style) => {
+    style.remove()
+  })
 })
 
 describe('frame controller', () => {
@@ -108,6 +115,41 @@ describe('frame controller', () => {
     expect(borderlessButton.hasAttribute('data-dsh-frame')).toBe(false)
   })
 
+  it('marks rows holding two or more control frames so spacing rules can keep artwork apart', () => {
+    fixture()
+    const row = document.createElement('div')
+    const first = document.createElement('button')
+    first.textContent = 'Light'
+    first.style.border = '1px solid rgb(20, 30, 40)'
+    const second = document.createElement('button')
+    second.textContent = 'Dark'
+    second.style.border = '1px solid rgb(20, 30, 40)'
+    row.append(first, second)
+    const loneParent = document.createElement('div')
+    const lone = document.createElement('button')
+    lone.textContent = 'Solo'
+    lone.style.border = '1px solid rgb(20, 30, 40)'
+    loneParent.append(lone)
+    document.body.append(row, loneParent)
+
+    controller = createFrameController(document.body)
+    controller.sync()
+
+    expect(first.dataset.dshFrame).toBe('control')
+    expect(second.dataset.dshFrame).toBe('control')
+    expect(row.hasAttribute('data-dsh-control-row')).toBe(true)
+    expect(lone.dataset.dshFrame).toBe('control')
+    expect(loneParent.hasAttribute('data-dsh-control-row')).toBe(false)
+
+    second.remove()
+    controller.sync()
+    expect(row.hasAttribute('data-dsh-control-row')).toBe(false)
+
+    controller.dispose()
+    controller = undefined
+    expect(document.querySelector('[data-dsh-control-row]')).toBeNull()
+  })
+
   it('does not frame bordered inline links inside conversation content', () => {
     fixture()
     const sourceLink = document.createElement('a')
@@ -120,6 +162,34 @@ describe('frame controller', () => {
     controller.sync()
 
     expect(sourceLink.hasAttribute('data-dsh-frame')).toBe(false)
+  })
+
+  it('leaves plugin market widgets on their native compact borders', () => {
+    const market = document.createElement('div')
+    market.className = 'mkts'
+    market.innerHTML = `
+      <input class="mkts-search" placeholder="搜索插件...">
+      <div class="mkts-chips">
+        <button class="mkts-chip">全部</button>
+        <button class="mkts-chip">UI 增强</button>
+      </div>
+      <article class="mkts-item">
+        <div class="mkts-actions">
+          <button class="mkts-cmdbtn">详情</button>
+          <button class="mkts-cmdbtn">安装</button>
+        </div>
+      </article>
+    `
+    market.querySelectorAll<HTMLElement>('.mkts-chip, .mkts-item, .mkts-actions, .mkts-cmdbtn').forEach((target) => {
+      target.style.border = '1px solid rgb(20, 30, 40)'
+    })
+    document.body.append(market)
+
+    controller = createFrameController(document.body)
+    controller.sync()
+
+    expect(market.querySelectorAll('[data-dsh-frame]')).toHaveLength(0)
+    expect(market.querySelectorAll('[data-dsh-control-row]')).toHaveLength(0)
   })
 
   it('promotes the nearest bordered composer ancestor to a dedicated shell frame', () => {
@@ -145,7 +215,8 @@ describe('frame controller', () => {
     userMessage.textContent = 'Sent message'
     const assistantReply = document.createElement('div')
     assistantReply.className = 'assistant_root'
-    assistantReply.innerHTML = '<div class="assistant_body"><div class="reasoning_root">Think before answering</div><article data-final-reply>Final reply</article></div>'
+    assistantReply.innerHTML =
+      '<div class="assistant_body"><div class="reasoning_root">Think before answering</div><article data-final-reply>Final reply</article></div>'
     const finalReply = assistantReply.querySelector<HTMLElement>('[data-final-reply]')!
     const reasoningOnly = document.createElement('div')
     reasoningOnly.className = 'assistant_root'
