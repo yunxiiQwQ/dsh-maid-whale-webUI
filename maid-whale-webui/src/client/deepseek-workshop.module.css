@@ -23,10 +23,19 @@ body[data-dsh-deepseek-workshop] {
   --dsw-specific-input-major: rgba(255, 255, 252, 0.98);
   --dsw-specific-selector: rgba(235, 244, 246, 0.98);
   --dsw-specific-command-token: #3aaef0;
+  --dsw-specific-app-shell: rgba(255, 254, 249, 0.2);
 }
 
 body[data-dsh-deepseek-workshop] [id='root'] {
   background: transparent;
+}
+
+/* The app shell paints an opaque full-viewport *_frame layer that would hide
+   the illustrated paper backdrop; keep it translucent so both background
+   artworks show through (CSS-modules suffix selector, same convention as the
+   composer's *_hlToken spans). */
+body[data-dsh-deepseek-workshop] [class$='_frame'] {
+  background-color: var(--dsw-specific-app-shell);
 }
 
 body[data-dsh-deepseek-workshop] :is(code, pre, kbd, samp) {
@@ -54,6 +63,7 @@ body[data-dsh-deepseek-workshop][data-ds-dark-theme] {
   --dsw-specific-input-major: rgba(23, 36, 53, 0.99);
   --dsw-specific-selector: rgba(41, 66, 91, 0.98);
   --dsw-specific-command-token: #7cc8f2;
+  --dsw-specific-app-shell: rgba(23, 36, 53, 0.2);
 }
 
 body[data-dsh-deepseek-workshop] [role='tree'] {

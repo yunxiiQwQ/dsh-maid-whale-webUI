@@ -461,3 +461,12 @@ describe('DeepSeek cloud paper stylesheet', () => {
     )
   })
 })
+
+describe('app shell translucency', () => {
+  it('keeps the full-viewport app frame translucent so the backdrop shows', () => {
+    const stylesheet = readFileSync(resolve(process.cwd(), 'src/client/deepseek-workshop.module.css'), 'utf8')
+    expect(stylesheet).toMatch(/\[class\$='_frame'\][^{]*\{[^}]*background-color: var\(--dsw-specific-app-shell\)/)
+    expect(stylesheet).toContain('--dsw-specific-app-shell: rgba(255, 254, 249, 0.2)')
+    expect(stylesheet).toContain('--dsw-specific-app-shell: rgba(23, 36, 53, 0.2)')
+  })
+})
