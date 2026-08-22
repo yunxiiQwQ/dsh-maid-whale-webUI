@@ -582,11 +582,11 @@ body[data-dsh-deepseek-workshop] .ornamentRibbonTab {
   transform: rotate(-2deg);
 }
 
-/* Desktop-pet quick toggle; bottom-right keeps the bottom-left settings clear. */
+/* Desktop-pet quick toggle; JS parks it at the workspace sidebar's bottom-right
+   corner (falling back to the viewport corner when no sidebar surface exists). */
 body[data-dsh-deepseek-workshop] .petToggle {
   position: fixed;
   bottom: max(16px, env(safe-area-inset-bottom));
-  right: max(16px, env(safe-area-inset-right));
   z-index: 8;
   display: inline-flex;
   align-items: center;

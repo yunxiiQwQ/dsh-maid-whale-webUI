@@ -56,7 +56,11 @@ describe('helper process launch resolution', () => {
       fileExists: () => false,
     })
     expect(launch.command).toBe('py')
-    expect(launch.args).toEqual(['-3', 'C:/app/runtime/helper.py'])
+    // defaultArgs keys off the REAL process platform (vendored behavior), so
+    // the '-3' launcher flag only appears when the suite itself runs on win32.
+    expect(launch.args).toEqual(
+      process.platform === 'win32' ? ['-3', 'C:/app/runtime/helper.py'] : ['C:/app/runtime/helper.py'],
+    )
   })
 
   it('launches the bundled executable through cmd.exe from WSL', () => {

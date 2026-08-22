@@ -110,8 +110,19 @@ export function apply(ctx: Context): void {
   petToggle.addEventListener('click', () => {
     void patchPetEnabled(!petEnabled)
   })
+  const syncPetTogglePosition = (): void => {
+    const bounds = sidebarSurface?.getBoundingClientRect()
+    if (bounds && bounds.width > 0 && bounds.height > 0) {
+      petToggle.style.left = `${Math.round(bounds.right - 54)}px`
+      petToggle.style.right = 'auto'
+    } else {
+      petToggle.style.left = 'auto'
+      petToggle.style.right = 'max(16px, env(safe-area-inset-right))'
+    }
+  }
   syncPetToggle()
   body.append(petToggle)
+  syncPetTogglePosition()
   if (typeof fetch === 'function') {
     void fetch('/plugins/maid-whale-webui/config', { cache: 'no-store' })
       .then((response) => (response.ok ? response.json() : null))
@@ -147,6 +158,7 @@ export function apply(ctx: Context): void {
 
   const syncChrome = (): void => {
     syncSidebarSurface()
+    syncPetTogglePosition()
   }
   const chromeObserver = new MutationObserver(syncChrome)
   chromeObserver.observe(body, { childList: true, subtree: true })
