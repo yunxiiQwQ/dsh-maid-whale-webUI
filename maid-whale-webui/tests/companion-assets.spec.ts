@@ -112,9 +112,10 @@ describe('per-clip render scale', () => {
   it('trims and centres the base idle pose to match the action poses', () => {
     expect(manifest.clips.idle?.scale).toBe(0.95)
     expect(manifest.clips.idle?.offsetX).toBe(3)
+    const micro = new Set(manifest.idleMicroClips)
     for (const [name, clip] of Object.entries(manifest.clips)) {
       if (name === 'idle') continue
-      expect(clip.scale ?? 1).toBe(1)
+      expect(clip.scale ?? 1).toBe(micro.has(name) ? 0.98 : 1)
       expect(clip.offsetX ?? 0).toBe(0)
     }
   })

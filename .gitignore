@@ -7,3 +7,5 @@ node_modules/
 AGENTS.md
 **/AGENTS.md
 .build/
+__pycache__/
+*.pyc

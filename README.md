@@ -14,6 +14,8 @@ DeepSeek Harness Web UI 的鲸鱼女仆主题插件，包含亮暗模式、海�
 
 ## 安装
 
+环境要求：Windows 10/11 x64（桌宠为原生窗口）、可正常运行的 DSH Web UI；无需安装 Python 或 Node。详细安装、更新与卸载说明见 [maid-whale-webui/README.md](maid-whale-webui/README.md)。
+
 ### 懒人版
 
 对你的 DSH 说：
@@ -30,7 +32,7 @@ cd dsh-maid-whale-webUI
 dsh plugin --profile web add ./maid-whale-webui
 ```
 
-安装后刷新或重启 DeepSeek Harness Web UI。同一时间建议只启用一个界面主题。
+安装后刷新或重启 DeepSeek Harness Web UI，桌宠会随 DSH 自动出现。更新：`git pull` 后重启 DSH 即生效（本地目录以链接方式安装）。同一时间建议只启用一个界面主题。
 
 ## 开发
 

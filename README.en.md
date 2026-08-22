@@ -14,6 +14,8 @@ A whale-maid theme plugin for the DeepSeek Harness Web UI, featuring light and d
 
 ## Installation
 
+Requirements: Windows 10/11 x64 (the companion is a native window) and a working DSH Web UI; no Python or Node required. See [maid-whale-webui/README.en.md](maid-whale-webui/README.en.md) for full install/update/uninstall instructions.
+
 ### Quick install
 
 Tell your DSH:

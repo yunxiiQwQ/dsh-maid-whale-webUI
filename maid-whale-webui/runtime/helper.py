@@ -421,9 +421,9 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
                 self.micro_timer.stop()
                 return
             intervals = {
-                "quiet": (12000, 24000),
-                "normal": (6500, 12500),
-                "lively": (3500, 8000),
+                "quiet": (24000, 48000),
+                "normal": (15000, 20000),
+                "lively": (7000, 16000),
             }
             lower, upper = intervals.get(self.activity_level, intervals["normal"])
             self.micro_timer.start(random.randint(lower, upper))
@@ -849,30 +849,30 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
             clip_name = self.model.active_clip_name
             if motion == "breathe":
                 # 缩放呼吸 + 极轻摇摆（无位移）：幅度收敛到几乎察觉不到的呼吸感
-                scale_extra = 1.0 + 0.008 * math.sin(phase * 2.5)
-                angle = math.sin(phase * 2.5) * 0.6
+                scale_extra = 1.0 + 0.005 * math.sin(phase * 2.5)
+                angle = math.sin(phase * 2.5) * 0.3
             elif motion == "think":
-                offset_y = math.sin(phase * 2.8) * 3
-                angle = math.sin(phase * 1.3) * 0.8
+                offset_y = math.sin(phase * 2.8) * 1.5
+                angle = math.sin(phase * 1.3) * 0.4
             elif motion == "work":
-                offset_x = math.sin(phase * 5.4) * 3
-                angle = math.sin(phase * 3.1) * 1.0
+                offset_x = math.sin(phase * 5.4) * 1.5
+                angle = math.sin(phase * 3.1) * 0.5
             elif motion == "wait":
-                offset_y = math.sin(phase * 1.8) * 1
-                angle = math.sin(phase * 1.2) * 0.8
+                offset_y = math.sin(phase * 1.8) * 0.8
+                angle = math.sin(phase * 1.2) * 0.4
             elif motion == "bounce":
-                offset_y = -abs(math.sin(phase * 5.2)) * 8
-                scale_extra = 1.0 + 0.02 * math.sin(phase * 5.2)
+                offset_y = -abs(math.sin(phase * 5.2)) * 5
+                scale_extra = 1.0 + 0.012 * math.sin(phase * 5.2)
             elif motion in {"shake", "dizzy"}:
-                offset_x = math.sin(phase * 11.0) * 4
-                angle = math.sin(phase * 11.0) * 1.5
+                offset_x = math.sin(phase * 11.0) * 2
+                angle = math.sin(phase * 11.0) * 0.8
             elif motion == "float":
-                offset_y = math.sin(phase * 3.0) * 4
-                angle = math.sin(phase * 1.6) * 1.0
+                offset_y = math.sin(phase * 3.0) * 2
+                angle = math.sin(phase * 1.6) * 0.5
             # Give walking clips a light bob and quick sway without changing frame timing.
             if clip_name in ("working_search", "working_command"):
-                offset_y = -abs(math.sin(phase * 4.5)) * 5
-                angle = math.sin(phase * 9.0) * 2.5
+                offset_y = -abs(math.sin(phase * 4.5)) * 3
+                angle = math.sin(phase * 9.0) * 1.2
             # Per-clip render scale (manifest "scale"): the base idle pose reads
             # slightly larger than the action poses, so clips can be trimmed
             # without resampling their pixels.

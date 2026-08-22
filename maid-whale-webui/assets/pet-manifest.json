@@ -172,10 +172,19 @@
         "05-surprised.png",
         "05-surprised.png",
         "05-surprised.png",
+        "05-surprised.png",
+        "05-surprised.png",
+        "05-surprised.png",
+        "05-surprised.png",
+        "05-surprised.png",
+        "05-surprised.png",
+        "05-surprised.png",
+        "05-surprised.png",
         "05-surprised.png"
       ],
-      "frameMs": 260,
-      "loop": false
+      "frameMs": 250,
+      "loop": false,
+      "scale": 0.98
     },
     "confused": {
       "frames": [
@@ -186,10 +195,19 @@
         "04-confused.png",
         "04-confused.png",
         "04-confused.png",
+        "04-confused.png",
+        "04-confused.png",
+        "04-confused.png",
+        "04-confused.png",
+        "04-confused.png",
+        "04-confused.png",
+        "04-confused.png",
+        "04-confused.png",
         "04-confused.png"
       ],
-      "frameMs": 260,
-      "loop": false
+      "frameMs": 250,
+      "loop": false,
+      "scale": 0.98
     },
     "eating": {
       "frames": [
@@ -202,10 +220,17 @@
         "20-eating.png",
         "20-eating.png",
         "20-eating.png",
+        "20-eating.png",
+        "20-eating.png",
+        "20-eating.png",
+        "20-eating.png",
+        "20-eating.png",
+        "20-eating.png",
         "20-eating.png"
       ],
-      "frameMs": 280,
-      "loop": false
+      "frameMs": 250,
+      "loop": false,
+      "scale": 0.98
     }
   },
   "stateMap": {

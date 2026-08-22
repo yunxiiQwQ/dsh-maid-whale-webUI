@@ -4,7 +4,7 @@
 
 [English](README.en.md) | 中文
 
-DeepSeek Harness Web UI 的鲸鱼女仆主题插件，包含亮暗模式、海洋插画背景、手绘九宫格边框与页边角色装饰。
+DeepSeek Harness Web UI 的鲸鱼女仆主题插件：亮暗双主题、海洋插画壁纸、手绘九宫格边框，并附带随 DSH 启停、置顶桌面的云鲸桌宠（deepseek-drool 20 动作素材）。
 
 ## 效果预览
 
@@ -13,6 +13,12 @@ DeepSeek Harness Web UI 的鲸鱼女仆主题插件，包含亮暗模式、海�
 | [![亮色模式](preview/light.webp)](preview/light.webp) | [![暗色模式](preview/dark.webp)](preview/dark.webp) |
 
 ## 安装
+
+### 环境要求
+
+- Windows 10/11 x64（桌宠为原生置顶窗口，仅支持 Windows；纯皮肤部分不限平台）
+- 可正常运行的 DSH（DeepSeek Harness）Web UI
+- **无需安装 Python 或 Node**——桌宠帮助程序已随包提供（`runtime/bin/win32-x64/dsw-drool-helper.exe`）
 
 ### 懒人版
 
@@ -25,23 +31,52 @@ DeepSeek Harness Web UI 的鲸鱼女仆主题插件，包含亮暗模式、海�
 ### 手动安装
 
 ```powershell
+# 1) 完全退出 DSH（含托盘进程）
+# 2) 克隆并安装插件
 git clone https://github.com/yunxiiQwQ/dsh-maid-whale-webUI.git
 cd dsh-maid-whale-webUI
 dsh plugin --profile web add ./maid-whale-webui
+# 3) 启动 DSH
+dsh --profile web
 ```
 
-安装后刷新或重启 DeepSeek Harness Web UI。同一时间建议只启用一个界面主题。
+启动后皮肤自动应用；云鲸桌宠会自动出现在桌面上。若未出现，到 **设置 → 插件 → 插件配置 → 云鲸桌宠** 检查启用开关。
+
+### 更新与卸载
+
+```powershell
+# 更新：本地目录以链接方式安装，拉取后重启 DSH 即生效
+git pull
+
+# 卸载（需先完全退出 DSH）
+dsh plugin --profile web remove @dsh-external/dsh-client-ui-skin-maid-whale-webui
+```
+
+同一时间建议只启用一个界面主题。
 
 ## 开发
 
 ```powershell
 pnpm install
-pnpm art:embed
-pnpm art:embed:check
+pnpm art:embed            # 从 assets/ 重新生成内嵌皮肤素材
 pnpm lint
 pnpm typecheck
 pnpm test
 pnpm build
+```
+
+桌宠侧（改动 `runtime/`、`assets/pet/` 或 `assets/pet-manifest.json` 后需要重建 exe）：
+
+```powershell
+py -3 -m unittest discover -s runtime/tests -t .   # Python 单元测试
+pnpm build:helper:windows                           # 重建桌宠 exe（代码与素材冻结其中）
+```
+
+`build-helper.ps1` 默认使用 `.build/python-env` 虚拟环境（已被 .gitignore 排除，**不会入库**）。首次构建前自建一次即可：
+
+```powershell
+python -m venv .build/python-env
+.build/python-env/Scripts/pip install PySide6 pyinstaller
 ```
 
 插件只使用官方 DSH 客户端插件机制，不修改 DeepSeek Harness 源码，也不影响模型请求。
@@ -59,11 +94,5 @@ pnpm build
 - 桌面互动：拖动（位置自动保存）、点击/双击摸头反应、右键菜单
 - 设置入口：DSH 设置 → 插件 → 插件配置 → 云鲸桌宠（角色大小、气泡、活跃程度、减少动态效果、响应子 Agent）
 - 隐私：不存密钥、不截图、无遥测、不开新端口，只响应 DSH 自身事件
-
-桌宠帮助程序为 `runtime/bin/win32-x64/dsw-drool-helper.exe`（PyInstaller 打包，素材冻结其中）。更换 `assets/pet/` 素材或 `assets/pet-manifest.json` 后需重建：
-
-```bash
-pnpm build:helper:windows
-```
 
 节点侧伴侣代码与 Python runtime 源自 QCYTSN/dsh-dafeiyu（MIT），详见 NOTICE。
