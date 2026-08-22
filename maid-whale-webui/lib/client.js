@@ -162,11 +162,11 @@ window.__ModuleLoader__.load({
 				return h("li", {
 					style: cardStyle,
 					"data-testid": "maid-whale-companion-settings"
-				}, h("div", null, h("strong", { style: { fontSize: 16 } }, "云鲸桌宠"), h("p", { style: {
+				}, h("div", null, h("strong", { style: { fontSize: 16 } }, "鲸鱼桌宠"), h("p", { style: {
 					margin: "5px 0 0",
 					opacity: .72
-				} }, "入口和状态属于 DSH，鲸鲸始终显示在 Windows 桌面最上层；DSH 最小化时也会继续陪伴。")), status === "unavailable" ? h("span", { role: "status" }, "云鲸桌宠设置尚未连接到 DSH Host。") : status === "loading" ? h("span", null, "正在读取设置…") : h(React.Fragment, null, h(Field, {
-					label: "启用云鲸桌宠",
+				} }, "入口和状态属于 DSH，鲸鲸始终显示在 Windows 桌面最上层；DSH 最小化时也会继续陪伴。")), status === "unavailable" ? h("span", { role: "status" }, "鲸鱼桌宠设置尚未连接到 DSH Host。") : status === "loading" ? h("span", null, "正在读取设置…") : h(React.Fragment, null, h(Field, {
+					label: "启用鲸鱼桌宠",
 					hint: "关闭后立即退出；重新开启无需单独启动程序。"
 				}, h("input", {
 					type: "checkbox",
@@ -883,7 +883,7 @@ window.__ModuleLoader__.load({
 			petToggle.type = "button";
 			petToggle.className = deepseek_workshop_module_css_default.petToggle ?? "";
 			petToggle.dataset.skinChrome = "pet-toggle";
-			petToggle.setAttribute("aria-label", "云鲸桌宠开关");
+			petToggle.setAttribute("aria-label", "鲸鱼桌宠开关");
 			const petToggleIcon = document.createElement("img");
 			petToggleIcon.className = deepseek_workshop_module_css_default.petToggleImage ?? "";
 			petToggleIcon.src = MASCOT_ART;
@@ -895,7 +895,7 @@ window.__ModuleLoader__.load({
 			const syncPetToggle = () => {
 				petToggle.dataset.petOn = petEnabled ? "on" : "off";
 				petToggle.setAttribute("aria-pressed", String(petEnabled));
-				petToggle.title = petEnabled ? "云鲸桌宠：开（点击关闭）" : "云鲸桌宠：关（点击开启）";
+				petToggle.title = petEnabled ? "鲸鱼桌宠：开（点击关闭）" : "鲸鱼桌宠：关（点击开启）";
 			};
 			const patchPetEnabled = async (next) => {
 				petEnabled = next;

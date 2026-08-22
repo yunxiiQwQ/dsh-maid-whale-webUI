@@ -4,7 +4,7 @@
 
 [English](README.en.md) | 中文
 
-DeepSeek Harness Web UI 的鲸鱼女仆主题插件：亮暗双主题、海洋插画壁纸、手绘九宫格边框，并附带随 DSH 启停、置顶桌面的云鲸桌宠（deepseek-drool 20 动作素材）。
+DeepSeek Harness Web UI 的鲸鱼女仆主题插件：亮暗双主题、海洋插画壁纸、手绘九宫格边框，并附带随 DSH 启停、置顶桌面的鲸鱼桌宠（deepseek-drool 20 动作素材）。
 
 ## 效果预览
 
@@ -12,9 +12,9 @@ DeepSeek Harness Web UI 的鲸鱼女仆主题插件：亮暗双主题、海洋�
 |---|---|
 | [![亮色模式](preview/light.webp)](preview/light.webp) | [![暗色模式](preview/dark.webp)](preview/dark.webp) |
 
-### 云鲸桌宠
+### 鲸鱼桌宠
 
-[<img src="preview/pet-working.png" alt="云鲸桌宠工作中状态" width="360">](preview/pet-working.png)
+[<img src="preview/pet-working.png" alt="鲸鱼桌宠工作中状态" width="360">](preview/pet-working.png)
 
 ## 安装
 
@@ -44,7 +44,7 @@ dsh plugin --profile web add ./maid-whale-webui
 dsh --profile web
 ```
 
-启动后皮肤自动应用；云鲸桌宠会自动出现在桌面上。若未出现，到 **设置 → 插件 → 插件配置 → 云鲸桌宠** 检查启用开关。
+启动后皮肤自动应用；鲸鱼桌宠会自动出现在桌面上。若未出现，到 **设置 → 插件 → 插件配置 → 鲸鱼桌宠** 检查启用开关。
 
 ### 更新与卸载
 
@@ -85,14 +85,14 @@ python -m venv .build/python-env
 
 插件只使用官方 DSH 客户端插件机制，不修改 DeepSeek Harness 源码，也不影响模型请求。
 
-## 桌面伴侣（云鲸桌宠）
+## 桌面伴侣（鲸鱼桌宠）
 
 本插件集成了一个由 DSH 状态驱动的桌面伴侣（桌面宠物），随 DSH 启动自动出现、DSH 退出自动关闭；DSH 最小化后桌宠仍以透明置顶窗口显示在 Windows 桌面上。
 
 - 事件驱动状态机：空闲 → 思考 → 工作（查找 / 执行 / 验证细分动作）→ 等待确认 / 完成 / 错误，多会话按"等待确认 > 错误 > 工作 > 思考 > 空闲"优先展示
 - 角色为 deepseek-drool 的 20 动作素材（待机、思考、努力工作、加载、拜托、成功、错误、惊讶、吃东西等）
 - 桌面互动：拖动（位置自动保存）、点击/双击摸头反应、右键菜单
-- 设置入口：DSH 设置 → 插件 → 插件配置 → 云鲸桌宠（角色大小、气泡、活跃程度、减少动态效果、响应子 Agent）
+- 设置入口：DSH 设置 → 插件 → 插件配置 → 鲸鱼桌宠（角色大小、气泡、活跃程度、减少动态效果、响应子 Agent）
 - 快捷开关：工作区面板右下角有桌宠开关按钮（角色小图标，点击即时启停；灰化为关闭状态）
 - 隐私：不存密钥、不截图、无遥测、不开新端口，只响应 DSH 自身事件
 

@@ -179,7 +179,7 @@ function createCardModule(React: typeof ReactTypes) {
       h(
         'div',
         null,
-        h('strong', { style: { fontSize: 16 } }, '云鲸桌宠'),
+        h('strong', { style: { fontSize: 16 } }, '鲸鱼桌宠'),
         h(
           'p',
           { style: { margin: '5px 0 0', opacity: 0.72 } },
@@ -187,7 +187,7 @@ function createCardModule(React: typeof ReactTypes) {
         ),
       ),
       status === 'unavailable'
-        ? h('span', { role: 'status' }, '云鲸桌宠设置尚未连接到 DSH Host。')
+        ? h('span', { role: 'status' }, '鲸鱼桌宠设置尚未连接到 DSH Host。')
         : status === 'loading'
           ? h('span', null, '正在读取设置…')
           : h(
@@ -195,7 +195,7 @@ function createCardModule(React: typeof ReactTypes) {
               null,
               h(
                 Field,
-                { label: '启用云鲸桌宠', hint: '关闭后立即退出；重新开启无需单独启动程序。' },
+                { label: '启用鲸鱼桌宠', hint: '关闭后立即退出；重新开启无需单独启动程序。' },
                 h('input', {
                   type: 'checkbox',
                   checked: value.enabled !== false,

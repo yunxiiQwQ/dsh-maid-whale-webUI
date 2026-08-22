@@ -1734,7 +1734,7 @@ const name = "@dsh-external/dsh-client-ui-skin-maid-whale-webui";
 const inject = ["sessions", "settings"];
 const CONFIG_ENDPOINT = "/plugins/maid-whale-webui/config";
 const Config = Schema.object({
-	enabled: Schema.boolean().default(true).description("启用云鲸桌宠"),
+	enabled: Schema.boolean().default(true).description("启用鲸鱼桌宠"),
 	scale: Schema.number().min(.5).max(1.4).step(.05).default(.65).role("slider").description("角色大小"),
 	bubbleScale: Schema.number().min(.8).max(1.2).step(.05).default(1).role("slider").description("气泡大小"),
 	activityLevel: Schema.union([
@@ -1754,7 +1754,7 @@ const Config = Schema.object({
 		"WAITING"
 	]).description("自定义模式下显示气泡的状态"),
 	includeSubagents: Schema.boolean().default(false).description("允许子 Agent 抢占宠物状态")
-}).description("由 DeepSeek Harness 状态驱动的云鲸桌宠");
+}).description("由 DeepSeek Harness 状态驱动的鲸鱼桌宠");
 const defaults = Object.freeze({
 	enabled: true,
 	scale: .65,

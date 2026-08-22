@@ -75,7 +75,7 @@ export function apply(ctx: Context): void {
   petToggle.type = 'button'
   petToggle.className = css.petToggle ?? ''
   petToggle.dataset.skinChrome = 'pet-toggle'
-  petToggle.setAttribute('aria-label', '云鲸桌宠开关')
+  petToggle.setAttribute('aria-label', '鲸鱼桌宠开关')
   const petToggleIcon = document.createElement('img')
   petToggleIcon.className = css.petToggleImage ?? ''
   petToggleIcon.src = MASCOT_ART
@@ -87,7 +87,7 @@ export function apply(ctx: Context): void {
   const syncPetToggle = (): void => {
     petToggle.dataset.petOn = petEnabled ? 'on' : 'off'
     petToggle.setAttribute('aria-pressed', String(petEnabled))
-    petToggle.title = petEnabled ? '云鲸桌宠：开（点击关闭）' : '云鲸桌宠：关（点击开启）'
+    petToggle.title = petEnabled ? '鲸鱼桌宠：开（点击关闭）' : '鲸鱼桌宠：关（点击开启）'
   }
   const patchPetEnabled = async (next: boolean): Promise<void> => {
     petEnabled = next

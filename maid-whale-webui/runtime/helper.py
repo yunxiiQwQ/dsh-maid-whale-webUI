@@ -226,7 +226,7 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
             if not self.reduced_motion:
                 self._schedule_micro()
             self.snapshot_saved = False
-            self.setWindowTitle("云鲸桌宠")
+            self.setWindowTitle("鲸鱼桌宠")
             self.setWindowFlags(
                 Qt.WindowType.FramelessWindowHint
                 | Qt.WindowType.WindowStaysOnTopHint
