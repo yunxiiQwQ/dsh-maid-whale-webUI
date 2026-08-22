@@ -286,9 +286,9 @@ describe('DeepSeek cloud paper stylesheet', () => {
 
   it('defines the light and dusk-paper token surfaces', () => {
     expect(stylesheet).toContain('body[data-dsh-deepseek-workshop] {')
-    expect(stylesheet).toContain('--dsw-alias-bg-base: rgba(251, 250, 245, 0.28)')
+    expect(stylesheet).toContain('--dsw-alias-bg-layer-1: rgba(247, 249, 246, 0.97)')
     expect(stylesheet).toContain('body[data-dsh-deepseek-workshop][data-ds-dark-theme]')
-    expect(stylesheet).toContain('--dsw-alias-bg-base: rgba(23, 36, 53, 0.34)')
+    expect(stylesheet).toContain('--dsw-alias-bg-layer-1: rgba(28, 45, 66, 0.98)')
   })
 
   it('keeps the mascot and generated ornament layer responsive', () => {
@@ -463,8 +463,8 @@ describe('DeepSeek cloud paper stylesheet', () => {
     expect(stylesheet).toContain('var(--dsw-sidebar-ocean-background)')
     expect(stylesheet).toContain('center bottom')
     expect(stylesheet).toContain('[data-ds-dark-theme] [data-dsh-sidebar-surface]')
-    expect(stylesheet).toContain('--dsw-specific-sidebar-fill: rgba(246, 249, 247, 0.36)')
-    expect(stylesheet).toContain('--dsw-specific-sidebar-fill: rgba(28, 45, 66, 0.48)')
+    expect(stylesheet).toContain('--dsw-specific-sidebar-nav-item-active: #e1f0f3')
+    expect(stylesheet).toContain('--dsw-specific-sidebar-nav-item-active: #2b465f')
   })
 
   it('keeps slash commands readable in the composer', () => {
