@@ -36,6 +36,7 @@ class Clip:
     loop: bool
     motion: str | None = None
     scale: float = 1.0
+    offset_x: float = 0.0
 
 
 class AnimationModel:
@@ -48,6 +49,7 @@ class AnimationModel:
                 loop=bool(value["loop"]),
                 motion=value.get("motion"),
                 scale=float(value.get("scale", 1.0)),
+                offset_x=float(value.get("offsetX", 0.0)),
             )
             for name, value in manifest["clips"].items()
         }

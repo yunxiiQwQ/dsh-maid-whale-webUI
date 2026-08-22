@@ -12,7 +12,8 @@
       "frameMs": 180,
       "loop": true,
       "motion": "breathe",
-      "scale": 0.95
+      "scale": 0.95,
+      "offsetX": 3
     },
     "sleeping": {
       "frames": [

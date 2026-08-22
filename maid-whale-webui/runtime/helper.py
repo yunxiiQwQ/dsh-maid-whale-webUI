@@ -877,6 +877,9 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
             # slightly larger than the action poses, so clips can be trimmed
             # without resampling their pixels.
             scale_extra *= self.model.active_clip.scale
+            # Per-clip canvas-space nudge (manifest "offsetX"): corrects content
+            # asymmetry between poses; scales with the character.
+            offset_x += self.model.active_clip.offset_x
 
             # Scale procedural offsets with the character while retaining subpixel motion.
             offset_x = offset_x * self.scale

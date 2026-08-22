@@ -12,6 +12,7 @@ interface Clip {
   loop: boolean
   motion?: string
   scale?: number
+  offsetX?: number
 }
 
 interface PetManifest {
@@ -108,11 +109,13 @@ describe('one-shot clip durations', () => {
 })
 
 describe('per-clip render scale', () => {
-  it('trims the base idle pose so it matches the action poses visually', () => {
+  it('trims and centres the base idle pose to match the action poses', () => {
     expect(manifest.clips.idle?.scale).toBe(0.95)
+    expect(manifest.clips.idle?.offsetX).toBe(3)
     for (const [name, clip] of Object.entries(manifest.clips)) {
       if (name === 'idle') continue
       expect(clip.scale ?? 1).toBe(1)
+      expect(clip.offsetX ?? 0).toBe(0)
     }
   })
 })
