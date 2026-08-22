@@ -12,6 +12,10 @@ A whale-maid theme plugin for the DeepSeek Harness Web UI: light/dark themes, oc
 |---|---|
 | [![Light](preview/light.webp)](preview/light.webp) | [![Dark](preview/dark.webp)](preview/dark.webp) |
 
+### Cloud-whale desktop companion
+
+[<img src="preview/pet-working.png" alt="Cloud-whale companion while working" width="360">](preview/pet-working.png)
+
 ## Installation
 
 ### Requirements
@@ -81,10 +85,6 @@ python -m venv .build/python-env
 
 The plugin uses only the official DSH client plugin mechanism. It does not modify the DeepSeek Harness source code or affect model requests.
 
-## License and Disclaimer
-
-The code is licensed under BSD-3-Clause. This is an unofficial community theme whose assets originate from community fan creations. It is not affiliated with DeepSeek. Node-side companion code and the Python runtime are vendored from QCYTSN/dsh-dafeiyu (MIT), see NOTICE.
-
 ## Desktop companion (cloud whale pet)
 
 A DSH-driven desktop companion: it starts with DSH, exits with DSH, and keeps rendering as a transparent always-on-top window while the WebUI is minimized.
@@ -95,3 +95,9 @@ A DSH-driven desktop companion: it starts with DSH, exits with DSH, and keeps re
 - Settings: DSH Settings -> Plugins -> Plugin config -> cloud whale companion (size, bubble, activity level, reduced motion, subagents)
 - Quick toggle: a pet on/off button sits at the bottom-right corner of the workspace panel (click to start/stop instantly; greyed out when off)
 - Privacy: no keys stored, no screenshots, no telemetry, no extra ports; reacts only to DSH events
+
+The Node-side companion code and Python runtime are based on QCYTSN/dsh-dafeiyu (MIT); see NOTICE.
+
+## License and Disclaimer
+
+The code is licensed under BSD-3-Clause. This is an unofficial community theme whose assets originate from community fan creations. It is not affiliated with DeepSeek.

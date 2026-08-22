@@ -12,6 +12,10 @@ DeepSeek Harness Web UI 的鲸鱼女仆主题插件：亮暗双主题、海洋�
 |---|---|
 | [![亮色模式](preview/light.webp)](preview/light.webp) | [![暗色模式](preview/dark.webp)](preview/dark.webp) |
 
+### 云鲸桌宠
+
+[<img src="preview/pet-working.png" alt="云鲸桌宠工作中状态" width="360">](preview/pet-working.png)
+
 ## 安装
 
 ### 环境要求
@@ -81,10 +85,6 @@ python -m venv .build/python-env
 
 插件只使用官方 DSH 客户端插件机制，不修改 DeepSeek Harness 源码，也不影响模型请求。
 
-## 许可与声明
-
-代码使用 BSD-3-Clause 许可。本项目是非官方社区主题，素材来源于社区二创，与 DeepSeek 官方无隶属关系。
-
 ## 桌面伴侣（云鲸桌宠）
 
 本插件集成了一个由 DSH 状态驱动的桌面伴侣（桌面宠物），随 DSH 启动自动出现、DSH 退出自动关闭；DSH 最小化后桌宠仍以透明置顶窗口显示在 Windows 桌面上。
@@ -97,3 +97,7 @@ python -m venv .build/python-env
 - 隐私：不存密钥、不截图、无遥测、不开新端口，只响应 DSH 自身事件
 
 节点侧伴侣代码与 Python runtime 源自 QCYTSN/dsh-dafeiyu（MIT），详见 NOTICE。
+
+## 许可与声明
+
+代码使用 BSD-3-Clause 许可。本项目是非官方社区主题，素材来源于社区二创，与 DeepSeek 官方无隶属关系。
