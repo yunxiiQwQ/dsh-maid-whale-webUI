@@ -165,18 +165,28 @@
       "frames": [
         "05-surprised.png",
         "05-surprised.png",
+        "05-surprised.png",
+        "05-surprised.png",
+        "05-surprised.png",
+        "05-surprised.png",
+        "05-surprised.png",
         "05-surprised.png"
       ],
-      "frameMs": 200,
+      "frameMs": 260,
       "loop": false
     },
     "confused": {
       "frames": [
         "04-confused.png",
         "04-confused.png",
+        "04-confused.png",
+        "04-confused.png",
+        "04-confused.png",
+        "04-confused.png",
+        "04-confused.png",
         "04-confused.png"
       ],
-      "frameMs": 200,
+      "frameMs": 260,
       "loop": false
     },
     "eating": {
@@ -184,9 +194,15 @@
         "20-eating.png",
         "20-eating.png",
         "20-eating.png",
+        "20-eating.png",
+        "20-eating.png",
+        "20-eating.png",
+        "20-eating.png",
+        "20-eating.png",
+        "20-eating.png",
         "20-eating.png"
       ],
-      "frameMs": 220,
+      "frameMs": 280,
       "loop": false
     }
   },

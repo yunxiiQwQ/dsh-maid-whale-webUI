@@ -848,9 +848,9 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
             offset_y = 0
             clip_name = self.model.active_clip_name
             if motion == "breathe":
-                # 独立版同款：缩放呼吸 + 轻摇摆（无位移）
-                scale_extra = 1.0 + 0.02 * math.sin(phase * 2.5)
-                angle = math.sin(phase * 2.5) * 1.5
+                # 缩放呼吸 + 极轻摇摆（无位移）：幅度收敛到几乎察觉不到的呼吸感
+                scale_extra = 1.0 + 0.008 * math.sin(phase * 2.5)
+                angle = math.sin(phase * 2.5) * 0.6
             elif motion == "think":
                 offset_y = math.sin(phase * 2.8) * 3
                 angle = math.sin(phase * 1.3) * 0.8
