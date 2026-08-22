@@ -582,11 +582,11 @@ body[data-dsh-deepseek-workshop] .ornamentRibbonTab {
   transform: rotate(-2deg);
 }
 
-/* Desktop-pet quick toggle, parked where the static page mascot used to live. */
+/* Desktop-pet quick toggle; bottom-right keeps the bottom-left settings clear. */
 body[data-dsh-deepseek-workshop] .petToggle {
   position: fixed;
   bottom: max(16px, env(safe-area-inset-bottom));
-  left: max(16px, env(safe-area-inset-left));
+  right: max(16px, env(safe-area-inset-right));
   z-index: 8;
   display: inline-flex;
   align-items: center;
