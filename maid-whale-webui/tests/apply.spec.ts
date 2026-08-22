@@ -128,6 +128,40 @@ describe('DeepSeek cloud paper skin', () => {
     expect(document.body.style.getPropertyValue('background-image')).toBe('')
   })
 
+  it('mounts a pet quick toggle that flips the companion enabled flag live', async () => {
+    installMatchMedia(true)
+    const patches: string[] = []
+    let enabled = true
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (_input: unknown, init?: { method?: string; body?: string }) => {
+        if (init?.method === 'PATCH') {
+          patches.push(init.body ?? '')
+          enabled = (JSON.parse(init.body ?? '{}') as { enabled: boolean }).enabled
+        }
+        return { ok: true, json: async () => ({ enabled }) } as Response
+      }),
+    )
+    try {
+      fiber = await mount()
+      const toggle = document.body.querySelector<HTMLButtonElement>('[data-skin-chrome="pet-toggle"]')
+      expect(toggle).not.toBeNull()
+      expect(toggle?.getAttribute('aria-pressed')).toBe('true')
+
+      toggle?.click()
+      await tick()
+      expect(patches).toEqual([JSON.stringify({ enabled: false })])
+      expect(toggle?.getAttribute('aria-pressed')).toBe('false')
+      expect(toggle?.dataset.petOn).toBe('off')
+
+      await fiber.dispose()
+      fiber = undefined
+      expect(document.body.querySelector('[data-skin-chrome="pet-toggle"]')).toBeNull()
+    } finally {
+      vi.unstubAllGlobals()
+    }
+  })
+
   it('never mounts an in-page mascot and survives viewport query changes', async () => {
     const media = installMatchMedia(false)
     fiber = await mount()

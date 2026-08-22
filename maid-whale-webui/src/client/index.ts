@@ -2,6 +2,7 @@ import type { Context } from '@deepseek-ai/cordis'
 import { MASCOT_ART, PAPER_BACKDROP_DARK, PAPER_BACKDROP_LIGHT } from './art.ts'
 import { ILLUSTRATED_BACKGROUND, SIDEBAR_OCEAN_BACKGROUND } from './background-art.generated.ts'
 import { registerCompanionSettingsCard } from './companion-settings.ts'
+import css from './deepseek-workshop.module.css'
 import { createFrameController } from './frames.ts'
 import { createOrnamentController } from './ornaments.ts'
 
@@ -70,6 +71,58 @@ export function apply(ctx: Context): void {
   }
   syncSidebarSurface()
 
+  const petToggle = document.createElement('button')
+  petToggle.type = 'button'
+  petToggle.className = css.petToggle ?? ''
+  petToggle.dataset.skinChrome = 'pet-toggle'
+  petToggle.setAttribute('aria-label', '云鲸桌宠开关')
+  const petToggleIcon = document.createElement('img')
+  petToggleIcon.className = css.petToggleImage ?? ''
+  petToggleIcon.src = MASCOT_ART
+  petToggleIcon.alt = ''
+  petToggleIcon.draggable = false
+  petToggleIcon.setAttribute('aria-hidden', 'true')
+  petToggle.append(petToggleIcon)
+  let petEnabled = true
+  const syncPetToggle = (): void => {
+    petToggle.dataset.petOn = petEnabled ? 'on' : 'off'
+    petToggle.setAttribute('aria-pressed', String(petEnabled))
+    petToggle.title = petEnabled ? '云鲸桌宠：开（点击关闭）' : '云鲸桌宠：关（点击开启）'
+  }
+  const patchPetEnabled = async (next: boolean): Promise<void> => {
+    petEnabled = next
+    syncPetToggle()
+    try {
+      const response = await fetch('/plugins/maid-whale-webui/config', {
+        method: 'PATCH',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ enabled: next }),
+      })
+      if (response.ok) {
+        const config = (await response.json()) as { enabled?: boolean }
+        petEnabled = config.enabled !== false
+      }
+    } catch {
+      // Host unreachable: keep the optimistic state; the next click retries.
+    }
+    syncPetToggle()
+  }
+  petToggle.addEventListener('click', () => {
+    void patchPetEnabled(!petEnabled)
+  })
+  syncPetToggle()
+  body.append(petToggle)
+  if (typeof fetch === 'function') {
+    void fetch('/plugins/maid-whale-webui/config', { cache: 'no-store' })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((config: { enabled?: boolean } | null) => {
+        if (!config) return
+        petEnabled = config.enabled !== false
+        syncPetToggle()
+      })
+      .catch(() => {})
+  }
+
   const ornaments = createOrnamentController(body, { wide: media?.matches ?? true })
   const frames = createFrameController(body)
   const setBackdrop = (): void => {
@@ -118,6 +171,7 @@ export function apply(ctx: Context): void {
       clearSidebarSurface()
       body.removeAttribute(BODY_ATTR)
       favicon.remove()
+      petToggle.remove()
       for (const [property, value] of previous) {
         if (value === '') body.style.removeProperty(property)
         else body.style.setProperty(property, value)

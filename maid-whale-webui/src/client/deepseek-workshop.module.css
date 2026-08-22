@@ -582,6 +582,48 @@ body[data-dsh-deepseek-workshop] .ornamentRibbonTab {
   transform: rotate(-2deg);
 }
 
+/* Desktop-pet quick toggle, parked where the static page mascot used to live. */
+body[data-dsh-deepseek-workshop] .petToggle {
+  position: fixed;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  left: max(16px, env(safe-area-inset-left));
+  z-index: 8;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 2px solid var(--dsw-alias-border-l2);
+  border-radius: 14px 17px 13px 16px;
+  background-color: var(--dsw-alias-button-elevated-fill);
+  box-shadow: 0 8px 20px rgba(49, 93, 120, 0.16);
+  cursor: pointer;
+  opacity: 0.94;
+  transition:
+    opacity 140ms ease,
+    filter 140ms ease,
+    border-color 140ms ease;
+}
+
+body[data-dsh-deepseek-workshop] .petToggle:hover {
+  opacity: 1;
+}
+
+body[data-dsh-deepseek-workshop] .petToggle[data-pet-on='off'] {
+  border-color: var(--dsw-alias-border-l1);
+  opacity: 0.5;
+  filter: grayscale(0.85);
+}
+
+body[data-dsh-deepseek-workshop] .petToggleImage {
+  display: block;
+  width: 30px;
+  height: 32px;
+  object-fit: contain;
+  pointer-events: none;
+}
+
 @media (max-width: 959px) {
   body[data-dsh-deepseek-workshop] {
     background-position:

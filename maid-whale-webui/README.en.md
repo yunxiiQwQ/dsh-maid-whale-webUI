@@ -93,4 +93,5 @@ A DSH-driven desktop companion: it starts with DSH, exits with DSH, and keeps re
 - The character is the deepseek-drool 20-action pack (idle, thinking, working, loading, please, success, error, surprised, eating, ...)
 - Desktop interactions: drag (position remembered), click/double-click head-pat reactions, context menu
 - Settings: DSH Settings -> Plugins -> Plugin config -> cloud whale companion (size, bubble, activity level, reduced motion, subagents)
+- Quick toggle: a pet on/off button sits at the bottom-left of the web page (click to start/stop instantly; greyed out when off)
 - Privacy: no keys stored, no screenshots, no telemetry, no extra ports; reacts only to DSH events
