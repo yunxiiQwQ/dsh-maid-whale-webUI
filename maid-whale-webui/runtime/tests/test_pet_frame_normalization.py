@@ -5,6 +5,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from statistics import median
 
 from PIL import Image, ImageDraw
 
@@ -19,6 +20,30 @@ SPEC.loader.exec_module(NORMALIZER)
 
 
 class PetFrameNormalizationTests(unittest.TestCase):
+    def test_normalize_directory_matches_other_frames_to_dragging_scale(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+
+            def save_frame(name: str, box: tuple[int, int, int, int]) -> None:
+                image = Image.new("RGBA", (238, 260), (0, 0, 0, 0))
+                ImageDraw.Draw(image).rectangle(box, fill=(30, 80, 220, 255))
+                image.save(root / name)
+
+            save_frame("11-dragging.png", (69, 50, 168, 199))
+            save_frame("01-idle.png", (19, 20, 218, 219))
+            save_frame("16-sleeping.png", (69, 100, 168, 199))
+
+            NORMALIZER.normalize_directory(root, match_scale_to="11-dragging.png")
+
+            heights = {}
+            for path in root.glob("*.png"):
+                image = Image.open(path).convert("RGBA")
+                _, top, _, bottom = NORMALIZER.connected_components(image)[0].bbox
+                heights[path.name] = bottom - top
+
+            self.assertAlmostEqual(heights["01-idle.png"], heights["11-dragging.png"], delta=2)
+            self.assertAlmostEqual(heights["16-sleeping.png"], 75, delta=2)
+
     def test_normalize_file_replaces_rgba_png_without_leaving_a_process_file(self) -> None:
         self.assertTrue(hasattr(NORMALIZER, "normalize_file"))
         with tempfile.TemporaryDirectory() as directory:
@@ -77,6 +102,17 @@ class PetFrameNormalizationTests(unittest.TestCase):
                 left, _, right, bottom = components[0].bbox
                 self.assertAlmostEqual((left + right) / 2, NORMALIZER.TARGET_X, delta=0.5)
                 self.assertEqual(bottom, NORMALIZER.TARGET_BOTTOM)
+
+    def test_shipped_frames_match_the_dragging_character_scale(self) -> None:
+        pet_root = ROOT / "assets" / "pet"
+        heights = {}
+        for name in (*NORMALIZER.SCALE_CALIBRATION_FRAMES, NORMALIZER.DRAGGING_FRAME):
+            image = Image.open(pet_root / name).convert("RGBA")
+            _, top, _, bottom = NORMALIZER._subject(image).bbox
+            heights[name] = bottom - top
+
+        standing_height = median(heights[name] for name in NORMALIZER.SCALE_CALIBRATION_FRAMES)
+        self.assertAlmostEqual(standing_height, heights[NORMALIZER.DRAGGING_FRAME], delta=2)
 
 
 if __name__ == "__main__":
