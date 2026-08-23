@@ -11,9 +11,7 @@
       ],
       "frameMs": 180,
       "loop": true,
-      "motion": "breathe",
-      "scale": 0.95,
-      "offsetX": 3
+      "motion": "breathe"
     },
     "sleeping": {
       "frames": [
@@ -201,8 +199,7 @@
         "05-surprised.png"
       ],
       "frameMs": 250,
-      "loop": false,
-      "scale": 0.98
+      "loop": false
     },
     "confused": {
       "frames": [
@@ -224,8 +221,7 @@
         "04-confused.png"
       ],
       "frameMs": 250,
-      "loop": false,
-      "scale": 0.98
+      "loop": false
     },
     "eating": {
       "frames": [
@@ -247,8 +243,7 @@
         "20-eating.png"
       ],
       "frameMs": 250,
-      "loop": false,
-      "scale": 0.98
+      "loop": false
     }
   },
   "stateMap": {

@@ -8,11 +8,40 @@ success pulse always returns to the newest Agent state.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Literal
 
 
 STATES = {"IDLE", "THINKING", "WORKING", "WAITING", "SUCCESS", "ERROR", "DISCONNECTED"}
 NON_CROSSFADE_CLIPS = {"blink", "glance", "dragging"}
+ANIMATION_TICK_MS = 33
+REDUCED_MOTION_TICK_MS = 50
+PROCEDURAL_MOTION_CLIPS = {"working_search", "working_command"}
+
+
+def animation_tick_interval(reduced_motion: bool) -> int:
+    return REDUCED_MOTION_TICK_MS if reduced_motion else ANIMATION_TICK_MS
+
+
+def repaint_scope(
+    *,
+    previous_frame: str,
+    current_frame: str,
+    motion: str | None,
+    clip_name: str,
+    reduced_motion: bool,
+    fade_active: bool,
+    surface_changed: bool,
+) -> Literal["full", "pet", "none"]:
+    """Choose the smallest repaint needed for one animation tick."""
+    if surface_changed:
+        return "full"
+    if previous_frame != current_frame or fade_active:
+        return "pet"
+    if reduced_motion:
+        return "none"
+    if motion is not None or clip_name in PROCEDURAL_MOTION_CLIPS:
+        return "pet"
+    return "none"
 
 
 def crossfade_duration(previous_clip: str, current_clip: str) -> float | None:

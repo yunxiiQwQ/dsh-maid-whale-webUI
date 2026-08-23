@@ -178,9 +178,9 @@ window.__ModuleLoader__.load({
 					hint: `${Math.round((value.scale ?? 1) * 100)}%`
 				}, h("input", {
 					type: "range",
-					min: .5,
+					min: .4,
 					max: 1.4,
-					step: .05,
+					step: 1e-4,
 					value: value.scale ?? 1,
 					disabled: status !== "ready",
 					onChange: (event) => void writeSlider("scale", Number(event.target.value))
@@ -213,9 +213,9 @@ window.__ModuleLoader__.load({
 					hint: `${Math.round((value.bubbleScale ?? 1) * 100)}%`
 				}, h("input", {
 					type: "range",
-					min: .8,
+					min: .6,
 					max: 1.2,
-					step: .05,
+					step: .01,
 					value: value.bubbleScale ?? 1,
 					disabled: status !== "ready",
 					onChange: (event) => void writeSlider("bubbleScale", Number(event.target.value))

@@ -7,6 +7,16 @@ from runtime.layout_store import DEFAULT_LAYOUT, load_layout, normalise_layout, 
 
 
 class LayoutStoreTests(unittest.TestCase):
+    def test_pet_and_bubble_defaults_match_requested_size(self) -> None:
+        self.assertEqual(DEFAULT_LAYOUT["scale"], 0.6552)
+        self.assertEqual(DEFAULT_LAYOUT["bubbleScale"], 0.78)
+
+    def test_compact_scales_are_preserved_and_lower_values_are_clamped(self) -> None:
+        self.assertEqual(normalise_layout({"scale": 0.42, "bubbleScale": 0.6})["scale"], 0.42)
+        self.assertEqual(normalise_layout({"scale": 0.42, "bubbleScale": 0.6})["bubbleScale"], 0.6)
+        self.assertEqual(normalise_layout({"scale": 0.1, "bubbleScale": 0.1})["scale"], 0.4)
+        self.assertEqual(normalise_layout({"scale": 0.1, "bubbleScale": 0.1})["bubbleScale"], 0.6)
+
     def test_corrupt_layout_falls_back_safely(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "layout.json"
@@ -24,7 +34,7 @@ class LayoutStoreTests(unittest.TestCase):
                 "petX": None,
                 "petY": None,
                 "scale": 1.4,
-                "bubbleScale": 1.0,
+                "bubbleScale": 0.78,
                 "reducedMotion": True,
                 "bubbleMode": "always",
                 "bubbleStates": ["SUCCESS", "ERROR", "WAITING"],
@@ -43,8 +53,8 @@ class LayoutStoreTests(unittest.TestCase):
 
     def test_bubble_scale_is_clamped(self) -> None:
         self.assertEqual(normalise_layout({"bubbleScale": 9})["bubbleScale"], 1.2)
-        self.assertEqual(normalise_layout({"bubbleScale": 0.1})["bubbleScale"], 0.8)
-        self.assertEqual(normalise_layout({})["bubbleScale"], 1.0)
+        self.assertEqual(normalise_layout({"bubbleScale": 0.1})["bubbleScale"], 0.6)
+        self.assertEqual(normalise_layout({})["bubbleScale"], 0.78)
 
 
 if __name__ == "__main__":

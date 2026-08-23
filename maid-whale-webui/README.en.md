@@ -80,7 +80,7 @@ pnpm build:helper:windows                           # rebuild the companion exe 
 
 ```powershell
 python -m venv .build/python-env
-.build/python-env/Scripts/pip install PySide6 pyinstaller
+.build/python-env/Scripts/pip install -r requirements.txt pyinstaller
 ```
 
 The plugin uses only the official DSH client plugin mechanism. It does not modify the DeepSeek Harness source code or affect model requests.

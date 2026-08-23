@@ -19,10 +19,10 @@ from pathlib import Path
 from typing import Any, TextIO
 
 try:
-    from .animation_model import AnimationModel, crossfade_duration
+    from .animation_model import AnimationModel, animation_tick_interval, crossfade_duration, repaint_scope
     from .layout_store import default_layout_path, load_layout, save_layout
 except ImportError:
-    from animation_model import AnimationModel, crossfade_duration
+    from animation_model import AnimationModel, animation_tick_interval, crossfade_duration, repaint_scope
     from layout_store import default_layout_path, load_layout, save_layout
 
 
@@ -111,7 +111,7 @@ def run_headless(recorder: EventRecorder) -> int:
 
 def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> int:
     try:
-        from PySide6.QtCore import QObject, QPoint, QRectF, Qt, QTimer, QUrl, Signal
+        from PySide6.QtCore import QObject, QPoint, QRect, QRectF, Qt, QTimer, QUrl, Signal
         from PySide6.QtGui import QColor, QDesktopServices, QFont, QFontMetrics, QMouseEvent, QPainter, QPen, QPixmap
         from PySide6.QtWidgets import QApplication, QMenu, QWidget
     except ImportError:
@@ -152,13 +152,13 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
             self.layout = load_layout(self.layout_path)
             configured_scale = os.environ.get("DSH_DAFEIYU_SCALE")
             try:
-                self.scale = min(1.4, max(0.7, float(configured_scale))) if configured_scale else self.layout["scale"]
+                self.scale = min(1.4, max(0.4, float(configured_scale))) if configured_scale else self.layout["scale"]
             except ValueError:
                 self.scale = self.layout["scale"]
             configured_bubble_scale = os.environ.get("DSH_DAFEIYU_BUBBLE_SCALE")
             try:
                 self.bubble_scale = (
-                    min(1.2, max(0.8, float(configured_bubble_scale)))
+                    min(1.2, max(0.6, float(configured_bubble_scale)))
                     if configured_bubble_scale
                     else self.layout["bubbleScale"]
                 )
@@ -198,6 +198,7 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
             self.status_message = "我在这儿等新任务哦"
             self.status_detail = "DSH · 等待下一次任务"
             self.status_deadline_ms: int | None = self._now_ms() + 4200
+            self.status_deadline_repainted = False
             self.overlay_state: str | None = None
             self.overlay_message = ""
             self.overlay_detail = ""
@@ -219,7 +220,7 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
             self.fade_duration = 0.15
             self.animation_timer = QTimer(self)
             self.animation_timer.timeout.connect(self._tick)
-            self.animation_timer.start(40 if self.reduced_motion else 20)
+            self.animation_timer.start(animation_tick_interval(self.reduced_motion))
             self.micro_timer = QTimer(self)
             self.micro_timer.setSingleShot(True)
             self.micro_timer.timeout.connect(self._play_idle_micro)
@@ -318,14 +319,14 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
             """Apply a live CONFIG message without restarting the window."""
             scale = message.get("scale")
             if isinstance(scale, (int, float)) and not isinstance(scale, bool):
-                self.scale = min(1.4, max(0.7, float(scale)))
+                self.scale = min(1.4, max(0.4, float(scale)))
             bubble_scale = message.get("bubbleScale")
             if isinstance(bubble_scale, (int, float)) and not isinstance(bubble_scale, bool):
-                self.bubble_scale = min(1.2, max(0.8, float(bubble_scale)))
+                self.bubble_scale = min(1.2, max(0.6, float(bubble_scale)))
             reduced_motion = message.get("reducedMotion")
             if isinstance(reduced_motion, bool) and reduced_motion != self.reduced_motion:
                 self.reduced_motion = reduced_motion
-                self.animation_timer.setInterval(40 if self.reduced_motion else 20)
+                self.animation_timer.setInterval(animation_tick_interval(self.reduced_motion))
                 if self.reduced_motion:
                     self.micro_timer.stop()
                 else:
@@ -356,9 +357,30 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
             self._sync_frame_transition(previous_frame, previous_clip)
             if had_pulse and self.model.pulse_state is None:
                 self.display_state = self.model.base_state
+            surface_changed = False
             if self.overlay_deadline_ms is not None and now_ms >= self.overlay_deadline_ms:
                 self._clear_overlay()
-            self.update()
+                surface_changed = True
+            if (
+                self.status_deadline_ms is not None
+                and now_ms >= self.status_deadline_ms
+                and not self.status_deadline_repainted
+            ):
+                self.status_deadline_repainted = True
+                surface_changed = True
+            scope = repaint_scope(
+                previous_frame=previous_frame,
+                current_frame=self.model.frame,
+                motion=self.model.active_clip.motion,
+                clip_name=self.model.active_clip_name,
+                reduced_motion=self.reduced_motion,
+                fade_active=self.fade_from_pixmap is not None,
+                surface_changed=surface_changed,
+            )
+            if scope == "full":
+                self.update()
+            elif scope == "pet":
+                self.update(self._pet_update_rect())
 
         def _play_idle_micro(self) -> None:
             if self.reduced_motion:
@@ -424,7 +446,7 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
             self._sync_frame_transition(previous_frame, previous_clip, allow_fade=False)
             self.dragging = False
             self.last_tick_ms = now_ms
-            self.animation_timer.start(40 if self.reduced_motion else 20)
+            self.animation_timer.start(animation_tick_interval(self.reduced_motion))
             if not self.reduced_motion:
                 self._schedule_micro()
 
@@ -524,6 +546,16 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
             pet_width, pet_height = self._pet_size()
             return self._pet_offset_x(pet_width), self.height() - pet_height - 8, pet_width, pet_height
 
+        def _pet_update_rect(self) -> QRect:
+            x, y, width, height = self._pet_rect()
+            padding = 16
+            return QRect(
+                x - padding,
+                y - padding,
+                width + padding * 2,
+                height + padding * 2,
+            ).intersected(self.rect())
+
         def _bubble_rect(self) -> tuple[int, int, int, int]:
             card_width = round(420 * self.bubble_scale)
             card_height = self._card_height()
@@ -591,6 +623,7 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
             self.status_detail = detail
             self.status_state = state
             self.status_deadline_ms = None if ttl_ms is None else self._now_ms() + ttl_ms
+            self.status_deadline_repainted = False
 
         def _show_overlay(self, message: str, detail: str, state: str, ttl_ms: int) -> None:
             self.overlay_message = message
@@ -706,10 +739,10 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
             s: float,
         ) -> None:
             title_font = QFont("Microsoft YaHei UI")
-            title_font.setPointSizeF(max(8.0, 11.0 * s))
+            title_font.setPointSizeF(max(1.0, 11.0 * s))
             title_font.setWeight(QFont.Weight.DemiBold)
             detail_font = QFont("Microsoft YaHei UI")
-            detail_font.setPointSizeF(max(7.0, 9.0 * s))
+            detail_font.setPointSizeF(max(1.0, 9.0 * s))
             text_x = card_x + round(16 * s)
             text_width = max(40, card_width - round(32 * s))
             painter.setFont(title_font)
@@ -814,10 +847,10 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
                 text_x = card_x + round(24 * s)
                 text_width = max(40, card_width - round(102 * s))
                 title_font = QFont("Microsoft YaHei UI")
-                title_font.setPointSizeF(max(8.0, 11.0 * s))
+                title_font.setPointSizeF(max(1.0, 11.0 * s))
                 title_font.setWeight(QFont.Weight.DemiBold)
                 detail_font = QFont("Microsoft YaHei UI")
-                detail_font.setPointSizeF(max(7.0, 9.0 * s))
+                detail_font.setPointSizeF(max(1.0, 9.0 * s))
                 painter.setFont(title_font)
                 painter.setPen(QColor("#25282D"))
                 title_text = QFontMetrics(title_font).elidedText(
@@ -999,14 +1032,14 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
             menu = QMenu(self)
             size_menu = menu.addMenu("大小")
             size_actions = {}
-            for label, scale in (("小", 0.8), ("标准", 1.0), ("大", 1.25)):
+            for label, scale in (("小", 0.6552), ("标准", 0.7), ("大", 1.0)):
                 action = size_menu.addAction(label)
                 action.setCheckable(True)
-                action.setChecked(abs(self.scale - scale) < 0.05)
+                action.setChecked(abs(self.scale - scale) < 0.01)
                 size_actions[action] = scale
             bubble_size_menu = menu.addMenu("气泡大小")
             bubble_size_actions = {}
-            for label, bubble_scale in (("小", 0.8), ("标准", 1.0), ("大", 1.2)):
+            for label, bubble_scale in (("小", 0.78), ("标准", 0.9), ("大", 1.0)):
                 action = bubble_size_menu.addAction(label)
                 action.setCheckable(True)
                 action.setChecked(abs(self.bubble_scale - bubble_scale) < 0.05)
@@ -1031,7 +1064,7 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
                 self._save_layout()
             elif selected == reduced_action:
                 self.reduced_motion = reduced_action.isChecked()
-                self.animation_timer.setInterval(40 if self.reduced_motion else 20)
+                self.animation_timer.setInterval(animation_tick_interval(self.reduced_motion))
                 if self.reduced_motion:
                     self.micro_timer.stop()
                 else:

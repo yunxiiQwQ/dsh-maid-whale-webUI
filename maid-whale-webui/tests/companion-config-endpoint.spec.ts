@@ -1,6 +1,6 @@
 import { Readable } from 'node:stream'
 import { describe, expect, it } from 'vitest'
-import { CONFIG_ENDPOINT, createConfigHandler } from '../src/index.ts'
+import { CONFIG_ENDPOINT, Config, createConfigHandler } from '../src/index.ts'
 
 interface FixtureValue {
   enabled: boolean
@@ -88,6 +88,14 @@ describe('companion local config endpoint', () => {
     expect(changed.body.enabled).toBe(false)
     expect(changed.body.scale).toBe(0.8)
     expect(changed.body.bubbleScale).toBe(0.8)
+  })
+
+  it('uses the requested pet and bubble sizes when no saved sizes exist', async () => {
+    const initial = Config({})
+    expect(initial.scale).toBe(0.6552)
+    expect(initial.bubbleScale).toBe(0.78)
+    expect(Config({ scale: 0.6552, bubbleScale: 0.78 }).scale).toBe(0.6552)
+    expect(Config({ scale: 0.6552, bubbleScale: 0.78 }).bubbleScale).toBe(0.78)
   })
 
   it('rejects remote, cross-origin, and unknown writes', async () => {

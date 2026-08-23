@@ -2,7 +2,7 @@ import json
 import unittest
 from pathlib import Path
 
-from runtime.animation_model import AnimationModel, crossfade_duration
+from runtime.animation_model import ANIMATION_TICK_MS, AnimationModel, crossfade_duration, repaint_scope
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -58,6 +58,46 @@ class AnimationModelTests(unittest.TestCase):
         self.assertIsNone(crossfade_duration("blink", "idle"))
         self.assertEqual(crossfade_duration("thinking", "working"), 0.10)
         self.assertEqual(crossfade_duration("working_search", "working_search"), 0.045)
+
+    def test_animation_refresh_is_capped_at_about_thirty_frames_per_second(self) -> None:
+        self.assertEqual(ANIMATION_TICK_MS, 33)
+
+    def test_refresh_scope_skips_unchanged_static_frames(self) -> None:
+        self.assertEqual(
+            repaint_scope(
+                previous_frame="idle.png",
+                current_frame="idle.png",
+                motion=None,
+                clip_name="idle",
+                reduced_motion=False,
+                fade_active=False,
+                surface_changed=False,
+            ),
+            "none",
+        )
+        self.assertEqual(
+            repaint_scope(
+                previous_frame="idle.png",
+                current_frame="idle.png",
+                motion="breathe",
+                clip_name="idle",
+                reduced_motion=True,
+                fade_active=False,
+                surface_changed=False,
+            ),
+            "none",
+        )
+
+    def test_refresh_scope_limits_animation_to_pet_and_surface_changes_to_full_window(self) -> None:
+        common = {
+            "previous_frame": "idle.png",
+            "current_frame": "idle.png",
+            "clip_name": "idle",
+            "reduced_motion": False,
+            "fade_active": False,
+        }
+        self.assertEqual(repaint_scope(**common, motion="breathe", surface_changed=False), "pet")
+        self.assertEqual(repaint_scope(**common, motion=None, surface_changed=True), "full")
 
 
 if __name__ == "__main__":

@@ -1735,8 +1735,8 @@ const inject = ["sessions", "settings"];
 const CONFIG_ENDPOINT = "/plugins/maid-whale-webui/config";
 const Config = Schema.object({
 	enabled: Schema.boolean().default(true).description("启用鲸鱼桌宠"),
-	scale: Schema.number().min(.5).max(1.4).step(.05).default(.65).role("slider").description("角色大小"),
-	bubbleScale: Schema.number().min(.8).max(1.2).step(.05).default(1).role("slider").description("气泡大小"),
+	scale: Schema.number().min(.4).max(1.4).step(1e-4).default(.6552).role("slider").description("角色大小"),
+	bubbleScale: Schema.number().min(.6).max(1.2).step(.01).default(.78).role("slider").description("气泡大小"),
 	activityLevel: Schema.union([
 		Schema.const("quiet").description("安静"),
 		Schema.const("normal").description("标准"),
@@ -1757,8 +1757,8 @@ const Config = Schema.object({
 }).description("由 DeepSeek Harness 状态驱动的鲸鱼桌宠");
 const defaults = Object.freeze({
 	enabled: true,
-	scale: .65,
-	bubbleScale: 1,
+	scale: .6552,
+	bubbleScale: .78,
 	activityLevel: "normal",
 	reducedMotion: false,
 	bubbleMode: "always",

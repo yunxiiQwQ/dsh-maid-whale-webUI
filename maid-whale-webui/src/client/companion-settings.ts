@@ -209,9 +209,9 @@ function createCardModule(React: typeof ReactTypes) {
                 { label: '角色大小', hint: `${Math.round((value.scale ?? 1) * 100)}%` },
                 h('input', {
                   type: 'range',
-                  min: 0.5,
+                  min: 0.4,
                   max: 1.4,
-                  step: 0.05,
+                  step: 0.0001,
                   value: value.scale ?? 1,
                   disabled: status !== 'ready',
                   onChange: (event: ReactTypes.ChangeEvent<HTMLInputElement>) =>
@@ -269,9 +269,9 @@ function createCardModule(React: typeof ReactTypes) {
                     { label: '气泡大小', hint: `${Math.round((value.bubbleScale ?? 1) * 100)}%` },
                     h('input', {
                       type: 'range',
-                      min: 0.8,
+                      min: 0.6,
                       max: 1.2,
-                      step: 0.05,
+                      step: 0.01,
                       value: value.bubbleScale ?? 1,
                       disabled: status !== 'ready',
                       onChange: (event: ReactTypes.ChangeEvent<HTMLInputElement>) =>

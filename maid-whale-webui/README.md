@@ -80,7 +80,7 @@ pnpm build:helper:windows                           # 重建桌宠 exe（代码�
 
 ```powershell
 python -m venv .build/python-env
-.build/python-env/Scripts/pip install PySide6 pyinstaller
+.build/python-env/Scripts/pip install -r requirements.txt pyinstaller
 ```
 
 插件只使用官方 DSH 客户端插件机制，不修改 DeepSeek Harness 源码，也不影响模型请求。
