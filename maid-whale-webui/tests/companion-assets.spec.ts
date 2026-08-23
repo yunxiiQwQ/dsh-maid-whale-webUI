@@ -106,6 +106,15 @@ describe('one-shot clip durations', () => {
       })
     }
   })
+
+  it('holds each click interaction pose for about two seconds', () => {
+    for (const name of ['head_pat', 'poke', 'tail']) {
+      const clip = manifest.clips[name]
+      const seconds = (clip.frames.length * clip.frameMs) / 1000
+      expect(seconds, name).toBeGreaterThanOrEqual(1.9)
+      expect(seconds, name).toBeLessThanOrEqual(2.1)
+    }
+  })
 })
 
 describe('per-clip render scale', () => {

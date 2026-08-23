@@ -138,6 +138,11 @@
         "02-happy.png",
         "02-happy.png",
         "02-happy.png",
+        "02-happy.png",
+        "02-happy.png",
+        "02-happy.png",
+        "02-happy.png",
+        "02-happy.png",
         "02-happy.png"
       ],
       "frameMs": 180,
@@ -148,6 +153,14 @@
         "05-surprised.png",
         "05-surprised.png",
         "05-surprised.png",
+        "05-surprised.png",
+        "05-surprised.png",
+        "05-surprised.png",
+        "05-surprised.png",
+        "05-surprised.png",
+        "05-surprised.png",
+        "05-surprised.png",
+        "05-surprised.png",
         "05-surprised.png"
       ],
       "frameMs": 170,
@@ -155,6 +168,11 @@
     },
     "tail": {
       "frames": [
+        "17-angry.png",
+        "17-angry.png",
+        "17-angry.png",
+        "17-angry.png",
+        "17-angry.png",
         "17-angry.png",
         "17-angry.png",
         "17-angry.png",

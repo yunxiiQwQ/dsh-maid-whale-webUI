@@ -23,7 +23,8 @@ class AnimationModelTests(unittest.TestCase):
         model.apply_state("THINKING")
         model.play_overlay("head_pat")
         model.apply_state("WAITING")
-        for tick in range(8):
+        # Advance past the longest interaction pose (~2s) to see it retire.
+        for tick in range(15):
             model.advance(200, tick * 200)
         self.assertEqual(model.active_clip_name, "waiting")
         self.assertEqual(model.base_state, "WAITING")

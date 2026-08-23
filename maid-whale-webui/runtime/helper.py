@@ -974,13 +974,13 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
             relative_y = max(0.0, y - pet_y)
             if relative_y < pet_height * 0.45:
                 self._play_model_overlay("head_pat")
-                self._show_overlay("摸摸也不能让我少干活哦~", self.status_detail, self.status_state, 1800)
+                self._show_overlay("摸摸也不能让我少干活哦~", self.status_detail, self.status_state, 2200)
             elif relative_x > pet_width * 0.72:
                 self._play_model_overlay("tail")
-                self._show_overlay("尾巴不是进度条啦！", self.status_detail, self.status_state, 1500)
+                self._show_overlay("尾巴不是进度条啦！", self.status_detail, self.status_state, 2200)
             else:
                 self._play_model_overlay("poke")
-                self._show_overlay("戳我干嘛，任务还在跑呢", self.status_detail, self.status_state, 1500)
+                self._show_overlay("戳我干嘛，任务还在跑呢", self.status_detail, self.status_state, 2200)
 
         def mouseDoubleClickEvent(self, event: QMouseEvent) -> None:
             if event.button() == Qt.MouseButton.LeftButton:
@@ -993,7 +993,7 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
                 self.pet_origin = QPoint(self.pet_x, self.pet_y)
                 self.dragging = False
                 self._play_model_overlay("head_pat")
-                self._show_overlay("好啦好啦，知道你喜欢我~", self.status_detail, self.status_state, 1800)
+                self._show_overlay("好啦好啦，知道你喜欢我~", self.status_detail, self.status_state, 2200)
 
         def contextMenuEvent(self, event: Any) -> None:
             menu = QMenu(self)
