@@ -225,6 +225,18 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
             self.micro_timer.timeout.connect(self._play_idle_micro)
             if not self.reduced_motion:
                 self._schedule_micro()
+            # A double-click in Qt arrives as release → DoubleClick press →
+            # release, and both releases used to fire the single-click
+            # interaction, making the pet flip between poke and head_pat while
+            # the user kept clicking. Defer the single-click reaction by the
+            # platform double-click interval so the second press can claim the
+            # gesture instead.
+            self.click_defer_timer = QTimer(self)
+            self.click_defer_timer.setSingleShot(True)
+            self.click_defer_timer.setInterval(QApplication.doubleClickInterval())
+            self.click_defer_timer.timeout.connect(self._play_deferred_click)
+            self.deferred_click_pos: QPointF | None = None
+            self.swallow_double_click_release = False
             self.snapshot_saved = False
             self.setWindowTitle("鲸鱼桌宠")
             self.setWindowFlags(
@@ -919,6 +931,12 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
 
         def mousePressEvent(self, event: QMouseEvent) -> None:
             if event.button() == Qt.MouseButton.LeftButton:
+                # A fresh press proves no double-click will claim the previous
+                # release (Qt would have delivered MouseButtonDblClick here
+                # instead), so its deferred single click can play right away.
+                if self.click_defer_timer.isActive():
+                    self.click_defer_timer.stop()
+                    self._play_deferred_click()
                 self.drag_origin = event.globalPosition().toPoint()
                 self.pet_origin = QPoint(self.pet_x, self.pet_y)
                 self.dragging = False
@@ -936,11 +954,19 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
                     self._finish_drag()
                     self._move_to_pet(self.pet_x, self.pet_y)
                     self._save_layout()
-                else:
-                    self._play_click_interaction(event.position().x(), event.position().y())
+                elif not self.swallow_double_click_release:
+                    self.deferred_click_pos = event.position()
+                    self.click_defer_timer.start()
+            self.swallow_double_click_release = False
             self.drag_origin = None
             self.pet_origin = None
             self.dragging = False
+
+        def _play_deferred_click(self) -> None:
+            position = self.deferred_click_pos
+            self.deferred_click_pos = None
+            if position is not None:
+                self._play_click_interaction(position.x(), position.y())
 
         def _play_click_interaction(self, x: float, y: float) -> None:
             pet_x, pet_y, pet_width, pet_height = self._pet_rect()
@@ -958,6 +984,14 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
 
         def mouseDoubleClickEvent(self, event: QMouseEvent) -> None:
             if event.button() == Qt.MouseButton.LeftButton:
+                # Claim the pending single click and swallow the release that
+                # matches this press, so a double-click plays only head_pat.
+                self.click_defer_timer.stop()
+                self.deferred_click_pos = None
+                self.swallow_double_click_release = True
+                self.drag_origin = event.globalPosition().toPoint()
+                self.pet_origin = QPoint(self.pet_x, self.pet_y)
+                self.dragging = False
                 self._play_model_overlay("head_pat")
                 self._show_overlay("好啦好啦，知道你喜欢我~", self.status_detail, self.status_state, 1800)
 
