@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { createFrameController, type FrameController } from '../src/client/frames.ts'
 
 let controller: FrameController | undefined
@@ -43,6 +43,32 @@ function mountConversationCssModules(): void {
     style.textContent = css
     document.head.append(style)
   }
+}
+
+/* Host chrome stylesheet: DSH-authored UI classes live under the
+   dsh-client-ui scope and never count as plugin-authored. */
+function mountNativeChromeCss(): HTMLElement {
+  const style = document.createElement('style')
+  style.dataset.pluginCss = '@deepseek-ai/dsh-client-ui-settings/Settings.module.css'
+  style.textContent = '.settings_root{display:block}.settings_button{display:inline-block}'
+  document.head.append(style)
+  const host = document.createElement('div')
+  host.className = 'settings_root'
+  document.body.append(host)
+  return host
+}
+
+/* Third-party plugin stylesheet: every class it declares marks a
+   plugin-authored subtree that must keep its native borders. */
+function mountForeignPluginCss(): HTMLElement {
+  const style = document.createElement('style')
+  style.dataset.pluginCss = '@dsh-external/dsh-client-plugin-market/Market.module.css'
+  style.textContent = '.market_root{display:block}'
+  document.head.append(style)
+  const root = document.createElement('div')
+  root.className = 'market_root'
+  document.body.append(root)
+  return root
 }
 
 afterEach(() => {
@@ -91,28 +117,38 @@ describe('frame controller', () => {
     expect(document.body.style.getPropertyValue('--dsw-frame-message')).not.toBe(lightMessage)
   })
 
-  it('decorates every visible non-semantic element that already has a rendered border', () => {
+  it('decorates bordered elements on the host UI and skips plugin subtrees', () => {
     fixture()
-    const borderedButton = document.createElement('button')
-    borderedButton.textContent = 'Secondary action'
-    borderedButton.style.border = '1px solid rgb(20, 30, 40)'
+    mountNativeChromeCss()
+    const pluginRoot = mountForeignPluginCss()
+    const hostButton = document.createElement('button')
+    hostButton.textContent = 'Secondary action'
+    hostButton.style.border = '1px solid rgb(20, 30, 40)'
     const borderedSurface = document.createElement('article')
     borderedSurface.style.border = '2px solid rgb(20, 30, 40)'
-    const borderedBadge = document.createElement('span')
-    borderedBadge.textContent = 'Preview'
-    borderedBadge.style.border = '1px solid rgb(20, 30, 40)'
     const borderlessButton = document.createElement('button')
     borderlessButton.textContent = 'Plain action'
     borderlessButton.style.border = '0 none transparent'
-    document.body.append(borderedButton, borderedSurface, borderedBadge, borderlessButton)
+    document.body.append(hostButton, borderedSurface, borderlessButton)
+
+    const pluginButton = document.createElement('button')
+    pluginButton.textContent = 'Install'
+    pluginButton.style.border = '1px solid rgb(20, 30, 40)'
+    // A plugin page may reuse host-styled components; ancestry still wins.
+    const reusedHostButton = document.createElement('button')
+    reusedHostButton.textContent = 'Host-styled tab'
+    reusedHostButton.className = 'settings_button'
+    reusedHostButton.style.border = '1px solid rgb(20, 30, 40)'
+    pluginRoot.append(pluginButton, reusedHostButton)
 
     controller = createFrameController(document.body)
     controller.sync()
 
-    expect(borderedButton.dataset.dshFrame).toBe('control')
+    expect(hostButton.dataset.dshFrame).toBe('control')
     expect(borderedSurface.dataset.dshFrame).toBe('surface')
-    expect(borderedBadge.dataset.dshFrame).toBe('surface')
     expect(borderlessButton.hasAttribute('data-dsh-frame')).toBe(false)
+    expect(pluginButton.hasAttribute('data-dsh-frame')).toBe(false)
+    expect(reusedHostButton.hasAttribute('data-dsh-frame')).toBe(false)
   })
 
   it('marks rows holding two or more control frames so spacing rules can keep artwork apart', () => {
@@ -150,6 +186,34 @@ describe('frame controller', () => {
     expect(document.querySelector('[data-dsh-control-row]')).toBeNull()
   })
 
+  it('reads each element style at most once per synchronization pass', () => {
+    fixture()
+    const shell = document.createElement('div')
+    let current = shell
+    for (let depth = 0; depth < 8; depth += 1) {
+      const next = document.createElement('div')
+      current.append(next)
+      current = next
+    }
+    const bordered = document.createElement('button')
+    bordered.textContent = 'Deep'
+    bordered.style.border = '1px solid rgb(20, 30, 40)'
+    current.append(bordered)
+    document.body.append(shell)
+
+    const compute = vi.spyOn(window, 'getComputedStyle')
+    controller = createFrameController(document.body)
+    compute.mockClear()
+    controller.sync()
+
+    expect(bordered.dataset.dshFrame).toBe('control')
+    // The uncached walk would read one style per ancestor per element (the
+    // depth-8 button alone costs 9); the pass memo must cap the whole scan at
+    // one read per element plus the body root.
+    expect(compute.mock.calls.length).toBeLessThanOrEqual(document.body.querySelectorAll('*').length + 1)
+    compute.mockRestore()
+  })
+
   it('does not frame bordered inline links inside conversation content', () => {
     fixture()
     const sourceLink = document.createElement('a')
@@ -164,32 +228,60 @@ describe('frame controller', () => {
     expect(sourceLink.hasAttribute('data-dsh-frame')).toBe(false)
   })
 
-  it('leaves plugin market widgets on their native compact borders', () => {
-    const market = document.createElement('div')
-    market.className = 'mkts'
+  it('leaves third-party plugin interfaces untouched regardless of their class names', () => {
+    fixture()
+    const market = mountForeignPluginCss()
     market.innerHTML = `
-      <input class="mkts-search" placeholder="搜索插件...">
-      <div class="mkts-chips">
-        <button class="mkts-chip">全部</button>
-        <button class="mkts-chip">UI 增强</button>
+      <input placeholder="搜索插件...">
+      <div>
+        <button>全部</button>
+        <button>UI 增强</button>
       </div>
-      <article class="mkts-item">
-        <div class="mkts-actions">
-          <button class="mkts-cmdbtn">详情</button>
-          <button class="mkts-cmdbtn">安装</button>
+      <article>
+        <div>
+          <button>详情</button>
+          <button>安装</button>
         </div>
       </article>
     `
-    market.querySelectorAll<HTMLElement>('.mkts-chip, .mkts-item, .mkts-actions, .mkts-cmdbtn').forEach((target) => {
+    market.querySelectorAll<HTMLElement>('input, div, article, button').forEach((target) => {
       target.style.border = '1px solid rgb(20, 30, 40)'
     })
-    document.body.append(market)
 
     controller = createFrameController(document.body)
     controller.sync()
 
     expect(market.querySelectorAll('[data-dsh-frame]')).toHaveLength(0)
     expect(market.querySelectorAll('[data-dsh-control-row]')).toHaveLength(0)
+  })
+
+  it('never adopts plugin search fields as the composer', () => {
+    fixture()
+    const pluginRoot = mountForeignPluginCss()
+    document.querySelector('main')!.before(pluginRoot)
+    const search = document.createElement('input')
+    search.placeholder = '搜索插件...'
+    pluginRoot.append(search)
+
+    controller = createFrameController(document.body)
+    controller.sync()
+
+    expect(search.hasAttribute('data-dsh-frame')).toBe(false)
+    expect(document.querySelector('textarea')!.dataset.dshFrame).toBe('composer')
+  })
+
+  it('never frames the skin chrome injected by this plugin', () => {
+    fixture()
+    const chrome = document.createElement('button')
+    chrome.dataset.skinChrome = 'pet-toggle'
+    chrome.textContent = 'Skin toggle'
+    chrome.style.border = '2px solid rgb(20, 30, 40)'
+    document.body.append(chrome)
+
+    controller = createFrameController(document.body)
+    controller.sync()
+
+    expect(chrome.hasAttribute('data-dsh-frame')).toBe(false)
   })
 
   it('promotes the nearest bordered composer ancestor to a dedicated shell frame', () => {

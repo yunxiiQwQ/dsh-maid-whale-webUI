@@ -1,6 +1,13 @@
 import css from './deepseek-workshop.module.css'
 import { ORNAMENT_ART, type OrnamentId, type OrnamentMode } from './ornament-art.generated.ts'
 import { chooseOrnaments } from './ornament-policy.ts'
+import {
+  createForeignUiGate,
+  createStyleReader,
+  createVisibility,
+  type ForeignUiGate,
+  type VisibilityCheck,
+} from './scan.ts'
 
 export interface OrnamentController {
   sync(): void
@@ -18,38 +25,28 @@ interface Targets {
   heading: HTMLElement | null
 }
 
-function isVisible(target: HTMLElement, body: HTMLElement): boolean {
-  if (target.hidden || target.getAttribute('aria-hidden') === 'true') return false
-  const checkVisibility = (
-    target as HTMLElement & {
-      checkVisibility?: (options?: { checkOpacity?: boolean; checkVisibilityCSS?: boolean }) => boolean
-    }
-  ).checkVisibility
-  if (checkVisibility && !checkVisibility.call(target, { checkOpacity: true, checkVisibilityCSS: true })) return false
-
-  const view = body.ownerDocument.defaultView
-  for (let current: HTMLElement | null = target; current; current = current.parentElement) {
-    const style = view?.getComputedStyle(current)
-    const opacity = Number.parseFloat(style?.opacity ?? '1')
-    if (style?.display === 'none' || style?.visibility === 'hidden' || opacity <= 0.05) return false
-    if (current === body) break
+function visibleTarget<T extends HTMLElement>(
+  body: HTMLElement,
+  selector: string,
+  isForeignUi: ForeignUiGate,
+  isVisible: VisibilityCheck,
+): T | null {
+  for (const target of Array.from(body.querySelectorAll<T>(selector))) {
+    if (!isForeignUi(target) && isVisible(target)) return target
   }
-  return true
+  return null
 }
 
-function visibleTarget<T extends HTMLElement>(body: HTMLElement, selector: string): T | null {
-  const target = body.querySelector<T>(selector)
-  return target && isVisible(target, body) ? target : null
-}
-
-function workspaceLabelForTree(tree: HTMLElement | null, body: HTMLElement): HTMLElement | null {
+function workspaceLabelForTree(
+  tree: HTMLElement | null,
+  body: HTMLElement,
+  isVisible: VisibilityCheck,
+): HTMLElement | null {
   if (!tree) return null
   for (let current: HTMLElement | null = tree; current && current !== body; current = current.parentElement) {
     const header = current.previousElementSibling
-    if (!(header instanceof HTMLElement) || !isVisible(header, body)) continue
-    const label = Array.from(header.querySelectorAll<HTMLElement>('span')).find((candidate) =>
-      isVisible(candidate, body),
-    )
+    if (!(header instanceof HTMLElement) || !isVisible(header)) continue
+    const label = Array.from(header.querySelectorAll<HTMLElement>('span')).find((candidate) => isVisible(candidate))
     return label ?? header
   }
   return null
@@ -66,14 +63,17 @@ const ornamentClasses: Record<OrnamentId, string> = {
 }
 
 function resolveTargets(body: HTMLElement): Targets {
-  const tree = visibleTarget(body, '[role="tree"]')
+  const isForeignUi = createForeignUiGate(body)
+  const styleOf = createStyleReader(body)
+  const isVisible = createVisibility(body, styleOf)
+  const tree = visibleTarget(body, '[role="tree"]', isForeignUi, isVisible)
   return {
-    selectedNav: visibleTarget(body, '[role="treeitem"][aria-selected="true"]'),
+    selectedNav: visibleTarget(body, '[role="treeitem"][aria-selected="true"]', isForeignUi, isVisible),
     tree,
-    workspaceLabel: workspaceLabelForTree(tree, body),
-    composer: visibleTarget(body, 'textarea, [contenteditable="true"], input:not([type])'),
-    dialog: visibleTarget(body, '[role="dialog"]'),
-    heading: visibleTarget(body, 'main h1, main h2, [role="main"] h1, [role="main"] h2'),
+    workspaceLabel: workspaceLabelForTree(tree, body, isVisible),
+    composer: visibleTarget(body, 'textarea, [contenteditable="true"], input:not([type])', isForeignUi, isVisible),
+    dialog: visibleTarget(body, '[role="dialog"]', isForeignUi, isVisible),
+    heading: visibleTarget(body, 'main h1, main h2, [role="main"] h1, [role="main"] h2', isForeignUi, isVisible),
   }
 }
 

@@ -118,4 +118,26 @@ describe('ornament controller', () => {
       ),
     ).toEqual(['whaleTail', 'bow'])
   })
+
+  it('anchors the composer ornaments to the host field, never a plugin search box', () => {
+    const input = fixture()
+    const style = document.createElement('style')
+    style.dataset.pluginCss = '@dsh-external/dsh-client-plugin-market/Market.module.css'
+    style.textContent = '.market_root{display:block}'
+    document.head.append(style)
+    const pluginRoot = document.createElement('div')
+    pluginRoot.className = 'market_root'
+    const search = document.createElement('input')
+    search.placeholder = '搜索插件...'
+    pluginRoot.append(search)
+    document.querySelector('main')!.before(pluginRoot)
+
+    controller = createOrnamentController(document.body, { wide: true })
+    controller.sync()
+
+    expect(search.hasAttribute('data-dsh-ornament-target')).toBe(false)
+    expect(input.getAttribute('data-dsh-ornament-target')).toBe('bubbles')
+
+    style.remove()
+  })
 })

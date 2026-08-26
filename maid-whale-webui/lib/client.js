@@ -161,7 +161,8 @@ window.__ModuleLoader__.load({
 				};
 				return h("li", {
 					style: cardStyle,
-					"data-testid": "maid-whale-companion-settings"
+					"data-testid": "maid-whale-companion-settings",
+					"data-skin-chrome": "companion-card"
 				}, h("div", null, h("strong", { style: { fontSize: 16 } }, "鲸鱼桌宠"), h("p", { style: {
 					margin: "5px 0 0",
 					opacity: .72
@@ -271,7 +272,7 @@ window.__ModuleLoader__.load({
 		}
 		//#endregion
 		//#region \0dsh-css:src/client/deepseek-workshop.module.css.mjs
-		const css = "body[data-dsh-deepseek-workshop]{color:#243746;background-blend-mode:normal, normal, soft-light, normal, normal;--dsw-static-blue-50:#f2f8fa;--dsw-static-blue-100:#deeff4;--dsw-static-blue-300:#a8d1df;--dsw-static-blue-400:#7fb9d0;--dsw-static-blue-450:#69acc8;--dsw-static-blue-500:#5aa7d8;--dsw-static-blue-600:#438db8;--dsw-static-blue-800:#315d78;--dsw-static-blue-950:#243746;--dsw-static-deepseek-50:#f2f8fa;--dsw-static-deepseek-100:#deeff4;--dsw-static-deepseek-200:#c9e4ec;--dsw-static-deepseek-300:#a8d1df;--dsw-static-deepseek-400:#7fb9d0;--dsw-static-deepseek-450:#69acc8;--dsw-static-deepseek-500:#5aa7d8;--dsw-static-deepseek-600:#438db8;--dsw-static-deepseek-700-delete:#39779a;--dsw-static-deepseek-800:#315d78;--dsw-static-deepseek-900:#294a60;--dsw-static-neutral-00:#fffef9;--dsw-static-neutral-50:#fbfaf5;--dsw-static-neutral-100:#f3f3ed;--dsw-static-neutral-200:#e4e8e4;--dsw-static-neutral-300:#ccd5d2;--dsw-static-neutral-400:#aebdba;--dsw-static-neutral-500:#8d9f9d;--dsw-static-neutral-600:#697f80;--dsw-static-neutral-700:#536b6f;--dsw-static-neutral-800:#40565d;--dsw-static-neutral-900:#2d4049;--dsw-static-neutral-1000:#243746;--dsw-alias-bg-base:#fbfaf547;--dsw-alias-bg-layer-1:#f7f9f6f7;--dsw-alias-bg-layer-2:#eff6f7fa;--dsw-alias-bg-layer-3:#e6f1f4fa;--dsw-alias-bg-mask-1:#2437466b;--dsw-alias-bg-mask-2:#2437462e;--dsw-alias-bg-overlay:#fffef9fc;--dsw-alias-brand-primary:#5aa7d8;--dsw-alias-brand-primary-invert:#fffef9;--dsw-alias-brand-primary-new-colorprimary-new-color:#5aa7d8;--dsw-alias-brand-text:#315d78;--dsw-alias-label-primary:#243746;--dsw-alias-label-secondary:#486170;--dsw-alias-label-tertiary:#718692;--dsw-alias-label-caption:#718692;--dsw-alias-label-dimmed:#a0adb1;--dsw-alias-border-l1:#48708424;--dsw-alias-border-l2:#48708438;--dsw-alias-border-l3:#48708452;--dsw-alias-button-primary-fill:#5aa7d8;--dsw-alias-button-primary-hover:#4899cb;--dsw-alias-button-primary-dimmed:#dceef3;--dsw-alias-button-elevated-fill:#fffef9;--dsw-alias-button-floating-fill:#fffef9;--dsw-alias-button-floating-hover:#edf5f6;--dsw-alias-interactive-bg-hover:#5aa7d81a;--dsw-alias-interactive-bg-hover-accent:#5aa7d829;--dsw-alias-interactive-bg-active:#5aa7d82b;--dsw-alias-markdown-code-block:#eff6f7fa;--dsw-alias-markdown-code-block-banner:#e6f1f4fa;--dsw-alias-markdown-inline-code:#deeff4f0;--dsw-alias-scrollbar-bg-l1:#dce6e5;--dsw-alias-scrollbar-hover-l1:#a8d1df;--dsw-specific-bubble:#e4f1f4;--dsw-specific-bubble-highlight:#d2e8ee;--dsw-specific-sidebar-fill:#f6f9f75c;--dsw-specific-sidebar-nav-item-active:#e1f0f3;--dsw-specific-sidebar-nav-item-active-accent:#a8d1df;--dsw-specific-sidebar-nav-item-hover:#edf5f6;--dsw-specific-menu:#fbfaf5fc;--dsw-specific-input-major:#fffffcfa;--dsw-specific-selector:#ebf4f6fa;--dsw-specific-command-token:#3aaef0;--dsw-specific-app-shell:#fffef933;background-color:#eef6f8;font-family:LXGW WenKai Screen,Microsoft YaHei UI,sans-serif}body[data-dsh-deepseek-workshop] [id=root]{background:0 0}body[data-dsh-deepseek-workshop] [class$=_frame]{background-color:var(--dsw-specific-app-shell)}body[data-dsh-deepseek-workshop] :is(code,pre,kbd,samp){font-family:Cascadia Code,JetBrains Mono,Consolas,monospace}body[data-dsh-deepseek-workshop][data-ds-dark-theme]{color:#e4edf2;--dsw-static-blue-50:#1c2d42;--dsw-static-blue-100:#263b53;--dsw-static-blue-300:#3f6380;--dsw-static-blue-400:#527e9d;--dsw-static-blue-450:#6090ae;--dsw-static-blue-500:#6ea3c2;--dsw-static-blue-600:#83bcdc;--dsw-static-blue-800:#b9d9ea;--dsw-static-blue-950:#e4edf2;--dsw-static-deepseek-50:#1c2d42;--dsw-static-deepseek-100:#263b53;--dsw-static-deepseek-200:#2e465f;--dsw-static-deepseek-300:#3f6380;--dsw-static-deepseek-400:#527e9d;--dsw-static-deepseek-450:#6090ae;--dsw-static-deepseek-500:#6ea3c2;--dsw-static-deepseek-600:#83bcdc;--dsw-static-deepseek-700-delete:#98c9e2;--dsw-static-deepseek-800:#b9d9ea;--dsw-static-deepseek-900:#d1e6f0;--dsw-static-neutral-00:#172435;--dsw-static-neutral-50:#1c2d42;--dsw-static-neutral-100:#22384f;--dsw-static-neutral-200:#30485f;--dsw-static-neutral-300:#425c73;--dsw-static-neutral-400:#566f84;--dsw-static-neutral-500:#6e8496;--dsw-static-neutral-600:#8a9dab;--dsw-static-neutral-700:#a2b1bc;--dsw-static-neutral-800:#b9c8d2;--dsw-static-neutral-900:#d5e0e6;--dsw-static-neutral-1000:#e4edf2;--dsw-alias-bg-base:#17243557;--dsw-alias-bg-layer-1:#1c2d42fa;--dsw-alias-bg-layer-2:#22384ffa;--dsw-alias-bg-layer-3:#29425bfa;--dsw-alias-bg-overlay:#1c2d42fc;--dsw-alias-brand-primary:#83bcdc;--dsw-alias-brand-primary-invert:#172435;--dsw-alias-brand-primary-new-colorprimary-new-color:#83bcdc;--dsw-alias-brand-text:#b9d9ea;--dsw-alias-label-primary:#e4edf2;--dsw-alias-label-secondary:#b9c8d2;--dsw-alias-label-tertiary:#8fa4b2;--dsw-alias-label-caption:#8fa4b2;--dsw-alias-label-dimmed:#607487;--dsw-alias-border-l1:#a7c7d81f;--dsw-alias-border-l2:#a7c7d82e;--dsw-alias-border-l3:#a7c7d842;--dsw-alias-button-primary-fill:#5f9fc5;--dsw-alias-button-primary-hover:#73afd1;--dsw-alias-button-primary-dimmed:#2d4c64;--dsw-alias-button-elevated-fill:#22384f;--dsw-alias-button-floating-fill:#1c2d42;--dsw-alias-button-floating-hover:#29435d;--dsw-alias-interactive-bg-hover:#83bcdc1a;--dsw-alias-interactive-bg-hover-accent:#83bcdc29;--dsw-alias-interactive-bg-active:#83bcdc2e;--dsw-alias-markdown-code-block:#1c2d42fa;--dsw-alias-markdown-code-block-banner:#22384ffa;--dsw-alias-markdown-inline-code:#29425bf5;--dsw-alias-scrollbar-bg-l1:#2f465c;--dsw-alias-scrollbar-hover-l1:#527e9d;--dsw-specific-bubble:#29465f;--dsw-specific-bubble-highlight:#31536e;--dsw-specific-sidebar-fill:#1c2d427a;--dsw-specific-sidebar-nav-item-active:#2b465f;--dsw-specific-sidebar-nav-item-active-accent:#527e9d;--dsw-specific-sidebar-nav-item-hover:#253b53;--dsw-specific-menu:#22384ffc;--dsw-specific-input-major:#172435fc;--dsw-specific-selector:#29425bfa;--dsw-specific-command-token:#7cc8f2;--dsw-specific-app-shell:#17243533;background-color:#172435}body[data-dsh-deepseek-workshop] [role=tree]{padding:5px}body[data-dsh-deepseek-workshop] [data-dsh-sidebar-surface]{background-image:linear-gradient(#f7faf970, #f7faf970), var(--dsw-sidebar-ocean-background);background-position:50%,bottom;background-repeat:no-repeat;background-size:cover,cover}body[data-dsh-deepseek-workshop][data-ds-dark-theme] [data-dsh-sidebar-surface]{background-image:linear-gradient(#121f2f94, #121f2f94), var(--dsw-sidebar-ocean-background)}body[data-dsh-deepseek-workshop] [role=treeitem]{border:2px solid #0000;border-radius:13px 16px 12px 15px;transition:color .14s,background-color .14s,border-color .14s}body[data-dsh-deepseek-workshop] [role=treeitem]:hover{background-color:var(--dsw-specific-sidebar-nav-item-hover)}body[data-dsh-deepseek-workshop] [role=treeitem][aria-selected=true]{border-color:var(--dsw-alias-border-l1);background-color:var(--dsw-specific-sidebar-nav-item-active);box-shadow:inset 3px 0 0 var(--dsw-specific-sidebar-nav-item-active-accent), 0 4px 12px #315d7812;color:var(--dsw-alias-brand-text);font-weight:650}body[data-dsh-deepseek-workshop] :is(textarea,[contenteditable=true],input:not([type])){border:2px solid var(--dsw-alias-border-l2);background-color:var(--dsw-specific-input-major);color:var(--dsw-alias-label-primary);border-radius:20px 23px 19px 22px;outline:none;transition:border-color .15s,box-shadow .15s,transform .15s;box-shadow:0 10px 26px #315d781a,inset 0 1px #ffffff52}body[data-dsh-deepseek-workshop] :is(textarea,[contenteditable=true],input:not([type])):focus{border-color:var(--dsw-static-blue-400);transform:translateY(-1px);box-shadow:0 12px 30px #315d7821,0 0 0 3px #5aa7d81a}body[data-dsh-deepseek-workshop] [role=dialog]{border:2px solid var(--dsw-alias-border-l2);background-color:var(--dsw-alias-bg-overlay);border-radius:24px 27px 22px 25px;box-shadow:0 24px 72px #24374633,0 3px #5aa7d812}body[data-dsh-deepseek-workshop] [role=menu]{border:2px solid var(--dsw-alias-border-l2);background-color:var(--dsw-specific-menu);border-radius:15px 18px 14px 17px;box-shadow:0 16px 38px #24374629}body[data-dsh-deepseek-workshop] :is([role=listbox],[role=combobox]){border-color:var(--dsw-alias-border-l2);background-color:var(--dsw-specific-selector);border-radius:13px 15px 12px 14px}body[data-dsh-deepseek-workshop] button{border-radius:12px 14px 11px 13px;transition:color .13s,background-color .13s,border-color .13s,transform .13s}body[data-dsh-deepseek-workshop] button:hover:not(:disabled){transform:translateY(-1px)}body[data-dsh-deepseek-workshop] :is(button[type=submit],button[data-variant=primary]){background-color:var(--dsw-alias-button-primary-fill);color:var(--dsw-alias-brand-primary-invert);border-color:#0000;box-shadow:0 6px 16px #315d7829}body[data-dsh-deepseek-workshop] :is(button[type=submit],button[data-variant=primary]):hover:not(:disabled){background-color:var(--dsw-alias-button-primary-hover)}body[data-dsh-deepseek-workshop] :is(main,[role=main]) :is(h1,h2){color:var(--dsw-alias-label-primary);letter-spacing:.015em;font-family:LXGW WenKai Screen,STKaiti,Microsoft YaHei UI,sans-serif;font-weight:650}body[data-dsh-deepseek-workshop] [data-dsh-frame]{box-sizing:border-box;border-style:solid;border-width:2px;border-color:var(--dsw-alias-border-l2);border-image-slice:70 95 70 110 fill;border-image-width:19px;border-image-outset:8px 4px 8px 5px;border-image-repeat:stretch}body[data-dsh-deepseek-workshop] [data-dsh-frame=selected-nav]{border-image-source:var(--dsw-frame-selected-nav);border-image-width:14px;border-image-outset:6px 3px 6px 4px}body[data-dsh-deepseek-workshop] :is(textarea,[contenteditable=true],input:not([type]))[data-dsh-frame=composer]{border-width:1px;border-color:var(--dsw-alias-border-l1);background-color:var(--dsw-specific-input-major);box-shadow:none;border-image-source:none;border-image-slice:70 95 70 110 fill;border-image-width:22px;border-image-outset:0;border-radius:18px;color:var(--dsw-alias-label-primary)!important;-webkit-text-fill-color:var(--dsw-alias-label-primary)!important}body[data-dsh-deepseek-workshop] [data-dsh-frame=composer],body[data-dsh-deepseek-workshop] [data-dsh-frame=composer] :not([class*=_hlToken]){color:var(--dsw-alias-label-primary)!important}body[data-dsh-deepseek-workshop] [data-input-scroll]:has([data-dsh-frame=composer]) [data-input-backdrop],body[data-dsh-deepseek-workshop] [data-input-scroll]:has([data-dsh-frame=composer]) [data-input-backdrop] :not([class*=_hlToken]),body[data-dsh-deepseek-workshop] [data-dsh-frame=composer]::placeholder{color:var(--dsw-alias-label-primary)!important;-webkit-text-fill-color:var(--dsw-alias-label-primary)!important}body[data-dsh-deepseek-workshop] :is([data-input-backdrop],[data-dsh-frame=composer]) [class*=_hlToken]{color:var(--dsw-specific-command-token)!important;-webkit-text-fill-color:var(--dsw-specific-command-token)!important}body[data-dsh-deepseek-workshop] [data-input-scroll]:has([data-input-backdrop]) :is(textarea,input:not([type]))[data-dsh-frame=composer]{color:#0000!important;-webkit-text-fill-color:transparent!important;caret-color:var(--dsw-alias-label-primary)!important;background-color:#0000!important}body[data-dsh-deepseek-workshop] [data-input-scroll]:has([data-input-backdrop]) [data-dsh-frame=composer-shell]:not(:has([data-input-backdrop])){border-image-slice:70 95 70 110;background-color:#0000!important}body[data-dsh-deepseek-workshop] :is(textarea,[contenteditable=true],input:not([type]))[data-dsh-frame=composer]:focus{border-color:var(--dsw-alias-border-l2);box-shadow:none;transform:none}body[data-dsh-deepseek-workshop] [data-dsh-frame=composer-shell]{border-width:1px;border-color:#0000;border-image-source:var(--dsw-frame-composer);background-color:var(--dsw-specific-input-major);border-image-slice:70 95 70 110 fill;border-image-width:18px;border-image-outset:7px 4px 7px 5px;border-radius:18px 21px 17px 20px;box-shadow:0 12px 30px #315d781f}body[data-dsh-deepseek-workshop] [data-dsh-frame=dialog]{border-image-source:var(--dsw-frame-dialog);background-color:var(--dsw-alias-bg-overlay);border-image-width:22px;border-image-outset:9px 5px 9px 6px;box-shadow:0 25px 72px #24374638}body[data-dsh-deepseek-workshop] [data-dsh-frame=menu]{border-image-source:var(--dsw-frame-menu);background-color:var(--dsw-specific-menu);border-image-width:16px;border-image-outset:7px 4px 6px;box-shadow:0 15px 36px #24374629}body[data-dsh-deepseek-workshop] [data-dsh-frame=panel]{border:2px solid var(--dsw-alias-border-l2);border-image-source:var(--dsw-frame-panel);background-color:var(--dsw-alias-bg-layer-1);border-image-slice:70 95 70 110 fill;border-image-width:22px;border-image-outset:9px 5px 9px 6px;border-radius:19px 22px 18px 21px;box-shadow:5px 7px 24px #315d7817;padding-block:14px!important;padding-inline:24px!important}body[data-dsh-deepseek-workshop] [data-dsh-frame=primary-button]{border-image-source:var(--dsw-frame-primary-button);border-image-slice:70 95 70 110 fill;border-image-width:14px;border-image-outset:6px 3px 6px 4px}body[data-dsh-deepseek-workshop] [data-dsh-frame=control]{border-image-source:var(--dsw-frame-primary-button);border-image-slice:70 95 70 110 fill;border-image-width:9px;border-image-outset:4px 2px}body[data-dsh-deepseek-workshop] [data-dsh-frame=surface]{border-image-source:var(--dsw-frame-panel);border-image-slice:70 95 70 110 fill;border-image-width:15px;border-image-outset:6px 3px 6px 4px}body[data-dsh-deepseek-workshop] [data-slot=\"conversation.session.header\"]>[data-dsh-frame=surface]{border-width:1px;border-image-width:11px}body[data-dsh-deepseek-workshop] [data-slot=sidebar\\.settings] [data-dsh-frame]:not([data-dsh-frame=dialog]){border-image-outset:0}body[data-dsh-deepseek-workshop] [data-slot=sidebar\\.settings] [data-dsh-control-row]{gap:16px!important;padding-inline:10px!important}body[data-dsh-deepseek-workshop] [data-slot=sidebar\\.settings] [data-dsh-control-row]>[data-dsh-frame=control]{flex-basis:0!important;min-width:0!important}body[data-dsh-deepseek-workshop] [data-slot=sidebar\\.settings] [data-dsh-frame=surface]>:first-child{padding-inline-start:16px!important}body[data-dsh-deepseek-workshop] [data-slot=sidebar\\.settings] [data-dsh-frame=surface]:has(>span>button){padding-inline-end:16px!important}body[data-dsh-deepseek-workshop] [data-settings-section][data-dsh-frame=panel],body[data-dsh-deepseek-workshop] [role=dialog] [data-dsh-frame=panel]{padding-block:14px;padding-inline:16px}body[data-dsh-deepseek-workshop] [data-dsh-frame=message]{border:2px solid var(--dsw-alias-border-l2);border-color:#0000;border-image-source:var(--dsw-frame-message);overflow-wrap:anywhere;background-clip:padding-box;border-image-slice:70 95 70 110 fill;border-image-width:30px;border-image-outset:12px 7px 12px 8px;min-width:0}body[data-dsh-deepseek-workshop] [data-dsh-frame=message][data-dsh-message-role=user]{background-color:var(--dsw-specific-bubble);border-radius:30px 33px 28px 32px;padding:10px 16px;box-shadow:3px 5px 16px #315d781a}body[data-dsh-deepseek-workshop] [data-dsh-frame=message][data-dsh-message-role=assistant]{background-color:color-mix(in srgb, var(--dsw-alias-bg-layer-1) 88%, transparent);border-radius:30px 34px 29px 33px;margin-block:5px 11px;padding:18px 21px 20px;box-shadow:4px 6px 22px #315d781a}body[data-dsh-deepseek-workshop] [data-dsh-message-role=assistant]>*{min-width:0}body[data-dsh-deepseek-workshop] [data-dsh-frame=primary-button]:focus-visible{outline:3px solid color-mix(in srgb, var(--dsw-static-blue-400) 46%, transparent);outline-offset:4px}body[data-dsh-deepseek-workshop] .o--vAW_ornamentLayer{z-index:7;pointer-events:none;position:fixed;inset:0;overflow:hidden}body[data-dsh-deepseek-workshop] .o--vAW_ornament{object-fit:contain;user-select:none;opacity:.94;filter:drop-shadow(0 5px 8px #315d781f);max-width:none;display:block;position:absolute}body[data-dsh-deepseek-workshop] .o--vAW_ornamentBow{top:calc(var(--dsw-y) - 12px);left:calc(var(--dsw-x) + var(--dsw-w) - 13px);width:44px;height:58px;transform:rotate(5deg)scaleX(-1)}body[data-dsh-deepseek-workshop] .o--vAW_ornamentWhaleTail{top:calc(var(--dsw-y) - 11px);left:calc(var(--dsw-x) + var(--dsw-w) + 7px);width:48px;height:43px;transform:rotate(-3deg)}body[data-dsh-deepseek-workshop] .o--vAW_ornamentApronCrest{top:calc(var(--dsw-y) - 44px);left:calc(var(--dsw-x) + var(--dsw-w) - 2px);width:88px;height:88px;transform:rotate(2deg)}body[data-dsh-deepseek-workshop] .o--vAW_ornamentHairWave{top:calc(var(--dsw-y) - 21px);left:calc(var(--dsw-x) + var(--dsw-w) + 10px);width:104px;height:54px;transform:rotate(-2deg)}body[data-dsh-deepseek-workshop] .o--vAW_ornamentBubbles{top:calc(var(--dsw-y) - 46px);left:calc(var(--dsw-x) + var(--dsw-w) - 59px);width:64px;height:64px;transform:rotate(3deg)}body[data-dsh-deepseek-workshop] .o--vAW_ornamentHeadbandCorner{top:calc(var(--dsw-y) - 31px);left:calc(var(--dsw-x) + var(--dsw-w) - 51px);width:70px;height:82px;transform:rotate(4deg)}body[data-dsh-deepseek-workshop] .o--vAW_ornamentRibbonTab{top:calc(var(--dsw-y) - 33px);left:calc(var(--dsw-x) + var(--dsw-w) - 91px);width:112px;height:58px;transform:rotate(-2deg)}body[data-dsh-deepseek-workshop] .o--vAW_petToggle{bottom:max(16px, env(safe-area-inset-bottom));z-index:8;border:2px solid var(--dsw-alias-border-l2);background-color:var(--dsw-alias-button-elevated-fill);cursor:pointer;opacity:.94;border-radius:14px 17px 13px 16px;justify-content:center;align-items:center;width:44px;height:44px;padding:0;transition:opacity .14s,filter .14s,border-color .14s;display:inline-flex;position:fixed;box-shadow:0 8px 20px #315d7829}body[data-dsh-deepseek-workshop] .o--vAW_petToggle:hover{opacity:1}body[data-dsh-deepseek-workshop] .o--vAW_petToggle[data-pet-on=off]{border-color:var(--dsw-alias-border-l1);opacity:.5;filter:grayscale(.85)}body[data-dsh-deepseek-workshop] .o--vAW_petToggleImage{object-fit:contain;pointer-events:none;width:30px;height:32px;display:block}@media (width<=959px){body[data-dsh-deepseek-workshop]{background-position:50%,calc(50% + 80px),50%,50%,50%!important}body[data-dsh-deepseek-workshop] [data-dsh-frame]{border-image-width:12px;border-image-outset:1px}body[data-dsh-deepseek-workshop] [data-dsh-frame=message]{border-image-width:20px;border-image-outset:8px 4px 8px 5px}body[data-dsh-deepseek-workshop] :is([data-dsh-frame=composer-shell],[data-slot=\"conversation.session.header\"]>[data-dsh-frame=surface]){border-width:1px;border-image-width:9px}body[data-dsh-deepseek-workshop] :is([data-dsh-frame=composer],[data-dsh-frame=dialog],[data-dsh-frame=menu],[data-dsh-frame=message]),body[data-dsh-deepseek-workshop] [data-dsh-frame=panel]{box-shadow:0 7px 18px #24374617}body[data-dsh-deepseek-workshop] [data-dsh-message-role=assistant]{padding:14px 15px 16px}}@media (width<=959px),print{body[data-dsh-deepseek-workshop] .o--vAW_ornamentApronCrest,body[data-dsh-deepseek-workshop] .o--vAW_ornamentHairWave,body[data-dsh-deepseek-workshop] .o--vAW_ornamentBubbles,body[data-dsh-deepseek-workshop] .o--vAW_ornamentRibbonTab{display:none}}@media print{body[data-dsh-deepseek-workshop]{background-image:none!important}body[data-dsh-deepseek-workshop] [data-dsh-frame]{box-shadow:none!important;border-image-source:none!important}body[data-dsh-deepseek-workshop] .o--vAW_ornamentLayer{display:none}body[data-dsh-deepseek-workshop] [data-dsh-sidebar-surface]{background-image:none!important}}";
+		const css = "body[data-dsh-deepseek-workshop]{color:#243746;background-blend-mode:normal, normal, soft-light, normal, normal;--dsw-static-blue-50:#f2f8fa;--dsw-static-blue-100:#deeff4;--dsw-static-blue-300:#a8d1df;--dsw-static-blue-400:#7fb9d0;--dsw-static-blue-450:#69acc8;--dsw-static-blue-500:#5aa7d8;--dsw-static-blue-600:#438db8;--dsw-static-blue-800:#315d78;--dsw-static-blue-950:#243746;--dsw-static-deepseek-50:#f2f8fa;--dsw-static-deepseek-100:#deeff4;--dsw-static-deepseek-200:#c9e4ec;--dsw-static-deepseek-300:#a8d1df;--dsw-static-deepseek-400:#7fb9d0;--dsw-static-deepseek-450:#69acc8;--dsw-static-deepseek-500:#5aa7d8;--dsw-static-deepseek-600:#438db8;--dsw-static-deepseek-700-delete:#39779a;--dsw-static-deepseek-800:#315d78;--dsw-static-deepseek-900:#294a60;--dsw-static-neutral-00:#fffef9;--dsw-static-neutral-50:#fbfaf5;--dsw-static-neutral-100:#f3f3ed;--dsw-static-neutral-200:#e4e8e4;--dsw-static-neutral-300:#ccd5d2;--dsw-static-neutral-400:#aebdba;--dsw-static-neutral-500:#8d9f9d;--dsw-static-neutral-600:#697f80;--dsw-static-neutral-700:#536b6f;--dsw-static-neutral-800:#40565d;--dsw-static-neutral-900:#2d4049;--dsw-static-neutral-1000:#243746;--dsw-alias-bg-base:#fbfaf547;--dsw-alias-bg-layer-1:#f7f9f6f7;--dsw-alias-bg-layer-2:#eff6f7fa;--dsw-alias-bg-layer-3:#e6f1f4fa;--dsw-alias-bg-mask-1:#2437466b;--dsw-alias-bg-mask-2:#2437462e;--dsw-alias-bg-overlay:#fffef9fc;--dsw-alias-brand-primary:#5aa7d8;--dsw-alias-brand-primary-invert:#fffef9;--dsw-alias-brand-primary-new-colorprimary-new-color:#5aa7d8;--dsw-alias-brand-text:#315d78;--dsw-alias-label-primary:#243746;--dsw-alias-label-secondary:#486170;--dsw-alias-label-tertiary:#718692;--dsw-alias-label-caption:#718692;--dsw-alias-label-dimmed:#a0adb1;--dsw-alias-border-l1:#48708424;--dsw-alias-border-l2:#48708438;--dsw-alias-border-l3:#48708452;--dsw-alias-button-primary-fill:#5aa7d8;--dsw-alias-button-primary-hover:#4899cb;--dsw-alias-button-primary-dimmed:#dceef3;--dsw-alias-button-elevated-fill:#fffef9;--dsw-alias-button-floating-fill:#fffef9;--dsw-alias-button-floating-hover:#edf5f6;--dsw-alias-interactive-bg-hover:#5aa7d81a;--dsw-alias-interactive-bg-hover-accent:#5aa7d829;--dsw-alias-interactive-bg-active:#5aa7d82b;--dsw-alias-markdown-code-block:#eff6f7fa;--dsw-alias-markdown-code-block-banner:#e6f1f4fa;--dsw-alias-markdown-inline-code:#deeff4f0;--dsw-alias-scrollbar-bg-l1:#dce6e5;--dsw-alias-scrollbar-hover-l1:#a8d1df;--dsw-specific-bubble:#e4f1f4;--dsw-specific-bubble-highlight:#d2e8ee;--dsw-specific-sidebar-fill:#f6f9f75c;--dsw-specific-sidebar-nav-item-active:#e1f0f3;--dsw-specific-sidebar-nav-item-active-accent:#a8d1df;--dsw-specific-sidebar-nav-item-hover:#edf5f6;--dsw-specific-menu:#fbfaf5fc;--dsw-specific-input-major:#fffffcfa;--dsw-specific-selector:#ebf4f6fa;--dsw-specific-command-token:#3aaef0;--dsw-specific-app-shell:#fffef933;background-color:#eef6f8;font-family:LXGW WenKai Screen,Microsoft YaHei UI,sans-serif}body[data-dsh-deepseek-workshop] [id=root]{background:0 0}body[data-dsh-deepseek-workshop] [class$=_frame]{background-color:var(--dsw-specific-app-shell)}body[data-dsh-deepseek-workshop] :is(code,pre,kbd,samp){font-family:Cascadia Code,JetBrains Mono,Consolas,monospace}body[data-dsh-deepseek-workshop][data-ds-dark-theme]{color:#e4edf2;--dsw-static-blue-50:#1c2d42;--dsw-static-blue-100:#263b53;--dsw-static-blue-300:#3f6380;--dsw-static-blue-400:#527e9d;--dsw-static-blue-450:#6090ae;--dsw-static-blue-500:#6ea3c2;--dsw-static-blue-600:#83bcdc;--dsw-static-blue-800:#b9d9ea;--dsw-static-blue-950:#e4edf2;--dsw-static-deepseek-50:#1c2d42;--dsw-static-deepseek-100:#263b53;--dsw-static-deepseek-200:#2e465f;--dsw-static-deepseek-300:#3f6380;--dsw-static-deepseek-400:#527e9d;--dsw-static-deepseek-450:#6090ae;--dsw-static-deepseek-500:#6ea3c2;--dsw-static-deepseek-600:#83bcdc;--dsw-static-deepseek-700-delete:#98c9e2;--dsw-static-deepseek-800:#b9d9ea;--dsw-static-deepseek-900:#d1e6f0;--dsw-static-neutral-00:#172435;--dsw-static-neutral-50:#1c2d42;--dsw-static-neutral-100:#22384f;--dsw-static-neutral-200:#30485f;--dsw-static-neutral-300:#425c73;--dsw-static-neutral-400:#566f84;--dsw-static-neutral-500:#6e8496;--dsw-static-neutral-600:#8a9dab;--dsw-static-neutral-700:#a2b1bc;--dsw-static-neutral-800:#b9c8d2;--dsw-static-neutral-900:#d5e0e6;--dsw-static-neutral-1000:#e4edf2;--dsw-alias-bg-base:#17243557;--dsw-alias-bg-layer-1:#1c2d42fa;--dsw-alias-bg-layer-2:#22384ffa;--dsw-alias-bg-layer-3:#29425bfa;--dsw-alias-bg-overlay:#1c2d42fc;--dsw-alias-brand-primary:#83bcdc;--dsw-alias-brand-primary-invert:#172435;--dsw-alias-brand-primary-new-colorprimary-new-color:#83bcdc;--dsw-alias-brand-text:#b9d9ea;--dsw-alias-label-primary:#e4edf2;--dsw-alias-label-secondary:#b9c8d2;--dsw-alias-label-tertiary:#8fa4b2;--dsw-alias-label-caption:#8fa4b2;--dsw-alias-label-dimmed:#607487;--dsw-alias-border-l1:#a7c7d81f;--dsw-alias-border-l2:#a7c7d82e;--dsw-alias-border-l3:#a7c7d842;--dsw-alias-button-primary-fill:#5f9fc5;--dsw-alias-button-primary-hover:#73afd1;--dsw-alias-button-primary-dimmed:#2d4c64;--dsw-alias-button-elevated-fill:#22384f;--dsw-alias-button-floating-fill:#1c2d42;--dsw-alias-button-floating-hover:#29435d;--dsw-alias-interactive-bg-hover:#83bcdc1a;--dsw-alias-interactive-bg-hover-accent:#83bcdc29;--dsw-alias-interactive-bg-active:#83bcdc2e;--dsw-alias-markdown-code-block:#1c2d42fa;--dsw-alias-markdown-code-block-banner:#22384ffa;--dsw-alias-markdown-inline-code:#29425bf5;--dsw-alias-scrollbar-bg-l1:#2f465c;--dsw-alias-scrollbar-hover-l1:#527e9d;--dsw-specific-bubble:#29465f;--dsw-specific-bubble-highlight:#31536e;--dsw-specific-sidebar-fill:#1c2d427a;--dsw-specific-sidebar-nav-item-active:#2b465f;--dsw-specific-sidebar-nav-item-active-accent:#527e9d;--dsw-specific-sidebar-nav-item-hover:#253b53;--dsw-specific-menu:#22384ffc;--dsw-specific-input-major:#172435fc;--dsw-specific-selector:#29425bfa;--dsw-specific-command-token:#7cc8f2;--dsw-specific-app-shell:#17243533;background-color:#172435}body[data-dsh-deepseek-workshop] [role=tree]{padding:5px}body[data-dsh-deepseek-workshop] [data-dsh-sidebar-surface]{background-image:linear-gradient(#f7faf970, #f7faf970), var(--dsw-sidebar-ocean-background);background-position:50%,bottom;background-repeat:no-repeat;background-size:cover,cover}body[data-dsh-deepseek-workshop][data-ds-dark-theme] [data-dsh-sidebar-surface]{background-image:linear-gradient(#121f2f94, #121f2f94), var(--dsw-sidebar-ocean-background)}body[data-dsh-deepseek-workshop] [role=treeitem]{border:2px solid #0000;border-radius:13px 16px 12px 15px;transition:color .14s,background-color .14s,border-color .14s}body[data-dsh-deepseek-workshop] [role=treeitem]:hover{background-color:var(--dsw-specific-sidebar-nav-item-hover)}body[data-dsh-deepseek-workshop] [role=treeitem][aria-selected=true]{border-color:var(--dsw-alias-border-l1);background-color:var(--dsw-specific-sidebar-nav-item-active);box-shadow:inset 3px 0 0 var(--dsw-specific-sidebar-nav-item-active-accent), 0 4px 12px #315d7812;color:var(--dsw-alias-brand-text);font-weight:650}body[data-dsh-deepseek-workshop] :is(textarea,[contenteditable=true],input:not([type])){border:2px solid var(--dsw-alias-border-l2);background-color:var(--dsw-specific-input-major);color:var(--dsw-alias-label-primary);border-radius:20px 23px 19px 22px;outline:none;transition:border-color .15s,box-shadow .15s,transform .15s;box-shadow:0 10px 26px #315d781a,inset 0 1px #ffffff52}body[data-dsh-deepseek-workshop] :is(textarea,[contenteditable=true],input:not([type])):focus{border-color:var(--dsw-static-blue-400);transform:translateY(-1px);box-shadow:0 12px 30px #315d7821,0 0 0 3px #5aa7d81a}body[data-dsh-deepseek-workshop] [role=dialog]{border:2px solid var(--dsw-alias-border-l2);background-color:var(--dsw-alias-bg-overlay);border-radius:24px 27px 22px 25px;box-shadow:0 24px 72px #24374633,0 3px #5aa7d812}body[data-dsh-deepseek-workshop] [role=menu]{border:2px solid var(--dsw-alias-border-l2);background-color:var(--dsw-specific-menu);border-radius:15px 18px 14px 17px;box-shadow:0 16px 38px #24374629}body[data-dsh-deepseek-workshop] :is([role=listbox],[role=combobox]){border-color:var(--dsw-alias-border-l2);background-color:var(--dsw-specific-selector);border-radius:13px 15px 12px 14px}body[data-dsh-deepseek-workshop] button{border-radius:12px 14px 11px 13px;transition:color .13s,background-color .13s,border-color .13s,transform .13s}body[data-dsh-deepseek-workshop] button:hover:not(:disabled){transform:translateY(-1px)}body[data-dsh-deepseek-workshop] :is(button[type=submit],button[data-variant=primary]){background-color:var(--dsw-alias-button-primary-fill);color:var(--dsw-alias-brand-primary-invert);border-color:#0000;box-shadow:0 6px 16px #315d7829}body[data-dsh-deepseek-workshop] :is(button[type=submit],button[data-variant=primary]):hover:not(:disabled){background-color:var(--dsw-alias-button-primary-hover)}body[data-dsh-deepseek-workshop] :is(main,[role=main]) :is(h1,h2){color:var(--dsw-alias-label-primary);letter-spacing:.015em;font-family:LXGW WenKai Screen,STKaiti,Microsoft YaHei UI,sans-serif;font-weight:650}body[data-dsh-deepseek-workshop] [data-dsh-frame]{box-sizing:border-box;border-style:solid;border-width:2px;border-color:var(--dsw-alias-border-l2);border-image-slice:70 95 70 110 fill;border-image-width:19px;border-image-outset:8px 4px 8px 5px;border-image-repeat:stretch}body[data-dsh-deepseek-workshop] [data-dsh-frame=selected-nav]{border-image-source:var(--dsw-frame-selected-nav);border-image-width:14px;border-image-outset:6px 3px 6px 4px}body[data-dsh-deepseek-workshop] :is(textarea,[contenteditable=true],input:not([type]))[data-dsh-frame=composer]{border-width:1px;border-color:var(--dsw-alias-border-l1);background-color:var(--dsw-specific-input-major);box-shadow:none;border-image-source:none;border-image-slice:70 95 70 110 fill;border-image-width:22px;border-image-outset:0;border-radius:18px;color:var(--dsw-alias-label-primary)!important;-webkit-text-fill-color:var(--dsw-alias-label-primary)!important}body[data-dsh-deepseek-workshop] [data-dsh-frame=composer],body[data-dsh-deepseek-workshop] [data-dsh-frame=composer] :not([class*=_hlToken]){color:var(--dsw-alias-label-primary)!important}body[data-dsh-deepseek-workshop] [data-input-scroll]:has([data-dsh-frame=composer]) [data-input-backdrop],body[data-dsh-deepseek-workshop] [data-input-scroll]:has([data-dsh-frame=composer]) [data-input-backdrop] :not([class*=_hlToken]),body[data-dsh-deepseek-workshop] [data-dsh-frame=composer]::placeholder{color:var(--dsw-alias-label-primary)!important;-webkit-text-fill-color:var(--dsw-alias-label-primary)!important}body[data-dsh-deepseek-workshop] :is([data-input-backdrop],[data-dsh-frame=composer]) [class*=_hlToken]{color:var(--dsw-specific-command-token)!important;-webkit-text-fill-color:var(--dsw-specific-command-token)!important}body[data-dsh-deepseek-workshop] [data-input-scroll]:has([data-input-backdrop]) :is(textarea,input:not([type]))[data-dsh-frame=composer]{color:#0000!important;-webkit-text-fill-color:transparent!important;caret-color:var(--dsw-alias-label-primary)!important;background-color:#0000!important}body[data-dsh-deepseek-workshop] [data-input-scroll]:has([data-input-backdrop]) [data-dsh-frame=composer-shell]:not(:has([data-input-backdrop])){border-image-slice:70 95 70 110;background-color:#0000!important}body[data-dsh-deepseek-workshop] :is(textarea,[contenteditable=true],input:not([type]))[data-dsh-frame=composer]:focus{border-color:var(--dsw-alias-border-l2);box-shadow:none;transform:none}body[data-dsh-deepseek-workshop] [data-dsh-frame=composer-shell]{border-width:1px;border-color:#0000;border-image-source:var(--dsw-frame-composer);background-color:var(--dsw-specific-input-major);border-image-slice:70 95 70 110 fill;border-image-width:18px;border-image-outset:7px 4px 7px 5px;border-radius:18px 21px 17px 20px;box-shadow:0 12px 30px #315d781f}body[data-dsh-deepseek-workshop] [data-dsh-frame=dialog]{border-image-source:var(--dsw-frame-dialog);background-color:var(--dsw-alias-bg-overlay);border-image-width:22px;border-image-outset:9px 5px 9px 6px;box-shadow:0 25px 72px #24374638}body[data-dsh-deepseek-workshop] [data-dsh-frame=menu]{border-image-source:var(--dsw-frame-menu);background-color:var(--dsw-specific-menu);border-image-width:16px;border-image-outset:7px 4px 6px;box-shadow:0 15px 36px #24374629}body[data-dsh-deepseek-workshop] [data-dsh-frame=panel]{border:2px solid var(--dsw-alias-border-l2);border-image-source:var(--dsw-frame-panel);background-color:var(--dsw-alias-bg-layer-1);border-image-slice:70 95 70 110 fill;border-image-width:22px;border-image-outset:9px 5px 9px 6px;border-radius:19px 22px 18px 21px;box-shadow:5px 7px 24px #315d7817;padding-block:14px!important;padding-inline:24px!important}body[data-dsh-deepseek-workshop] [data-dsh-frame=primary-button]{border-image-source:var(--dsw-frame-primary-button);border-image-slice:70 95 70 110 fill;border-image-width:14px;border-image-outset:6px 3px 6px 4px}body[data-dsh-deepseek-workshop] [data-dsh-frame=control]{border-image-source:var(--dsw-frame-primary-button);border-image-slice:70 95 70 110 fill;border-image-width:9px;border-image-outset:4px 2px}body[data-dsh-deepseek-workshop] [data-dsh-frame=surface]{border-image-source:var(--dsw-frame-panel);border-image-slice:70 95 70 110 fill;border-image-width:15px;border-image-outset:6px 3px 6px 4px}body[data-dsh-deepseek-workshop] [data-slot=\"conversation.session.header\"]>[data-dsh-frame=surface]{border-width:1px;border-image-width:11px}body[data-dsh-deepseek-workshop] [data-slot=sidebar\\.settings] [data-dsh-frame]:not([data-dsh-frame=dialog]){border-image-outset:0}body[data-dsh-deepseek-workshop] [data-slot=sidebar\\.settings] [data-dsh-control-row]{gap:16px!important;padding-inline:10px!important}body[data-dsh-deepseek-workshop] [data-slot=sidebar\\.settings] [data-dsh-control-row]>[data-dsh-frame=control]{flex-basis:auto!important;min-width:min-content!important}body[data-dsh-deepseek-workshop] [data-slot=sidebar\\.settings] [data-dsh-frame=surface]>:first-child{padding-inline-start:16px!important}body[data-dsh-deepseek-workshop] [data-slot=sidebar\\.settings] [data-dsh-frame=surface]:has(>span>button){padding-inline-end:16px!important}body[data-dsh-deepseek-workshop] [data-settings-section][data-dsh-frame=panel],body[data-dsh-deepseek-workshop] [role=dialog] [data-dsh-frame=panel]{padding-block:14px;padding-inline:16px}body[data-dsh-deepseek-workshop] [data-dsh-frame=message]{border:2px solid var(--dsw-alias-border-l2);border-color:#0000;border-image-source:var(--dsw-frame-message);overflow-wrap:anywhere;background-clip:padding-box;border-image-slice:70 95 70 110 fill;border-image-width:30px;border-image-outset:12px 7px 12px 8px;min-width:0}body[data-dsh-deepseek-workshop] [data-dsh-frame=message][data-dsh-message-role=user]{background-color:var(--dsw-specific-bubble);border-radius:30px 33px 28px 32px;padding:10px 16px;box-shadow:3px 5px 16px #315d781a}body[data-dsh-deepseek-workshop] [data-dsh-frame=message][data-dsh-message-role=assistant]{background-color:color-mix(in srgb, var(--dsw-alias-bg-layer-1) 88%, transparent);border-radius:30px 34px 29px 33px;margin-block:5px 11px;padding:18px 21px 20px;box-shadow:4px 6px 22px #315d781a}body[data-dsh-deepseek-workshop] [data-dsh-message-role=assistant]>*{min-width:0}body[data-dsh-deepseek-workshop] [data-dsh-frame=primary-button]:focus-visible{outline:3px solid color-mix(in srgb, var(--dsw-static-blue-400) 46%, transparent);outline-offset:4px}body[data-dsh-deepseek-workshop] .o--vAW_ornamentLayer{z-index:7;pointer-events:none;position:fixed;inset:0;overflow:hidden}body[data-dsh-deepseek-workshop] .o--vAW_ornament{object-fit:contain;user-select:none;opacity:.94;filter:drop-shadow(0 5px 8px #315d781f);max-width:none;display:block;position:absolute}body[data-dsh-deepseek-workshop] .o--vAW_ornamentBow{top:calc(var(--dsw-y) - 12px);left:calc(var(--dsw-x) + var(--dsw-w) - 13px);width:44px;height:58px;transform:rotate(5deg)scaleX(-1)}body[data-dsh-deepseek-workshop] .o--vAW_ornamentWhaleTail{top:calc(var(--dsw-y) - 11px);left:calc(var(--dsw-x) + var(--dsw-w) + 7px);width:48px;height:43px;transform:rotate(-3deg)}body[data-dsh-deepseek-workshop] .o--vAW_ornamentApronCrest{top:calc(var(--dsw-y) - 44px);left:calc(var(--dsw-x) + var(--dsw-w) - 2px);width:88px;height:88px;transform:rotate(2deg)}body[data-dsh-deepseek-workshop] .o--vAW_ornamentHairWave{top:calc(var(--dsw-y) - 21px);left:calc(var(--dsw-x) + var(--dsw-w) + 10px);width:104px;height:54px;transform:rotate(-2deg)}body[data-dsh-deepseek-workshop] .o--vAW_ornamentBubbles{top:calc(var(--dsw-y) - 46px);left:calc(var(--dsw-x) + var(--dsw-w) - 59px);width:64px;height:64px;transform:rotate(3deg)}body[data-dsh-deepseek-workshop] .o--vAW_ornamentHeadbandCorner{top:calc(var(--dsw-y) - 31px);left:calc(var(--dsw-x) + var(--dsw-w) - 51px);width:70px;height:82px;transform:rotate(4deg)}body[data-dsh-deepseek-workshop] .o--vAW_ornamentRibbonTab{top:calc(var(--dsw-y) - 33px);left:calc(var(--dsw-x) + var(--dsw-w) - 91px);width:112px;height:58px;transform:rotate(-2deg)}body[data-dsh-deepseek-workshop] .o--vAW_petToggle{bottom:max(16px, env(safe-area-inset-bottom));z-index:8;border:2px solid var(--dsw-alias-border-l2);background-color:var(--dsw-alias-button-elevated-fill);cursor:pointer;opacity:.94;border-radius:14px 17px 13px 16px;justify-content:center;align-items:center;width:44px;height:44px;padding:0;transition:opacity .14s,filter .14s,border-color .14s;display:inline-flex;position:fixed;box-shadow:0 8px 20px #315d7829}body[data-dsh-deepseek-workshop] .o--vAW_petToggle:hover{opacity:1}body[data-dsh-deepseek-workshop] .o--vAW_petToggle[data-pet-on=off]{border-color:var(--dsw-alias-border-l1);opacity:.5;filter:grayscale(.85)}body[data-dsh-deepseek-workshop] .o--vAW_petToggleImage{object-fit:contain;pointer-events:none;width:30px;height:32px;display:block}@media (width<=959px){body[data-dsh-deepseek-workshop]{background-position:50%,calc(50% + 80px),50%,50%,50%!important}body[data-dsh-deepseek-workshop] [data-dsh-frame]{border-image-width:12px;border-image-outset:1px}body[data-dsh-deepseek-workshop] [data-dsh-frame=message]{border-image-width:20px;border-image-outset:8px 4px 8px 5px}body[data-dsh-deepseek-workshop] :is([data-dsh-frame=composer-shell],[data-slot=\"conversation.session.header\"]>[data-dsh-frame=surface]){border-width:1px;border-image-width:9px}body[data-dsh-deepseek-workshop] :is([data-dsh-frame=composer],[data-dsh-frame=dialog],[data-dsh-frame=menu],[data-dsh-frame=message]),body[data-dsh-deepseek-workshop] [data-dsh-frame=panel]{box-shadow:0 7px 18px #24374617}body[data-dsh-deepseek-workshop] [data-dsh-message-role=assistant]{padding:14px 15px 16px}}@media (width<=959px),print{body[data-dsh-deepseek-workshop] .o--vAW_ornamentApronCrest,body[data-dsh-deepseek-workshop] .o--vAW_ornamentHairWave,body[data-dsh-deepseek-workshop] .o--vAW_ornamentBubbles,body[data-dsh-deepseek-workshop] .o--vAW_ornamentRibbonTab{display:none}}@media print{body[data-dsh-deepseek-workshop]{background-image:none!important}body[data-dsh-deepseek-workshop] [data-dsh-frame]{box-shadow:none!important;border-image-source:none!important}body[data-dsh-deepseek-workshop] .o--vAW_ornamentLayer{display:none}body[data-dsh-deepseek-workshop] [data-dsh-sidebar-surface]{background-image:none!important}}";
 		const tagId = "@dsh-external/dsh-client-ui-skin-maid-whale-webui/deepseek-workshop.module.css";
 		if (typeof document !== "undefined" && document.querySelector("style[data-plugin-css=" + JSON.stringify(tagId) + "]") === null) {
 			const tag = document.createElement("style");
@@ -325,6 +326,109 @@ window.__ModuleLoader__.load({
 			}
 		};
 		//#endregion
+		//#region src/client/scan.ts
+		const NATIVE_CSS_PREFIX = "@deepseek-ai/dsh-client-ui";
+		const parsedStyleSheets = /* @__PURE__ */ new WeakMap();
+		function parseStyleSheet(style) {
+			const text = style.textContent ?? "";
+			let parsed = parsedStyleSheets.get(style);
+			if (parsed?.text === text) return parsed;
+			const classNames = /* @__PURE__ */ new Set();
+			for (const match of text.matchAll(/\.([-\w]+)(?![-\w])/g)) classNames.add(match[1]);
+			parsed = {
+				text,
+				classNames,
+				exportNames: /* @__PURE__ */ new Map()
+			};
+			parsedStyleSheets.set(style, parsed);
+			return parsed;
+		}
+		/** Class names declared by plugin stylesheets; host-authored sheets are
+		skipped so host components never count as plugin UI. */
+		function foreignClassNames(body) {
+			const names = /* @__PURE__ */ new Set();
+			body.ownerDocument.querySelectorAll("style[data-plugin-css]").forEach((style) => {
+				if ((style.dataset.pluginCss ?? "").startsWith(NATIVE_CSS_PREFIX)) return;
+				for (const name of parseStyleSheet(style).classNames) names.add(name);
+			});
+			return names;
+		}
+		/** Resolve a CSS-modules export name to its hashed class. Cached per
+		stylesheet text so repeated syncs skip the full-text regex match. */
+		function cssModuleClass(document, moduleId, exportName) {
+			const style = Array.from(document.querySelectorAll("style[data-plugin-css]")).find((candidate) => candidate.dataset.pluginCss === moduleId);
+			if (!style) return void 0;
+			const parsed = parseStyleSheet(style);
+			if (!parsed.exportNames.has(exportName)) {
+				const safeExportName = exportName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+				parsed.exportNames.set(exportName, parsed.text.match(new RegExp(`\\.([\\w-]+_${safeExportName})(?=[\\s,{.:#>\\[])`))?.[1]);
+			}
+			return parsed.exportNames.get(exportName);
+		}
+		/** One getComputedStyle read per element per pass; the live declaration is
+		stable because a pass never interleaves style reads with DOM writes. */
+		function createStyleReader(body) {
+			const view = body.ownerDocument.defaultView;
+			const cache = /* @__PURE__ */ new WeakMap();
+			return (target) => {
+				let style = cache.get(target);
+				if (style === void 0 && view) {
+					style = view.getComputedStyle(target);
+					cache.set(target, style);
+				}
+				return style;
+			};
+		}
+		/** Visibility with a memoized ancestor chain. Document-order iteration lets
+		each verdict reuse its parent's, collapsing per-element ancestor walks
+		into one shared pass; target-only checks (hidden, aria-hidden,
+		checkVisibility) stay outside the memo because they never apply to
+		ancestors. */
+		function createVisibility(body, styleOf) {
+			const verdicts = /* @__PURE__ */ new Map();
+			const chainVisible = (target) => {
+				const cached = verdicts.get(target);
+				if (cached !== void 0) return cached;
+				const style = styleOf(target);
+				const opacity = Number.parseFloat(style?.opacity ?? "1");
+				const concealed = style?.display === "none" || style?.visibility === "hidden" || opacity <= .05;
+				const parent = target.parentElement;
+				const visible = !concealed && (target === body || parent == null || chainVisible(parent));
+				verdicts.set(target, visible);
+				return visible;
+			};
+			return (target) => {
+				if (target.hidden || target.getAttribute("aria-hidden") === "true") return false;
+				const checkVisibility = target.checkVisibility;
+				if (checkVisibility && !checkVisibility.call(target, {
+					checkOpacity: true,
+					checkVisibilityCSS: true
+				})) return false;
+				return chainVisible(target);
+			};
+		}
+		/** Snapshot gate over plugin-authored subtrees. Verdicts memoize up the
+		ancestor chain like visibility and are recomputed per pass so plugins
+		that load late are covered too. */
+		function createForeignUiGate(body) {
+			const foreignClasses = foreignClassNames(body);
+			const verdicts = /* @__PURE__ */ new Map();
+			const gate = (target) => {
+				const cached = verdicts.get(target);
+				if (cached !== void 0) return cached;
+				let self = false;
+				for (const name of target.classList) if (foreignClasses.has(name)) {
+					self = true;
+					break;
+				}
+				const parent = target.parentElement;
+				const verdict = self || (parent != null && parent !== body ? gate(parent) : false);
+				verdicts.set(target, verdict);
+				return verdict;
+			};
+			return gate;
+		}
+		//#endregion
 		//#region src/client/frames.ts
 		const FRAME_PROPERTIES = {
 			selectedNav: "--dsw-frame-selected-nav",
@@ -365,18 +469,14 @@ window.__ModuleLoader__.load({
 			"[role=\"option\"]",
 			"[role=\"combobox\"]"
 		].join(", ");
-		const FRAME_EXCLUSION_SELECTOR = "a, [role=\"link\"], .mkts, .mkts *";
+		const FRAME_EXCLUSION_SELECTOR = "a, [role=\"link\"], [data-skin-chrome], [data-skin-chrome] *";
 		const CONVERSATION_CSS_MODULES = {
 			userMessage: "@deepseek-ai/dsh-client-ui-conversation/MessageItem.module.css",
 			assistantMessage: "@deepseek-ai/dsh-client-ui-conversation/AssistantMarkdown.module.css",
 			reasoning: "@deepseek-ai/dsh-client-ui-conversation/ReasoningRow.module.css"
 		};
-		function cssModuleClass(document, moduleId, exportName) {
-			const style = Array.from(document.querySelectorAll("style[data-plugin-css]")).find((candidate) => candidate.dataset.pluginCss === moduleId);
-			const safeExportName = exportName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-			return style?.textContent?.match(new RegExp(`\\.([\\w-]+_${safeExportName})(?=[\\s,{.:#>\\[])`))?.[1];
-		}
-		function messageTargets(body) {
+		function messageTargets(pass) {
+			const body = pass.body;
 			const document = body.ownerDocument;
 			const userBubbleClass = cssModuleClass(document, CONVERSATION_CSS_MODULES.userMessage, "bubble");
 			const assistantRootClass = cssModuleClass(document, CONVERSATION_CSS_MODULES.assistantMessage, "root");
@@ -394,26 +494,10 @@ window.__ModuleLoader__.load({
 			})), ...assistantMessages.map((target) => ({
 				target,
 				role: "assistant"
-			}))].filter(({ target }) => isVisible$1(target, body));
+			}))].filter(({ target }) => !pass.isForeignUi(target) && pass.isVisible(target));
 		}
-		function isVisible$1(target, body) {
-			if (target.hidden || target.getAttribute("aria-hidden") === "true") return false;
-			const checkVisibility = target.checkVisibility;
-			if (checkVisibility && !checkVisibility.call(target, {
-				checkOpacity: true,
-				checkVisibilityCSS: true
-			})) return false;
-			const view = body.ownerDocument.defaultView;
-			for (let current = target; current; current = current.parentElement) {
-				const style = view?.getComputedStyle(current);
-				const opacity = Number.parseFloat(style?.opacity ?? "1");
-				if (style?.display === "none" || style?.visibility === "hidden" || opacity <= .05) return false;
-				if (current === body) break;
-			}
-			return true;
-		}
-		function visibleCandidates(body, id) {
-			return Array.from(body.querySelectorAll(SELECTORS[id])).filter((target) => !target.matches(FRAME_EXCLUSION_SELECTOR) && isVisible$1(target, body));
+		function visibleCandidates(pass, id) {
+			return Array.from(pass.body.querySelectorAll(SELECTORS[id])).filter((target) => !target.matches(FRAME_EXCLUSION_SELECTOR) && !pass.isForeignUi(target) && pass.isVisible(target));
 		}
 		function hasAccessibleName(button) {
 			return Boolean(button.getAttribute("aria-label")?.trim() || button.getAttribute("title")?.trim() || button.textContent?.trim());
@@ -421,8 +505,8 @@ window.__ModuleLoader__.load({
 		function related(left, right) {
 			return left === right || left.contains(right) || right.contains(left);
 		}
-		function hasRenderedBorder(target, body) {
-			const style = body.ownerDocument.defaultView?.getComputedStyle(target);
+		function hasRenderedBorder(target, styleOf) {
+			const style = styleOf(target);
 			if (!style) return false;
 			return [
 				[style.borderTopWidth, style.borderTopStyle],
@@ -431,24 +515,24 @@ window.__ModuleLoader__.load({
 				[style.borderLeftWidth, style.borderLeftStyle]
 			].some(([width, borderStyle]) => Number.parseFloat(width) > 0 && borderStyle !== "none");
 		}
-		function closestBorderedAncestor(target, body) {
-			for (let current = target.parentElement; current && current !== body; current = current.parentElement) if (isVisible$1(current, body) && hasRenderedBorder(current, body)) return current;
+		function closestBorderedAncestor(target, pass) {
+			for (let current = target.parentElement; current && current !== pass.body; current = current.parentElement) if (pass.isVisible(current) && hasRenderedBorder(current, pass.styleOf)) return current;
 			return null;
 		}
-		function selectTargets(body) {
+		function selectTargets(pass) {
 			const result = /* @__PURE__ */ new Map();
-			const selectedNav = visibleCandidates(body, "selectedNav").slice(0, 1);
-			const composer = visibleCandidates(body, "composer").slice(0, 1);
-			const dialogs = visibleCandidates(body, "dialog");
-			const menus = visibleCandidates(body, "menu");
+			const selectedNav = visibleCandidates(pass, "selectedNav").slice(0, 1);
+			const composer = visibleCandidates(pass, "composer").slice(0, 1);
+			const dialogs = visibleCandidates(pass, "dialog");
+			const menus = visibleCandidates(pass, "menu");
 			const reserved = [
 				...composer,
 				...dialogs,
 				...menus
 			];
-			const panelCandidates = visibleCandidates(body, "panel").filter((panel) => reserved.every((target) => !related(panel, target)));
+			const panelCandidates = visibleCandidates(pass, "panel").filter((panel) => reserved.every((target) => !related(panel, target)));
 			const panels = panelCandidates.filter((panel) => panelCandidates.every((candidate) => candidate === panel || !candidate.contains(panel)));
-			const primaryButtons = visibleCandidates(body, "primaryButton").filter(hasAccessibleName);
+			const primaryButtons = visibleCandidates(pass, "primaryButton").filter(hasAccessibleName);
 			result.set("selectedNav", selectedNav);
 			result.set("composer", composer);
 			result.set("dialog", dialogs);
@@ -475,29 +559,36 @@ window.__ModuleLoader__.load({
 			};
 			const sync = () => {
 				if (disposed) return;
-				const targets = selectTargets(body);
+				const styleOf = createStyleReader(body);
+				const pass = {
+					body,
+					styleOf,
+					isVisible: createVisibility(body, styleOf),
+					isForeignUi: createForeignUiGate(body)
+				};
+				const targets = selectTargets(pass);
 				const desired = /* @__PURE__ */ new Map();
 				for (const id of FRAME_IDS) targets.get(id)?.forEach((target) => {
 					desired.set(target, { frame: FRAME_VALUES[id] });
 				});
 				targets.get("composer")?.forEach((target) => {
-					const shell = closestBorderedAncestor(target, body);
+					const shell = closestBorderedAncestor(target, pass);
 					if (shell) desired.set(shell, { frame: "composer-shell" });
 				});
-				messageTargets(body).forEach(({ target, role }) => {
+				messageTargets(pass).forEach(({ target, role }) => {
 					desired.set(target, {
 						frame: "message",
 						role
 					});
 				});
 				body.querySelectorAll("*").forEach((target) => {
-					if (!(target instanceof HTMLElement) || desired.has(target) || target.matches(FRAME_EXCLUSION_SELECTOR) || !isVisible$1(target, body)) return;
+					if (!(target instanceof HTMLElement) || desired.has(target) || target.matches(FRAME_EXCLUSION_SELECTOR) || pass.isForeignUi(target) || !pass.isVisible(target)) return;
 					const existing = target.dataset.dshFrame;
 					if (existing === "control" || existing === "surface") {
 						desired.set(target, { frame: existing });
 						return;
 					}
-					if (!target.hasAttribute("data-dsh-frame") && hasRenderedBorder(target, body)) desired.set(target, { frame: target.matches(INTERACTIVE_FRAME_SELECTOR) ? "control" : "surface" });
+					if (!target.hasAttribute("data-dsh-frame") && hasRenderedBorder(target, pass.styleOf)) desired.set(target, { frame: target.matches(INTERACTIVE_FRAME_SELECTOR) ? "control" : "surface" });
 				});
 				body.querySelectorAll("[data-dsh-frame], [data-dsh-message-role]").forEach((target) => {
 					const next = desired.get(target);
@@ -627,32 +718,16 @@ window.__ModuleLoader__.load({
 		}
 		//#endregion
 		//#region src/client/ornaments.ts
-		function isVisible(target, body) {
-			if (target.hidden || target.getAttribute("aria-hidden") === "true") return false;
-			const checkVisibility = target.checkVisibility;
-			if (checkVisibility && !checkVisibility.call(target, {
-				checkOpacity: true,
-				checkVisibilityCSS: true
-			})) return false;
-			const view = body.ownerDocument.defaultView;
-			for (let current = target; current; current = current.parentElement) {
-				const style = view?.getComputedStyle(current);
-				const opacity = Number.parseFloat(style?.opacity ?? "1");
-				if (style?.display === "none" || style?.visibility === "hidden" || opacity <= .05) return false;
-				if (current === body) break;
-			}
-			return true;
+		function visibleTarget(body, selector, isForeignUi, isVisible) {
+			for (const target of Array.from(body.querySelectorAll(selector))) if (!isForeignUi(target) && isVisible(target)) return target;
+			return null;
 		}
-		function visibleTarget(body, selector) {
-			const target = body.querySelector(selector);
-			return target && isVisible(target, body) ? target : null;
-		}
-		function workspaceLabelForTree(tree, body) {
+		function workspaceLabelForTree(tree, body, isVisible) {
 			if (!tree) return null;
 			for (let current = tree; current && current !== body; current = current.parentElement) {
 				const header = current.previousElementSibling;
-				if (!(header instanceof HTMLElement) || !isVisible(header, body)) continue;
-				return Array.from(header.querySelectorAll("span")).find((candidate) => isVisible(candidate, body)) ?? header;
+				if (!(header instanceof HTMLElement) || !isVisible(header)) continue;
+				return Array.from(header.querySelectorAll("span")).find((candidate) => isVisible(candidate)) ?? header;
 			}
 			return null;
 		}
@@ -666,14 +741,16 @@ window.__ModuleLoader__.load({
 			ribbonTab: deepseek_workshop_module_css_default.ornamentRibbonTab
 		};
 		function resolveTargets(body) {
-			const tree = visibleTarget(body, "[role=\"tree\"]");
+			const isForeignUi = createForeignUiGate(body);
+			const isVisible = createVisibility(body, createStyleReader(body));
+			const tree = visibleTarget(body, "[role=\"tree\"]", isForeignUi, isVisible);
 			return {
-				selectedNav: visibleTarget(body, "[role=\"treeitem\"][aria-selected=\"true\"]"),
+				selectedNav: visibleTarget(body, "[role=\"treeitem\"][aria-selected=\"true\"]", isForeignUi, isVisible),
 				tree,
-				workspaceLabel: workspaceLabelForTree(tree, body),
-				composer: visibleTarget(body, "textarea, [contenteditable=\"true\"], input:not([type])"),
-				dialog: visibleTarget(body, "[role=\"dialog\"]"),
-				heading: visibleTarget(body, "main h1, main h2, [role=\"main\"] h1, [role=\"main\"] h2")
+				workspaceLabel: workspaceLabelForTree(tree, body, isVisible),
+				composer: visibleTarget(body, "textarea, [contenteditable=\"true\"], input:not([type])", isForeignUi, isVisible),
+				dialog: visibleTarget(body, "[role=\"dialog\"]", isForeignUi, isVisible),
+				heading: visibleTarget(body, "main h1, main h2, [role=\"main\"] h1, [role=\"main\"] h2", isForeignUi, isVisible)
 			};
 		}
 		function hasComposerContent(composer) {
@@ -953,12 +1030,28 @@ window.__ModuleLoader__.load({
 				syncSidebarSurface();
 				syncPetTogglePosition();
 			};
-			const chromeObserver = new MutationObserver(syncChrome);
+			let chromeFrame;
+			const requestChromeFrame = (callback) => {
+				if (typeof window.requestAnimationFrame === "function") return window.requestAnimationFrame(callback);
+				return window.setTimeout(() => callback(performance.now()), 0);
+			};
+			const cancelChromeFrame = (handle) => {
+				if (typeof window.cancelAnimationFrame === "function") window.cancelAnimationFrame(handle);
+				else window.clearTimeout(handle);
+			};
+			const scheduleChrome = () => {
+				if (chromeFrame != null) return;
+				chromeFrame = requestChromeFrame(() => {
+					chromeFrame = void 0;
+					syncChrome();
+				});
+			};
+			const chromeObserver = new MutationObserver(scheduleChrome);
 			chromeObserver.observe(body, {
 				childList: true,
 				subtree: true
 			});
-			window.addEventListener("resize", syncChrome);
+			window.addEventListener("resize", scheduleChrome);
 			setBackdrop();
 			document.title = SKIN_TITLE;
 			registerCompanionSettingsCard(ctx);
@@ -973,8 +1066,9 @@ window.__ModuleLoader__.load({
 				ornaments.dispose();
 				observer.disconnect();
 				chromeObserver.disconnect();
+				if (chromeFrame != null) cancelChromeFrame(chromeFrame);
 				media?.removeEventListener("change", syncViewport);
-				window.removeEventListener("resize", syncChrome);
+				window.removeEventListener("resize", scheduleChrome);
 				clearSidebarSurface();
 				body.removeAttribute(BODY_ATTR);
 				favicon.remove();

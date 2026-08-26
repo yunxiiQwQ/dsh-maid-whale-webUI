@@ -399,16 +399,18 @@ describe('DeepSeek cloud paper stylesheet', () => {
     )
   })
 
-  it('keeps settings control artwork while spacing framed rows apart', () => {
+  it('keeps settings control artwork with spaced rows and content-sized controls', () => {
     expect(stylesheet).toMatch(
       /\[data-slot='sidebar\.settings'\] \[data-dsh-control-row\][^{]*\{[^}]*gap: 16px !important[^}]*padding-inline: 10px !important/,
     )
     expect(stylesheet).toMatch(
-      /\[data-slot='sidebar\.settings'\] \[data-dsh-control-row\] > \[data-dsh-frame='control'\][^{]*\{[^}]*flex-basis: 0 !important[^}]*min-width: 0 !important/,
+      /\[data-slot='sidebar\.settings'\] \[data-dsh-control-row\] > \[data-dsh-frame='control'\][^{]*\{[^}]*flex-basis: auto !important[^}]*min-width: min-content !important/,
     )
     expect(stylesheet).not.toMatch(
       /\[data-slot='sidebar\.settings'\] \[data-dsh-frame='control'\][^{]*\{[^}]*margin-inline/,
     )
+    expect(stylesheet).not.toMatch(/\[data-dsh-control-row\][^{]*\{[^}]*flex-basis: 0 !important/)
+    expect(stylesheet).not.toMatch(/\[data-dsh-frame='control'\][^{]*\{[^}]*white-space: nowrap !important/)
   })
 
   it('keeps text clear of decorative frame artwork', () => {

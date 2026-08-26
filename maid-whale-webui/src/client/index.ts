@@ -160,9 +160,28 @@ export function apply(ctx: Context): void {
     syncSidebarSurface()
     syncPetTogglePosition()
   }
-  const chromeObserver = new MutationObserver(syncChrome)
+  // Coalesce chrome reflows to one per frame: each mutation batch used to run
+  // sidebar lookups (getBoundingClientRect walks) synchronously, forcing a
+  // layout between React commits.
+  let chromeFrame: number | undefined
+  const requestChromeFrame = (callback: FrameRequestCallback): number => {
+    if (typeof window.requestAnimationFrame === 'function') return window.requestAnimationFrame(callback)
+    return window.setTimeout(() => callback(performance.now()), 0)
+  }
+  const cancelChromeFrame = (handle: number): void => {
+    if (typeof window.cancelAnimationFrame === 'function') window.cancelAnimationFrame(handle)
+    else window.clearTimeout(handle)
+  }
+  const scheduleChrome = (): void => {
+    if (chromeFrame != null) return
+    chromeFrame = requestChromeFrame(() => {
+      chromeFrame = undefined
+      syncChrome()
+    })
+  }
+  const chromeObserver = new MutationObserver(scheduleChrome)
   chromeObserver.observe(body, { childList: true, subtree: true })
-  window.addEventListener('resize', syncChrome)
+  window.addEventListener('resize', scheduleChrome)
 
   setBackdrop()
   document.title = SKIN_TITLE
@@ -178,8 +197,9 @@ export function apply(ctx: Context): void {
       ornaments.dispose()
       observer.disconnect()
       chromeObserver.disconnect()
+      if (chromeFrame != null) cancelChromeFrame(chromeFrame)
       media?.removeEventListener('change', syncViewport)
-      window.removeEventListener('resize', syncChrome)
+      window.removeEventListener('resize', scheduleChrome)
       clearSidebarSurface()
       body.removeAttribute(BODY_ATTR)
       favicon.remove()

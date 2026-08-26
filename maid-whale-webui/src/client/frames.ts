@@ -1,4 +1,13 @@
 import { FRAME_ART, FRAME_IDS, type FrameId, type FrameMode } from './frame-art.generated.ts'
+import {
+  createForeignUiGate,
+  createStyleReader,
+  createVisibility,
+  cssModuleClass,
+  type ForeignUiGate,
+  type StyleReader,
+  type VisibilityCheck,
+} from './scan.ts'
 
 export interface FrameController {
   sync(): void
@@ -49,21 +58,16 @@ const INTERACTIVE_FRAME_SELECTOR = [
   '[role="combobox"]',
 ].join(', ')
 
-const FRAME_EXCLUSION_SELECTOR = 'a, [role="link"], .mkts, .mkts *'
+// Third-party plugin interfaces and the skin's own injected chrome keep their
+// native borders; every framing pass rejects plugin-authored subtrees (see
+// createForeignUiGate) so decorations stay on the DSH-hosted UI only.
+const FRAME_EXCLUSION_SELECTOR = 'a, [role="link"], [data-skin-chrome], [data-skin-chrome] *'
 
 const CONVERSATION_CSS_MODULES = {
   userMessage: '@deepseek-ai/dsh-client-ui-conversation/MessageItem.module.css',
   assistantMessage: '@deepseek-ai/dsh-client-ui-conversation/AssistantMarkdown.module.css',
   reasoning: '@deepseek-ai/dsh-client-ui-conversation/ReasoningRow.module.css',
 } as const
-
-function cssModuleClass(document: Document, moduleId: string, exportName: string): string | undefined {
-  const style = Array.from(document.querySelectorAll<HTMLStyleElement>('style[data-plugin-css]')).find(
-    (candidate) => candidate.dataset.pluginCss === moduleId,
-  )
-  const safeExportName = exportName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-  return style?.textContent?.match(new RegExp(`\\.([\\w-]+_${safeExportName})(?=[\\s,{.:#>\\[])`))?.[1]
-}
 
 interface MessageTarget {
   target: HTMLElement
@@ -75,7 +79,18 @@ interface DesiredFrame {
   role?: MessageTarget['role']
 }
 
-function messageTargets(body: HTMLElement): MessageTarget[] {
+/* One synchronization pass: style reads, visibility verdicts, and the
+   plugin-subtree gate share their per-pass caches so the full-tree heuristic
+   scan costs one getComputedStyle per element instead of one per ancestor. */
+interface ScanPass {
+  body: HTMLElement
+  styleOf: StyleReader
+  isVisible: VisibilityCheck
+  isForeignUi: ForeignUiGate
+}
+
+function messageTargets(pass: ScanPass): MessageTarget[] {
+  const body = pass.body
   const document = body.ownerDocument
   const userBubbleClass = cssModuleClass(document, CONVERSATION_CSS_MODULES.userMessage, 'bubble')
   const assistantRootClass = cssModuleClass(document, CONVERSATION_CSS_MODULES.assistantMessage, 'root')
@@ -105,31 +120,12 @@ function messageTargets(body: HTMLElement): MessageTarget[] {
   return [
     ...userMessages.map((target): MessageTarget => ({ target, role: 'user' })),
     ...assistantMessages.map((target): MessageTarget => ({ target, role: 'assistant' })),
-  ].filter(({ target }) => isVisible(target, body))
+  ].filter(({ target }) => !pass.isForeignUi(target) && pass.isVisible(target))
 }
 
-function isVisible(target: HTMLElement, body: HTMLElement): boolean {
-  if (target.hidden || target.getAttribute('aria-hidden') === 'true') return false
-  const checkVisibility = (
-    target as HTMLElement & {
-      checkVisibility?: (options?: { checkOpacity?: boolean; checkVisibilityCSS?: boolean }) => boolean
-    }
-  ).checkVisibility
-  if (checkVisibility && !checkVisibility.call(target, { checkOpacity: true, checkVisibilityCSS: true })) return false
-
-  const view = body.ownerDocument.defaultView
-  for (let current: HTMLElement | null = target; current; current = current.parentElement) {
-    const style = view?.getComputedStyle(current)
-    const opacity = Number.parseFloat(style?.opacity ?? '1')
-    if (style?.display === 'none' || style?.visibility === 'hidden' || opacity <= 0.05) return false
-    if (current === body) break
-  }
-  return true
-}
-
-function visibleCandidates(body: HTMLElement, id: FrameId): HTMLElement[] {
-  return Array.from(body.querySelectorAll<HTMLElement>(SELECTORS[id])).filter(
-    (target) => !target.matches(FRAME_EXCLUSION_SELECTOR) && isVisible(target, body),
+function visibleCandidates(pass: ScanPass, id: FrameId): HTMLElement[] {
+  return Array.from(pass.body.querySelectorAll<HTMLElement>(SELECTORS[id])).filter(
+    (target) => !target.matches(FRAME_EXCLUSION_SELECTOR) && !pass.isForeignUi(target) && pass.isVisible(target),
   )
 }
 
@@ -143,8 +139,8 @@ function related(left: HTMLElement, right: HTMLElement): boolean {
   return left === right || left.contains(right) || right.contains(left)
 }
 
-function hasRenderedBorder(target: HTMLElement, body: HTMLElement): boolean {
-  const style = body.ownerDocument.defaultView?.getComputedStyle(target)
+function hasRenderedBorder(target: HTMLElement, styleOf: StyleReader): boolean {
+  const style = styleOf(target)
   if (!style) return false
   return [
     [style.borderTopWidth, style.borderTopStyle],
@@ -154,27 +150,27 @@ function hasRenderedBorder(target: HTMLElement, body: HTMLElement): boolean {
   ].some(([width, borderStyle]) => Number.parseFloat(width) > 0 && borderStyle !== 'none')
 }
 
-function closestBorderedAncestor(target: HTMLElement, body: HTMLElement): HTMLElement | null {
-  for (let current = target.parentElement; current && current !== body; current = current.parentElement) {
-    if (isVisible(current, body) && hasRenderedBorder(current, body)) return current
+function closestBorderedAncestor(target: HTMLElement, pass: ScanPass): HTMLElement | null {
+  for (let current = target.parentElement; current && current !== pass.body; current = current.parentElement) {
+    if (pass.isVisible(current) && hasRenderedBorder(current, pass.styleOf)) return current
   }
   return null
 }
 
-function selectTargets(body: HTMLElement): Map<FrameId, HTMLElement[]> {
+function selectTargets(pass: ScanPass): Map<FrameId, HTMLElement[]> {
   const result = new Map<FrameId, HTMLElement[]>()
-  const selectedNav = visibleCandidates(body, 'selectedNav').slice(0, 1)
-  const composer = visibleCandidates(body, 'composer').slice(0, 1)
-  const dialogs = visibleCandidates(body, 'dialog')
-  const menus = visibleCandidates(body, 'menu')
+  const selectedNav = visibleCandidates(pass, 'selectedNav').slice(0, 1)
+  const composer = visibleCandidates(pass, 'composer').slice(0, 1)
+  const dialogs = visibleCandidates(pass, 'dialog')
+  const menus = visibleCandidates(pass, 'menu')
   const reserved = [...composer, ...dialogs, ...menus]
-  const panelCandidates = visibleCandidates(body, 'panel').filter((panel) =>
+  const panelCandidates = visibleCandidates(pass, 'panel').filter((panel) =>
     reserved.every((target) => !related(panel, target)),
   )
   const panels = panelCandidates.filter((panel) =>
     panelCandidates.every((candidate) => candidate === panel || !candidate.contains(panel)),
   )
-  const primaryButtons = visibleCandidates(body, 'primaryButton').filter(hasAccessibleName)
+  const primaryButtons = visibleCandidates(pass, 'primaryButton').filter(hasAccessibleName)
 
   result.set('selectedNav', selectedNav)
   result.set('composer', composer)
@@ -210,7 +206,14 @@ export function createFrameController(body: HTMLElement): FrameController {
 
   const sync = (): void => {
     if (disposed) return
-    const targets = selectTargets(body)
+    const styleOf = createStyleReader(body)
+    const pass: ScanPass = {
+      body,
+      styleOf,
+      isVisible: createVisibility(body, styleOf),
+      isForeignUi: createForeignUiGate(body),
+    }
+    const targets = selectTargets(pass)
     const desired = new Map<HTMLElement, DesiredFrame>()
     for (const id of FRAME_IDS) {
       targets.get(id)?.forEach((target) => {
@@ -218,10 +221,10 @@ export function createFrameController(body: HTMLElement): FrameController {
       })
     }
     targets.get('composer')?.forEach((target) => {
-      const shell = closestBorderedAncestor(target, body)
+      const shell = closestBorderedAncestor(target, pass)
       if (shell) desired.set(shell, { frame: 'composer-shell' })
     })
-    messageTargets(body).forEach(({ target, role }) => {
+    messageTargets(pass).forEach(({ target, role }) => {
       desired.set(target, { frame: 'message', role })
     })
     body.querySelectorAll<HTMLElement>('*').forEach((target) => {
@@ -229,7 +232,8 @@ export function createFrameController(body: HTMLElement): FrameController {
         !(target instanceof HTMLElement) ||
         desired.has(target) ||
         target.matches(FRAME_EXCLUSION_SELECTOR) ||
-        !isVisible(target, body)
+        pass.isForeignUi(target) ||
+        !pass.isVisible(target)
       )
         return
       const existing = target.dataset.dshFrame
@@ -237,7 +241,7 @@ export function createFrameController(body: HTMLElement): FrameController {
         desired.set(target, { frame: existing })
         return
       }
-      if (!target.hasAttribute('data-dsh-frame') && hasRenderedBorder(target, body)) {
+      if (!target.hasAttribute('data-dsh-frame') && hasRenderedBorder(target, pass.styleOf)) {
         desired.set(target, {
           frame: target.matches(INTERACTIVE_FRAME_SELECTOR) ? 'control' : 'surface',
         })

@@ -175,7 +175,13 @@ function createCardModule(React: typeof ReactTypes) {
     }
     return h(
       'li',
-      { style: cardStyle, 'data-testid': 'maid-whale-companion-settings' },
+      {
+        style: cardStyle,
+        'data-testid': 'maid-whale-companion-settings',
+        // Marks this card as skin-injected chrome so the frame controller never
+        // decorates it (the card is plugin UI living inside a host slot).
+        'data-skin-chrome': 'companion-card',
+      },
       h(
         'div',
         null,
