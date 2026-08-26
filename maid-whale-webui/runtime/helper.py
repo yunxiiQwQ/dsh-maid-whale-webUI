@@ -28,6 +28,32 @@ except ImportError:
 
 PROTOCOL_VERSION = 1
 STATES = {"IDLE", "THINKING", "WORKING", "WAITING", "SUCCESS", "ERROR", "DISCONNECTED"}
+BUBBLE_BASE_WIDTH = 352
+BUBBLE_SINGLE_HEIGHT = 72
+BUBBLE_MULTI_BASE_HEIGHT = 44
+BUBBLE_MULTI_ROW_HEIGHT = 22
+BUBBLE_TITLE_POINTS = 13.0
+BUBBLE_DETAIL_POINTS = 11.5
+BUBBLE_CARD_TOP = 7
+PET_BOTTOM_MARGIN = 8
+BUBBLE_TO_PET_GAP = -20
+BUBBLE_WINDOW_EXTRA = BUBBLE_CARD_TOP + PET_BOTTOM_MARGIN + BUBBLE_TO_PET_GAP
+
+
+def bubble_metrics(scale: float, task_count: int) -> dict[str, int | float]:
+    """Return compact card geometry while keeping text independent of the saved scale preset."""
+
+    card_height = (
+        BUBBLE_MULTI_BASE_HEIGHT + min(task_count, 3) * BUBBLE_MULTI_ROW_HEIGHT
+        if task_count >= 2
+        else BUBBLE_SINGLE_HEIGHT
+    )
+    return {
+        "cardWidth": round(BUBBLE_BASE_WIDTH * scale),
+        "cardHeight": round(card_height * scale),
+        "titlePoints": max(1.0, BUBBLE_TITLE_POINTS * scale),
+        "detailPoints": max(1.0, BUBBLE_DETAIL_POINTS * scale),
+    }
 
 
 def bundle_root() -> Path:
@@ -482,9 +508,13 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
             pet_width = round(int(manifest["maxFrameWidth"]) * self.scale)
             pet_height = round(int(manifest["maxFrameHeight"]) * self.scale)
             if self._bubble_visible():
-                bubble_width = round(420 * self.bubble_scale)
-                bubble_height = self._card_height()
-                self.setFixedSize(max(pet_width + 50, bubble_width + 28), pet_height + bubble_height + 34)
+                metrics = bubble_metrics(self.bubble_scale, len(self.tasks))
+                bubble_width = int(metrics["cardWidth"])
+                bubble_height = int(metrics["cardHeight"])
+                self.setFixedSize(
+                    max(pet_width + 50, bubble_width + 28),
+                    pet_height + bubble_height + BUBBLE_WINDOW_EXTRA,
+                )
             else:
                 self.setFixedSize(pet_width + 50, pet_height + 26)
 
@@ -517,7 +547,7 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
                 self.pet_y = pet_y
                 self.move(
                     pet_x - (self.width() - pet_width) // 2,
-                    pet_y - (self.height() - pet_height - 8),
+                    pet_y - (self.height() - pet_height - PET_BOTTOM_MARGIN),
                 )
                 self.update()
                 return
@@ -532,7 +562,7 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
             offset_x = min(max(pet_x - window_x, 0), self.width() - pet_width)
             self.pet_x = window_x + offset_x
 
-            top_offset_y = self.height() - pet_height - 8
+            top_offset_y = self.height() - pet_height - PET_BOTTOM_MARGIN
             window_y = min(max(pet_y - top_offset_y, min_y), max_y)
             self.pet_y = window_y + top_offset_y
 
@@ -544,7 +574,12 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
 
         def _pet_rect(self) -> tuple[int, int, int, int]:
             pet_width, pet_height = self._pet_size()
-            return self._pet_offset_x(pet_width), self.height() - pet_height - 8, pet_width, pet_height
+            return (
+                self._pet_offset_x(pet_width),
+                self.height() - pet_height - PET_BOTTOM_MARGIN,
+                pet_width,
+                pet_height,
+            )
 
         def _pet_update_rect(self) -> QRect:
             x, y, width, height = self._pet_rect()
@@ -557,8 +592,9 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
             ).intersected(self.rect())
 
         def _bubble_rect(self) -> tuple[int, int, int, int]:
-            card_width = round(420 * self.bubble_scale)
-            card_height = self._card_height()
+            metrics = bubble_metrics(self.bubble_scale, len(self.tasks))
+            card_width = int(metrics["cardWidth"])
+            card_height = int(metrics["cardHeight"])
             pet_width, _ = self._pet_size()
             pet_center_x = self._pet_offset_x(pet_width) + pet_width // 2
             margin = 14
@@ -568,11 +604,11 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
             if max_x < min_x:
                 max_x = min_x
             card_x = min(max(card_x, min_x), max_x)
-            return card_x, 7, card_width, card_height
+            return card_x, BUBBLE_CARD_TOP, card_width, card_height
 
         def _restore_visible_position(self) -> None:
             pet_width, pet_height = self._pet_size()
-            top_offset = self.height() - pet_height - 8
+            top_offset = self.height() - pet_height - PET_BOTTOM_MARGIN
             center_offset = (self.width() - pet_width) // 2
             saved_pet_x = self.layout.get("petX")
             saved_pet_y = self.layout.get("petY")
@@ -696,10 +732,7 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
                 painter.drawEllipse(center_x - 5, center_y - 5, 10, 10)
 
         def _card_height(self) -> int:
-            if len(self.tasks) >= 2:
-                rows = min(len(self.tasks), 3)
-                return round((58 + rows * 26) * self.bubble_scale)
-            return round(84 * self.bubble_scale)
+            return int(bubble_metrics(self.bubble_scale, len(self.tasks))["cardHeight"])
 
         def _draw_card_background(
             self,
@@ -738,11 +771,12 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
             card_height: int,
             s: float,
         ) -> None:
+            metrics = bubble_metrics(s, len(self.tasks))
             title_font = QFont("Microsoft YaHei UI")
-            title_font.setPointSizeF(max(1.0, 11.0 * s))
+            title_font.setPointSizeF(float(metrics["titlePoints"]))
             title_font.setWeight(QFont.Weight.DemiBold)
             detail_font = QFont("Microsoft YaHei UI")
-            detail_font.setPointSizeF(max(1.0, 9.0 * s))
+            detail_font.setPointSizeF(float(metrics["detailPoints"]))
             text_x = card_x + round(16 * s)
             text_width = max(40, card_width - round(32 * s))
             painter.setFont(title_font)
@@ -750,15 +784,15 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
             title = f"{len(self.tasks)} 个任务进行中"
             painter.drawText(
                 text_x,
-                card_y + round(10 * s),
+                card_y + round(7 * s),
                 text_width,
-                max(12, round(22 * s)),
+                max(12, round(24 * s)),
                 Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
                 QFontMetrics(title_font).elidedText(title, Qt.TextElideMode.ElideRight, text_width),
             )
             painter.setFont(detail_font)
             for index, task in enumerate(self.tasks[:3]):
-                row_y = card_y + round((36 + index * 24) * s)
+                row_y = card_y + round((29 + index * 20) * s)
                 state = str(task.get("state", "IDLE"))
                 state_label = self.LABELS.get(state, state)
                 label = task.get("project") or task.get("task") or task.get("message") or state_label
@@ -772,7 +806,7 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
                     text_x + round(14 * s),
                     row_y,
                     text_width - round(14 * s),
-                    max(12, round(20 * s)),
+                    max(12, round(22 * s)),
                     Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
                     QFontMetrics(detail_font).elidedText(line, Qt.TextElideMode.ElideRight, text_width - round(14 * s)),
                 )
@@ -781,9 +815,9 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
                 painter.setPen(QColor("#9AA0A6"))
                 painter.drawText(
                     text_x + round(14 * s),
-                    card_y + round((36 + 3 * 24) * s),
+                    card_y + round((29 + 3 * 20) * s),
                     text_width,
-                    max(12, round(20 * s)),
+                    max(12, round(22 * s)),
                     Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
                     more,
                 )
@@ -828,12 +862,12 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
             corner_radius = round(30 * s)
 
             if len(self.tasks) >= 2 and self._bubble_visible():
-                bubble_height = card_y + card_height + 19
+                bubble_height = card_y + card_height + BUBBLE_TO_PET_GAP
                 self._draw_card_background(painter, card_x, card_y, card_width, card_height, corner_radius, s)
                 self._draw_multi_task_card(painter, card_x, card_y, card_width, card_height, s)
             elif card:
                 title, detail, card_state = card
-                bubble_height = card_y + card_height + 19
+                bubble_height = card_y + card_height + BUBBLE_TO_PET_GAP
                 self._draw_card_background(painter, card_x, card_y, card_width, card_height, corner_radius, s)
                 icon_center_x = card_x + card_width - round(39 * s)
                 icon_center_y = card_y + card_height // 2
@@ -846,11 +880,12 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
 
                 text_x = card_x + round(24 * s)
                 text_width = max(40, card_width - round(102 * s))
+                metrics = bubble_metrics(s, len(self.tasks))
                 title_font = QFont("Microsoft YaHei UI")
-                title_font.setPointSizeF(max(1.0, 11.0 * s))
+                title_font.setPointSizeF(float(metrics["titlePoints"]))
                 title_font.setWeight(QFont.Weight.DemiBold)
                 detail_font = QFont("Microsoft YaHei UI")
-                detail_font.setPointSizeF(max(1.0, 9.0 * s))
+                detail_font.setPointSizeF(float(metrics["detailPoints"]))
                 painter.setFont(title_font)
                 painter.setPen(QColor("#25282D"))
                 title_text = QFontMetrics(title_font).elidedText(
@@ -860,9 +895,9 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
                 )
                 painter.drawText(
                     text_x,
-                    card_y + round(15 * s),
+                    card_y + round(10 * s),
                     text_width,
-                    max(12, round(27 * s)),
+                    max(12, round(24 * s)),
                     Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
                     title_text,
                 )
@@ -875,9 +910,9 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
                 )
                 painter.drawText(
                     text_x,
-                    card_y + round(43 * s),
+                    card_y + round(34 * s),
                     text_width,
-                    max(12, round(24 * s)),
+                    max(12, round(20 * s)),
                     Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
                     detail_text,
                 )
@@ -944,7 +979,7 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
                 pw = base_width * scale_extra
                 ph = base_height * scale_extra
                 x = self._pet_offset_x(base_width) + (base_width - pw) / 2 + offset_x
-                y = self.height() - ph - 8 + offset_y
+                y = self.height() - ph - PET_BOTTOM_MARGIN + offset_y
                 if bubble_height > y:
                     y = bubble_height
                 cx = x + pw / 2
