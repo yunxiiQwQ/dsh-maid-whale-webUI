@@ -1,0 +1,19 @@
+{
+  "name": "dsh-maid-whale-webui-workspace",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cloud-paper DeepSeek skin for the DSH web GUI with the deepseek-drool character as a quiet page-edge mascot",
+  "license": "BSD-3-Clause",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yunxiiQwQ/dsh-maid-whale-webUI.git"
+  },
+  "packageManager": "pnpm@11.21.0",
+  "scripts": {
+    "build": "pnpm -C maid-whale-webui build",
+    "test": "pnpm -C maid-whale-webui test",
+    "typecheck": "pnpm -C maid-whale-webui typecheck",
+    "lint": "pnpm -C maid-whale-webui lint"
+  }
+}
