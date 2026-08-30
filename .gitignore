@@ -4,6 +4,7 @@ node_modules/
 .DS_Store
 .tmp-*
 .claude/
+.worktrees/
 AGENTS.md
 **/AGENTS.md
 .build/
