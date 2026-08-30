@@ -20,10 +20,10 @@ from typing import Any, TextIO
 
 try:
     from .animation_model import AnimationModel, animation_tick_interval, crossfade_duration, repaint_scope
-    from .layout_store import default_layout_path, load_layout, save_layout
+    from .layout_store import DeferredLayoutSaver, default_layout_path, load_layout
 except ImportError:
     from animation_model import AnimationModel, animation_tick_interval, crossfade_duration, repaint_scope
-    from layout_store import default_layout_path, load_layout, save_layout
+    from layout_store import DeferredLayoutSaver, default_layout_path, load_layout
 
 
 PROTOCOL_VERSION = 1
@@ -176,6 +176,7 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
             super().__init__()
             self.layout_path = default_layout_path()
             self.layout = load_layout(self.layout_path)
+            self.layout_saver = DeferredLayoutSaver(self.layout_path)
             configured_scale = os.environ.get("DSH_DAFEIYU_SCALE")
             try:
                 self.scale = min(1.4, max(0.4, float(configured_scale))) if configured_scale else self.layout["scale"]
@@ -644,7 +645,7 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
                 "bubbleStates": self.bubble_states,
             }
             try:
-                save_layout(self.layout_path, self.layout)
+                self.layout_saver.schedule(self.layout)
             except OSError as error:
                 print(f"Unable to save BigFish layout: {error}", file=sys.stderr)
 
@@ -1140,6 +1141,10 @@ def run_visual(recorder: EventRecorder, snapshot_path: Path | None = None) -> in
     window.show()
     emit_reply("ready")
     code = application.exec()
+    try:
+        window.layout_saver.flush()
+    except OSError as error:
+        print(f"Unable to save BigFish layout: {error}", file=sys.stderr)
     recorder.close()
     return code
 

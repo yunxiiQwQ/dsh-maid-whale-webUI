@@ -5,8 +5,10 @@ from __future__ import annotations
 import json
 import os
 import tempfile
+import threading
 from pathlib import Path
-from typing import Any
+from threading import Timer
+from typing import Any, Callable
 
 
 DEFAULT_LAYOUT: dict[str, Any] = {
@@ -82,3 +84,57 @@ def save_layout(path: Path, value: dict[str, Any]) -> None:
             Path(temporary_name).unlink()
         except FileNotFoundError:
             pass
+
+
+class DeferredLayoutSaver:
+    def __init__(
+        self,
+        path: Path,
+        *,
+        delay_seconds: float = 0.35,
+        save: Callable[[Path, dict[str, Any]], None] = save_layout,
+        timer_factory: Callable[[float, Callable[[], None]], Timer] = threading.Timer,
+    ) -> None:
+        self.path = path
+        self.delay_seconds = delay_seconds
+        self.save = save
+        self.timer_factory = timer_factory
+        self.lock = threading.RLock()
+        self.timer: Timer | None = None
+        self.pending: dict[str, Any] | None = None
+        self.generation: object | None = None
+
+    def schedule(self, value: dict[str, Any]) -> None:
+        latest = normalise_layout(value)
+        with self.lock:
+            if self.timer is not None:
+                self.timer.cancel()
+            generation = object()
+            timer = self.timer_factory(self.delay_seconds, lambda: self._save_generation(generation))
+            timer.daemon = True
+            self.pending = latest
+            self.generation = generation
+            self.timer = timer
+            timer.start()
+
+    def flush(self) -> None:
+        with self.lock:
+            if self.timer is not None:
+                self.timer.cancel()
+            self.timer = None
+            self.generation = None
+            pending = self.pending
+            self.pending = None
+            if pending is not None:
+                self.save(self.path, pending)
+
+    def _save_generation(self, generation: object) -> None:
+        with self.lock:
+            if self.generation is not generation:
+                return
+            self.timer = None
+            self.generation = None
+            pending = self.pending
+            self.pending = None
+            if pending is not None:
+                self.save(self.path, pending)

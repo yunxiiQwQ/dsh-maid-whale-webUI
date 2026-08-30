@@ -3,10 +3,56 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from runtime.layout_store import DEFAULT_LAYOUT, load_layout, normalise_layout, save_layout
+from runtime.layout_store import DeferredLayoutSaver, DEFAULT_LAYOUT, load_layout, normalise_layout, save_layout
+
+
+class FakeTimer:
+    def __init__(self, delay, callback):
+        self.delay = delay
+        self.callback = callback
+        self.cancelled = False
+        self.daemon = False
+
+    def start(self):
+        return None
+
+    def cancel(self):
+        self.cancelled = True
 
 
 class LayoutStoreTests(unittest.TestCase):
+    def test_deferred_saver_coalesces_and_flushes_latest_value(self) -> None:
+        timers = []
+        writes = []
+        factory = lambda delay, callback: timers.append(FakeTimer(delay, callback)) or timers[-1]
+        saver = DeferredLayoutSaver(
+            Path("layout.json"),
+            save=lambda _path, value: writes.append(value),
+            timer_factory=factory,
+        )
+        saver.schedule({"scale": 0.7})
+        saver.schedule({"scale": 1.0})
+        self.assertTrue(timers[0].cancelled)
+        self.assertEqual(writes, [])
+        saver.flush()
+        self.assertEqual(writes[-1]["scale"], 1.0)
+        self.assertTrue(timers[1].cancelled)
+
+    def test_deferred_saver_timer_and_flush_write_once(self) -> None:
+        timers = []
+        writes = []
+        factory = lambda delay, callback: timers.append(FakeTimer(delay, callback)) or timers[-1]
+        saver = DeferredLayoutSaver(
+            Path("layout.json"),
+            save=lambda _path, value: writes.append(value),
+            timer_factory=factory,
+        )
+        saver.schedule({"scale": 0.9})
+        timers[0].callback()
+        saver.flush()
+        self.assertEqual(len(writes), 1)
+        self.assertEqual(writes[0]["scale"], 0.9)
+
     def test_pet_and_bubble_defaults_match_requested_size(self) -> None:
         self.assertEqual(DEFAULT_LAYOUT["scale"], 0.6552)
         self.assertEqual(DEFAULT_LAYOUT["bubbleScale"], 0.78)
