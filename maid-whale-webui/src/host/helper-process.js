@@ -46,27 +46,21 @@ function toWindowsPath(path) {
   return execFileSync('wslpath', ['-w', path], { encoding: 'utf8' }).trim()
 }
 
-function defaultCmdExe({ wslpath = defaultWslPath, fileExists = existsSync } = {}) {
-  // WSL visual mode launches the bundled EXE through Windows cmd.exe. cmd.exe
-  // is usually NOT on the WSL PATH (System32 is not appended by default), so
-  // never rely on `cmd.exe` being resolvable: convert the Windows absolute path
-  // with wslpath and only fall back to the bare name as a last resort.
+function defaultPowerShellExe({ wslpath = defaultWslPath, fileExists = existsSync } = {}) {
+  // WSL visual mode launches the bundled EXE through Windows PowerShell.
+  // Keep the executable path in an environment variable so it remains data:
+  // interpolating it into cmd.exe syntax would let metacharacters become code.
   try {
-    const candidate = wslpath('C:\\Windows\\System32\\cmd.exe')
+    const candidate = wslpath('C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe')
     if (candidate && fileExists(candidate)) return candidate
   } catch {
     // Fall through to the bare-name fallback below.
   }
-  return 'cmd.exe'
+  return 'powershell.exe'
 }
 
 function defaultWslPath(...args) {
   return execFileSync('wslpath', args, { encoding: 'utf8' }).trim()
-}
-
-function cmdExecutableCommand(path) {
-  if (path.includes('"')) throw new TypeError('Windows helper path cannot contain a quote')
-  return `""${path}""`
 }
 
 function resolveHelperLaunch({
@@ -78,19 +72,21 @@ function resolveHelperLaunch({
   headless = false,
   fileExists = existsSync,
   windowsPath = toWindowsPath,
-  cmdExe = defaultCmdExe,
+  powerShellExe = defaultPowerShellExe,
 }) {
   if (platform === 'win32' && fileExists(bundledPath)) {
     return { command: bundledPath, args: [] }
   }
   if (platform === 'linux' && isWslEnv && !headless && fileExists(bundledPath)) {
     // npm archives created on Windows store ordinary files as 0644. Launching
-    // the EXE directly from WSL can therefore fail with EACCES. cmd.exe opens
-    // the Windows path without relying on the Linux executable bit and keeps
-    // stdin/stdout attached for the companion protocol.
+    // the EXE directly from WSL can therefore fail with EACCES. PowerShell
+    // opens the Windows path without relying on the Linux executable bit and
+    // keeps stdin/stdout attached for the companion protocol. The fixed
+    // expression contains no path text, so shell metacharacters stay inert.
     return {
-      command: cmdExe(),
-      args: ['/d', '/s', '/c', cmdExecutableCommand(windowsPath(bundledPath))],
+      command: powerShellExe(),
+      args: ['-NoLogo', '-NoProfile', '-NonInteractive', '-Command', '& $env:DSH_DAFEIYU_HELPER_EXE'],
+      env: { DSH_DAFEIYU_HELPER_EXE: windowsPath(bundledPath) },
     }
   }
   const command = pythonEnv || (platform === 'win32' ? 'py' : 'python3')
@@ -161,7 +157,7 @@ export class HelperProcess {
 
       child = spawn(command, [...args, ...extraArgs], {
         cwd: this.options.cwd || packageRoot,
-        env: { ...process.env, ...this.options.env },
+        env: { ...process.env, ...this.options.env, ...launch.env },
         stdio: ['pipe', 'pipe', 'pipe'],
         windowsHide: true,
       })
@@ -377,7 +373,7 @@ export {
   bundledHelperPath,
   defaultHelperPath,
   defaultArgs,
-  defaultCmdExe,
+  defaultPowerShellExe,
   defaultCommand,
   defaultLaunch,
   isWsl,

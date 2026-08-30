@@ -1452,33 +1452,31 @@ function isWsl() {
 function toWindowsPath(path) {
 	return execFileSync("wslpath", ["-w", path], { encoding: "utf8" }).trim();
 }
-function defaultCmdExe({ wslpath = defaultWslPath, fileExists = existsSync } = {}) {
+function defaultPowerShellExe({ wslpath = defaultWslPath, fileExists = existsSync } = {}) {
 	try {
-		const candidate = wslpath("C:\\Windows\\System32\\cmd.exe");
+		const candidate = wslpath("C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe");
 		if (candidate && fileExists(candidate)) return candidate;
 	} catch {}
-	return "cmd.exe";
+	return "powershell.exe";
 }
 function defaultWslPath(...args) {
 	return execFileSync("wslpath", args, { encoding: "utf8" }).trim();
 }
-function cmdExecutableCommand(path) {
-	if (path.includes("\"")) throw new TypeError("Windows helper path cannot contain a quote");
-	return `""${path}""`;
-}
-function resolveHelperLaunch({ platform, isWslEnv, bundledPath, helperPath, pythonEnv, headless = false, fileExists = existsSync, windowsPath = toWindowsPath, cmdExe = defaultCmdExe }) {
+function resolveHelperLaunch({ platform, isWslEnv, bundledPath, helperPath, pythonEnv, headless = false, fileExists = existsSync, windowsPath = toWindowsPath, powerShellExe = defaultPowerShellExe }) {
 	if (platform === "win32" && fileExists(bundledPath)) return {
 		command: bundledPath,
 		args: []
 	};
 	if (platform === "linux" && isWslEnv && !headless && fileExists(bundledPath)) return {
-		command: cmdExe(),
+		command: powerShellExe(),
 		args: [
-			"/d",
-			"/s",
-			"/c",
-			cmdExecutableCommand(windowsPath(bundledPath))
-		]
+			"-NoLogo",
+			"-NoProfile",
+			"-NonInteractive",
+			"-Command",
+			"& $env:DSH_DAFEIYU_HELPER_EXE"
+		],
+		env: { DSH_DAFEIYU_HELPER_EXE: windowsPath(bundledPath) }
 	};
 	const command = pythonEnv || (platform === "win32" ? "py" : "python3");
 	return {
@@ -1540,7 +1538,8 @@ var HelperProcess = class {
 				cwd: this.options.cwd || packageRoot,
 				env: {
 					...process.env,
-					...this.options.env
+					...this.options.env,
+					...launch.env
 				},
 				stdio: [
 					"pipe",

@@ -1,3 +1,7 @@
+import { spawnSync } from 'node:child_process'
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import {
   HelperProcess,
@@ -63,7 +67,7 @@ describe('helper process launch resolution', () => {
     )
   })
 
-  it('launches the bundled executable through cmd.exe from WSL', () => {
+  it('launches the bundled executable through a fixed PowerShell expression from WSL', () => {
     const launch = resolveHelperLaunch({
       platform: 'linux',
       isWslEnv: true,
@@ -72,10 +76,19 @@ describe('helper process launch resolution', () => {
       pythonEnv: undefined,
       fileExists: () => true,
       windowsPath: (path: string) => `C:\\${path}`,
-      cmdExe: () => 'C:\\Windows\\System32\\cmd.exe',
+      powerShellExe: () => 'C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe',
     })
-    expect(launch.command).toBe('C:\\Windows\\System32\\cmd.exe')
-    expect(launch.args).toEqual(['/d', '/s', '/c', '""C:\\/mnt/c/app/runtime/bin/win32-x64/dsw-drool-helper.exe""'])
+    expect(launch.command).toBe('C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe')
+    expect(launch.args).toEqual([
+      '-NoLogo',
+      '-NoProfile',
+      '-NonInteractive',
+      '-Command',
+      '& $env:DSH_DAFEIYU_HELPER_EXE',
+    ])
+    expect(launch.env).toEqual({
+      DSH_DAFEIYU_HELPER_EXE: 'C:\\/mnt/c/app/runtime/bin/win32-x64/dsw-drool-helper.exe',
+    })
   })
 
   it('quotes the WSL helper as one cmd command even when its path has metacharacters', () => {
@@ -87,9 +100,40 @@ describe('helper process launch resolution', () => {
       pythonEnv: undefined,
       fileExists: () => true,
       windowsPath: () => 'C:\\Whale & echo INJECTED\\helper.exe',
-      cmdExe: () => 'C:\\Windows\\System32\\cmd.exe',
+      powerShellExe: () => 'C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe',
     })
-    expect(launch.args).toEqual(['/d', '/s', '/c', '""C:\\Whale & echo INJECTED\\helper.exe""'])
+    expect(launch.args.join(' ')).not.toContain('INJECTED')
+    expect(launch.env).toEqual({ DSH_DAFEIYU_HELPER_EXE: 'C:\\Whale & echo INJECTED\\helper.exe' })
+  })
+
+  it.runIf(process.platform === 'win32')('executes a metacharacter path without interpreting it', () => {
+    const root = mkdtempSync(join(tmpdir(), 'maid-whale-launch-'))
+    const unsafeDirectory = join(root, 'Whale & echo INJECTED')
+    const script = join(unsafeDirectory, 'helper.cmd')
+    mkdirSync(unsafeDirectory)
+    writeFileSync(script, '@echo SAFE_MARKER\r\n', 'ascii')
+    try {
+      const launch = resolveHelperLaunch({
+        platform: 'linux',
+        isWslEnv: true,
+        bundledPath: '/mnt/c/Whale & echo INJECTED/helper.cmd',
+        helperPath: '/app/runtime/helper.py',
+        pythonEnv: undefined,
+        fileExists: () => true,
+        windowsPath: () => script,
+        powerShellExe: () => 'C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe',
+      })
+      const result = spawnSync(launch.command, launch.args, {
+        encoding: 'utf8',
+        env: { ...process.env, ...launch.env },
+        windowsHide: true,
+      })
+      expect(result.status).toBe(0)
+      expect(result.stdout.trim()).toBe('SAFE_MARKER')
+      expect(result.stderr.trim()).toBe('')
+    } finally {
+      rmSync(root, { recursive: true, force: true })
+    }
   })
 })
 
