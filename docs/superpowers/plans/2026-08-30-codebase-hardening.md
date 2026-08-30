@@ -662,8 +662,10 @@ Run:
 ```powershell
 pnpm -C maid-whale-webui exec vitest run tests/build-config.spec.ts tests/workflow-config.spec.ts tests/companion-bundle-config.spec.ts
 pnpm -C maid-whale-webui test:coverage
-py -3 -m coverage run --rcfile=maid-whale-webui/.coveragerc -m unittest discover -s maid-whale-webui/runtime/tests -t maid-whale-webui
-py -3 -m coverage report --rcfile=maid-whale-webui/.coveragerc
+Push-Location maid-whale-webui
+py -3 -m coverage run --rcfile=.coveragerc -m unittest discover -s runtime/tests -t .
+py -3 -m coverage report --rcfile=.coveragerc
+Pop-Location
 pnpm build
 pnpm lint
 ```
@@ -693,8 +695,10 @@ pnpm -C maid-whale-webui test:coverage
 pnpm build
 pnpm -C maid-whale-webui art:embed:check
 pnpm -C maid-whale-webui pack:check
-py -3 -m coverage run --rcfile=maid-whale-webui/.coveragerc -m unittest discover -s maid-whale-webui/runtime/tests -t maid-whale-webui
-py -3 -m coverage report --rcfile=maid-whale-webui/.coveragerc
+Push-Location maid-whale-webui
+py -3 -m coverage run --rcfile=.coveragerc -m unittest discover -s runtime/tests -t .
+py -3 -m coverage report --rcfile=.coveragerc
+Pop-Location
 pnpm -C maid-whale-webui test:helper:packaged
 pnpm -C maid-whale-webui audit --registry=https://registry.npmjs.org
 git diff --check
