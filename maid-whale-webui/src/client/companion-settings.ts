@@ -8,6 +8,7 @@
  */
 import type { Context } from '@deepseek-ai/cordis'
 import type * as ReactTypes from 'react'
+import { writeCompanionConfig } from './config-writes.ts'
 
 const CONFIG_ENDPOINT = '/plugins/maid-whale-webui/config'
 const SLOT_NAME = 'settings.plugin.item'
@@ -114,7 +115,7 @@ function createCardModule(React: typeof ReactTypes) {
     const [busy, setBusy] = React.useState(false)
     const patchSeq = React.useRef(0)
     const sliderTimers = React.useRef(new Map<string, ReturnType<typeof setTimeout>>())
-    const writable = status === 'ready' && !busy
+    const writable = status === 'ready'
     React.useEffect(() => {
       let active = true
       fetch(CONFIG_ENDPOINT, { cache: 'no-store' })
@@ -139,15 +140,10 @@ function createCardModule(React: typeof ReactTypes) {
     }, [])
     const write = async (field: string, next: unknown) => {
       const seq = ++patchSeq.current
+      setValue((prev) => ({ ...prev, [field]: next }))
       setBusy(true)
       try {
-        const response = await fetch(CONFIG_ENDPOINT, {
-          method: 'PATCH',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ [field]: next }),
-        })
-        if (!response.ok) throw new Error(`settings write failed: ${response.status}`)
-        const updated = (await response.json()) as CompanionConfig
+        const updated = (await writeCompanionConfig({ [field]: next })) as CompanionConfig
         if (seq === patchSeq.current) {
           setValue(updated)
           setStatus('ready')

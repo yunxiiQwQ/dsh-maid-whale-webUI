@@ -2,6 +2,7 @@ import type { Context } from '@deepseek-ai/cordis'
 import { MASCOT_ART, PAPER_BACKDROP_DARK, PAPER_BACKDROP_LIGHT } from './art.ts'
 import { ILLUSTRATED_BACKGROUND, SIDEBAR_OCEAN_BACKGROUND } from './background-art.generated.ts'
 import { registerCompanionSettingsCard } from './companion-settings.ts'
+import { writeCompanionConfig } from './config-writes.ts'
 import css from './deepseek-workshop.module.css'
 import { createFrameController } from './frames.ts'
 import { createOrnamentController } from './ornaments.ts'
@@ -84,28 +85,25 @@ export function apply(ctx: Context): void {
   petToggleIcon.setAttribute('aria-hidden', 'true')
   petToggle.append(petToggleIcon)
   let petEnabled = true
+  let petPatchSeq = 0
   const syncPetToggle = (): void => {
     petToggle.dataset.petOn = petEnabled ? 'on' : 'off'
     petToggle.setAttribute('aria-pressed', String(petEnabled))
     petToggle.title = petEnabled ? '鲸鱼桌宠：开（点击关闭）' : '鲸鱼桌宠：关（点击开启）'
   }
   const patchPetEnabled = async (next: boolean): Promise<void> => {
+    const seq = ++petPatchSeq
     petEnabled = next
     syncPetToggle()
     try {
-      const response = await fetch('/plugins/maid-whale-webui/config', {
-        method: 'PATCH',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ enabled: next }),
-      })
-      if (response.ok) {
-        const config = (await response.json()) as { enabled?: boolean }
+      const config = (await writeCompanionConfig({ enabled: next })) as { enabled?: boolean }
+      if (seq === petPatchSeq) {
         petEnabled = config.enabled !== false
       }
     } catch {
       // Host unreachable: keep the optimistic state; the next click retries.
     }
-    syncPetToggle()
+    if (seq === petPatchSeq) syncPetToggle()
   }
   petToggle.addEventListener('click', () => {
     void patchPetEnabled(!petEnabled)
