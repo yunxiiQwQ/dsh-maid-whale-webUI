@@ -75,11 +75,59 @@ describe('helper process launch resolution', () => {
       cmdExe: () => 'C:\\Windows\\System32\\cmd.exe',
     })
     expect(launch.command).toBe('C:\\Windows\\System32\\cmd.exe')
-    expect(launch.args).toEqual(['/d', '/c', 'C:\\/mnt/c/app/runtime/bin/win32-x64/dsw-drool-helper.exe'])
+    expect(launch.args).toEqual(['/d', '/s', '/c', '""C:\\/mnt/c/app/runtime/bin/win32-x64/dsw-drool-helper.exe""'])
+  })
+
+  it('quotes the WSL helper as one cmd command even when its path has metacharacters', () => {
+    const launch = resolveHelperLaunch({
+      platform: 'linux',
+      isWslEnv: true,
+      bundledPath: '/mnt/c/Whale & echo INJECTED/helper.exe',
+      helperPath: '/app/runtime/helper.py',
+      pythonEnv: undefined,
+      fileExists: () => true,
+      windowsPath: () => 'C:\\Whale & echo INJECTED\\helper.exe',
+      cmdExe: () => 'C:\\Windows\\System32\\cmd.exe',
+    })
+    expect(launch.args).toEqual(['/d', '/s', '/c', '""C:\\Whale & echo INJECTED\\helper.exe""'])
   })
 })
 
 describe('helper process bridge', () => {
+  it('keeps only durable snapshots and a bounded transient queue before READY', () => {
+    const bridge = new HelperProcess({ maxQueuedMessages: 4 }, console)
+    for (let index = 0; index < 20; index += 1) {
+      bridge.send(
+        createMessage(CompanionMessageKind.STATE, {
+          state: CompanionState.WORKING,
+          message: `state-${index}`,
+        }),
+      )
+      bridge.send(
+        createMessage(CompanionMessageKind.PULSE, {
+          state: CompanionState.SUCCESS,
+          ttlMs: 1000,
+          message: `pulse-${index}`,
+        }),
+      )
+    }
+    expect(bridge.snapshot.size).toBe(1)
+    expect(bridge.queue).toHaveLength(4)
+    expect(bridge.queue.at(-1)).toContain('pulse-19')
+  })
+
+  it('does not retain new traffic after restart suppression', () => {
+    const bridge = new HelperProcess({ maxQueuedMessages: 4 }, console)
+    bridge.restartSuppressed = true
+    bridge.send(
+      createMessage(CompanionMessageKind.PULSE, {
+        state: CompanionState.ERROR,
+        ttlMs: 1000,
+      }),
+    )
+    expect(bridge.queue).toHaveLength(0)
+  })
+
   it('queues messages before readiness, flushes them after, and shuts down cleanly', async () => {
     const replies: string[] = []
     const logger = { debug() {}, info() {}, warn() {}, error() {} }
