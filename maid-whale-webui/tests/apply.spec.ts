@@ -323,6 +323,13 @@ describe('DeepSeek cloud paper stylesheet', () => {
     expect(stylesheet).not.toContain('repeating-linear-gradient')
   })
 
+  it('shows settings navigation hover feedback without a transition', () => {
+    expect(stylesheet).toMatch(/\[role='dialog'\]\[data-dsh-frame='dialog'\] > nav button\s*\{[^}]*transition: none/)
+    expect(stylesheet).toMatch(
+      /\[role='dialog'\]\[data-dsh-frame='dialog'\] > nav button:hover:not\(:disabled\)\s*\{[^}]*transform: none/,
+    )
+  })
+
   it('uses the shared redrawn nine-slice frame with responsive and printable fallbacks', () => {
     for (const frame of [
       'selected-nav',
@@ -358,44 +365,66 @@ describe('DeepSeek cloud paper stylesheet', () => {
     expect(stylesheet).toContain('background-image: none !important')
   })
 
-  it('renders interface frames with the approved 35 percent heavier treatment outside targeted rollbacks', () => {
+  it('renders non-message frame corners at visible, source-proportional sizes', () => {
     const frameWidths = {
-      'selected-nav': 14,
-      composer: 22,
-      'composer-shell': 18,
-      dialog: 22,
-      menu: 16,
-      panel: 22,
-      'primary-button': 14,
-      control: 9,
-      surface: 15,
-      message: 30,
+      'selected-nav': '21px 28.5px 21px 33px',
+      'composer-shell': '31.5px 42.75px 31.5px 49.5px',
+      dialog: '28px 38px 28px 44px',
+      menu: '21px 28.5px 21px 33px',
+      panel: '28px 38px 28px 44px',
+      'primary-button': '21px 28.5px 21px 33px',
+      control: '14px 19px 14px 22px',
+      surface: '21px 28.5px 21px 33px',
     }
 
+    expect(stylesheet).toMatch(
+      /\[data-dsh-frame\][^{]*\{[^}]*border-image-slice: 70 95 70 110 fill[^}]*border-image-width: 28px 38px 28px 44px/,
+    )
     for (const [frame, width] of Object.entries(frameWidths)) {
-      expect(stylesheet).toMatch(new RegExp(`\\[data-dsh-frame='${frame}'\\][\\s\\S]*?border-image-width: ${width}px`))
+      expect(stylesheet).toMatch(new RegExp(`\\[data-dsh-frame='${frame}'\\][\\s\\S]*?border-image-width: ${width}`))
     }
 
     expect(stylesheet).not.toContain('border: 1px solid')
     expect(stylesheet).toContain('border: 2px solid')
-    expect(stylesheet).toMatch(/@media \(max-width: 959px\)[\s\S]*?\[data-dsh-frame\][\s\S]*?border-image-width: 12px/)
+    expect(stylesheet).toMatch(
+      /@media \(max-width: 959px\)[\s\S]*?\[data-dsh-frame\][\s\S]*?border-image-width: 14px 19px 14px 22px/,
+    )
+    expect(stylesheet).toMatch(/\[data-dsh-frame='message'\][^{]*\{[^}]*border-image-width: 30px/)
   })
 
-  it('restores the composer shell and conversation header to their original frame thickness', () => {
+  it('keeps compact conversation chrome proportional without changing the plain composer field', () => {
     expect(stylesheet).toMatch(
-      /\[data-dsh-frame='composer-shell'\][\s\S]*?border-width: 1px;[\s\S]*?border-image-width: 18px/,
+      /\[data-dsh-frame='composer-shell'\][\s\S]*?border-width: 1px;[\s\S]*?border-image-width: 31.5px 42.75px 31.5px 49.5px/,
     )
     expect(stylesheet).toMatch(
-      /\[data-slot='conversation\.session\.header'\] > \[data-dsh-frame='surface'\][\s\S]*?border-width: 1px;[\s\S]*?border-image-width: 11px/,
+      /\[data-slot='conversation\.session\.header'\] > \[data-dsh-frame='surface'\][\s\S]*?border-width: 1px;[\s\S]*?border-image-width: 14px 19px 14px 22px/,
     )
   })
 
-  it('keeps inner settings frames un-outset while the dialog itself hugs its boundary', () => {
+  it('keeps the responsive composer frame larger than the conversation header', () => {
     expect(stylesheet).toMatch(
-      /\[data-slot='sidebar\.settings'\] \[data-dsh-frame\]:not\(\[data-dsh-frame='dialog'\]\)[\s\S]*?border-image-outset: 0/,
+      /@media \(max-width: 959px\)[\s\S]*?\[data-dsh-frame='composer-shell'\]\s*\{[^}]*border-width: 1px[^}]*border-image-width: 17.5px 23.75px 17.5px 27.5px/,
+    )
+    expect(stylesheet).toMatch(
+      /@media \(max-width: 959px\)[\s\S]*?\[data-slot='conversation\.session\.header'\]\s*>\s*\[data-dsh-frame='surface'\]\s*\{[^}]*border-width: 1px[^}]*border-image-width: 14px 19px 14px 22px/,
     )
     expect(stylesheet).not.toMatch(
-      /\[data-slot='sidebar\.settings'\] \[data-dsh-frame\] \{[^}]*border-image-outset: 0[^}]*\}[\s\S]*?\[data-dsh-frame='dialog'\][^{]*\{[^}]*border-image-outset: 0/,
+      /:is\(\[data-dsh-frame='composer-shell'\], \[data-slot='conversation\.session\.header'\] > \[data-dsh-frame='surface'\]\)/,
+    )
+  })
+
+  it('keeps settings frame artwork tight to its host boundaries', () => {
+    expect(stylesheet).toMatch(
+      /\[data-slot='sidebar\.settings'\]\s+\[role='dialog'\]\[data-dsh-frame='dialog'\][^{]*\{[^}]*border-image-outset: 12px 8px 12px 9px/,
+    )
+    expect(stylesheet).toMatch(
+      /\[data-slot='sidebar\.settings'\] \[data-dsh-frame='surface'\][^{]*\{[^}]*border-image-outset: 7px 4px 7px 5px/,
+    )
+    expect(stylesheet).toMatch(
+      /\[data-slot='sidebar\.settings'\] \[data-dsh-frame='control'\][^{]*\{[^}]*border-image-outset: 5px 3px 5px 3px/,
+    )
+    expect(stylesheet).not.toMatch(
+      /\[data-slot='sidebar\.settings'\] \[data-dsh-frame\]:not\(\[data-dsh-frame='dialog'\]\)/,
     )
   })
 
@@ -421,7 +450,7 @@ describe('DeepSeek cloud paper stylesheet', () => {
       /:is\(textarea, \[contenteditable='true'\], input:not\(\[type\]\)\)\[data-dsh-frame='composer'\]:focus[^{]*\{[^}]*border-color: var\(--dsw-alias-border-l2\)[^}]*box-shadow: none[^}]*transform: none/,
     )
     expect(stylesheet).toMatch(
-      /\[data-dsh-frame='composer-shell'\][^{]*\{[^}]*border-image-source: var\(--dsw-frame-composer\)[^}]*border-image-width: 18px[^}]*border-image-outset: 7px 4px 7px 5px/,
+      /\[data-dsh-frame='composer-shell'\][^{]*\{[^}]*border-image-source: var\(--dsw-frame-composer\)[^}]*border-image-width: 31.5px 42.75px 31.5px 49.5px[^}]*border-image-outset: 10px 7px 10px 8px/,
     )
     expect(stylesheet).toMatch(
       /\[data-dsh-frame='panel'\][^{]*\{[^}]*padding-block: 14px !important[^}]*padding-inline: 24px !important/,
@@ -448,13 +477,13 @@ describe('DeepSeek cloud paper stylesheet', () => {
 
   it('calibrates frame outset to the normalized artwork rectangle without legacy compensation', () => {
     expect(stylesheet).toMatch(
-      /\[data-dsh-frame\][^{]*\{[^}]*border-image-width: 19px[^}]*border-image-outset: 8px 4px 8px 5px/,
+      /\[data-dsh-frame\][^{]*\{[^}]*border-image-width: 28px 38px 28px 44px[^}]*border-image-outset: 8px 4px 8px 5px/,
     )
     expect(stylesheet).toMatch(
-      /\[data-dsh-frame='dialog'\][^{]*\{[^}]*border-image-width: 22px[^}]*border-image-outset: 9px 5px 9px 6px/,
+      /\[data-dsh-frame='dialog'\][^{]*\{[^}]*border-image-width: 28px 38px 28px 44px[^}]*border-image-outset: 9px 5px 9px 6px/,
     )
     expect(stylesheet).toMatch(
-      /\[data-dsh-frame='panel'\][^{]*\{[^}]*border-image-width: 22px[^}]*border-image-outset: 9px 5px 9px 6px/,
+      /\[data-dsh-frame='panel'\][^{]*\{[^}]*border-image-width: 28px 38px 28px 44px[^}]*border-image-outset: 9px 5px 9px 6px/,
     )
     expect(stylesheet).toMatch(/\[data-dsh-frame='surface'\][^{]*\{[^}]*border-image-outset: 6px 3px 6px 4px/)
     expect(stylesheet).toMatch(/\[data-dsh-frame='control'\][^{]*\{[^}]*border-image-outset: 4px 2px 4px 2px/)
