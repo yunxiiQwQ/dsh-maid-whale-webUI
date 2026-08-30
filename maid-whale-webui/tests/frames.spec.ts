@@ -214,6 +214,19 @@ describe('frame controller', () => {
     compute.mockRestore()
   })
 
+  it('does not rescan the full tree for streamed text-only mutations', async () => {
+    fixture()
+    controller = createFrameController(document.body)
+    await tick()
+    const compute = vi.spyOn(window, 'getComputedStyle')
+
+    document.querySelector('main')!.append(document.createTextNode('streamed response chunk'))
+    await tick()
+
+    expect(compute).not.toHaveBeenCalled()
+    compute.mockRestore()
+  })
+
   it('does not frame bordered inline links inside conversation content', () => {
     fixture()
     const sourceLink = document.createElement('a')

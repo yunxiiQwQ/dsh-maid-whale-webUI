@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { createOrnamentController, type OrnamentController } from '../src/client/ornaments.ts'
 
 let controller: OrnamentController | undefined
@@ -117,6 +117,19 @@ describe('ornament controller', () => {
         (image) => image.dataset.dshOrnament,
       ),
     ).toEqual(['whaleTail', 'bow'])
+  })
+
+  it('does not rescan the full tree for streamed text-only mutations', async () => {
+    fixture()
+    controller = createOrnamentController(document.body, { wide: true })
+    await tick()
+    const compute = vi.spyOn(window, 'getComputedStyle')
+
+    document.querySelector('main')!.append(document.createTextNode('streamed response chunk'))
+    await tick()
+
+    expect(compute).not.toHaveBeenCalled()
+    compute.mockRestore()
   })
 
   it('anchors the composer ornaments to the host field, never a plugin search box', () => {

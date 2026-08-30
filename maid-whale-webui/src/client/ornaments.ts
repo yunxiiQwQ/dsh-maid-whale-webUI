@@ -5,6 +5,7 @@ import {
   createForeignUiGate,
   createStyleReader,
   createVisibility,
+  mutationNeedsScan,
   type ForeignUiGate,
   type VisibilityCheck,
 } from './scan.ts'
@@ -186,14 +187,13 @@ export function createOrnamentController(body: HTMLElement, options: { wide: boo
   }
 
   const mutationObserver = new MutationObserver((mutations) => {
-    if (mutations.every((mutation) => layer.contains(mutation.target))) return
-    schedule()
+    const externalMutations = mutations.filter((mutation) => !layer.contains(mutation.target))
+    if (mutationNeedsScan(externalMutations)) schedule()
   })
   mutationObserver.observe(body, {
     attributes: true,
     attributeFilter: ['aria-hidden', 'aria-selected', 'class', 'hidden', 'open', 'role', 'style'],
     childList: true,
-    characterData: true,
     subtree: true,
   })
 

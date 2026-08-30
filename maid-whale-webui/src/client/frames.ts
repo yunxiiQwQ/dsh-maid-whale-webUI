@@ -4,6 +4,7 @@ import {
   createStyleReader,
   createVisibility,
   cssModuleClass,
+  mutationNeedsScan,
   type ForeignUiGate,
   type StyleReader,
   type VisibilityCheck,
@@ -301,7 +302,9 @@ export function createFrameController(body: HTMLElement): FrameController {
     })
   }
 
-  const observer = new MutationObserver(schedule)
+  const observer = new MutationObserver((mutations) => {
+    if (mutationNeedsScan(mutations)) schedule()
+  })
   observer.observe(body, {
     attributes: true,
     attributeFilter: [
@@ -317,7 +320,6 @@ export function createFrameController(body: HTMLElement): FrameController {
       'type',
     ],
     childList: true,
-    characterData: true,
     subtree: true,
   })
 

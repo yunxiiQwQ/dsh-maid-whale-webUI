@@ -12,6 +12,21 @@ export type VisibilityCheck = (target: HTMLElement) => boolean
 
 export type ForeignUiGate = (target: HTMLElement) => boolean
 
+function hasElementNode(nodes: NodeList): boolean {
+  return Array.from(nodes).some((node) => node.nodeType === 1)
+}
+
+/** Text streaming changes character data or adds text nodes. Neither can
+    introduce or remove a semantic frame target, so only structural element
+    changes and observed attributes require a new full-tree scan. */
+export function mutationNeedsScan(mutations: readonly MutationRecord[]): boolean {
+  return mutations.some((mutation) => {
+    if (mutation.type === 'attributes') return true
+    if (mutation.type !== 'childList') return false
+    return hasElementNode(mutation.addedNodes) || hasElementNode(mutation.removedNodes)
+  })
+}
+
 interface ParsedStyleSheet {
   text: string
   classNames: Set<string>
