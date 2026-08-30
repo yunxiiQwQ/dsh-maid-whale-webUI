@@ -1,9 +1,18 @@
 import json
+import os
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
-from runtime.layout_store import DeferredLayoutSaver, DEFAULT_LAYOUT, load_layout, normalise_layout, save_layout
+from runtime.layout_store import (
+    DeferredLayoutSaver,
+    DEFAULT_LAYOUT,
+    default_layout_path,
+    load_layout,
+    normalise_layout,
+    save_layout,
+)
 
 
 class FakeTimer:
@@ -34,6 +43,8 @@ class LayoutStoreTests(unittest.TestCase):
         saver.schedule({"scale": 1.0})
         self.assertTrue(timers[0].cancelled)
         self.assertEqual(writes, [])
+        timers[0].callback()
+        self.assertEqual(writes, [])
         saver.flush()
         self.assertEqual(writes[-1]["scale"], 1.0)
         self.assertTrue(timers[1].cancelled)
@@ -56,6 +67,21 @@ class LayoutStoreTests(unittest.TestCase):
     def test_pet_and_bubble_defaults_match_requested_size(self) -> None:
         self.assertEqual(DEFAULT_LAYOUT["scale"], 0.6552)
         self.assertEqual(DEFAULT_LAYOUT["bubbleScale"], 0.78)
+
+    def test_default_layout_path_uses_each_supported_location_in_priority_order(self) -> None:
+        with patch.dict(os.environ, {"DSH_DAFEIYU_LAYOUT_PATH": "D:/custom/layout.json"}, clear=True):
+            self.assertEqual(default_layout_path(), Path("D:/custom/layout.json"))
+        with patch.dict(os.environ, {"DSH_HOME": "D:/dsh"}, clear=True):
+            self.assertEqual(default_layout_path(), Path("D:/dsh/dsh-dafeiyu/layout.json"))
+        with patch.dict(os.environ, {"LOCALAPPDATA": "D:/local"}, clear=True):
+            self.assertEqual(default_layout_path(), Path("D:/local/DSH/dsh-dafeiyu/layout.json"))
+        with patch.dict(os.environ, {}, clear=True), patch(
+            "runtime.layout_store.Path.home", return_value=Path("D:/home")
+        ):
+            self.assertEqual(default_layout_path(), Path("D:/home/.dsh/dsh-dafeiyu/layout.json"))
+
+    def test_non_mapping_layout_uses_defaults(self) -> None:
+        self.assertEqual(normalise_layout(None), DEFAULT_LAYOUT)
 
     def test_compact_scales_are_preserved_and_lower_values_are_clamped(self) -> None:
         self.assertEqual(normalise_layout({"scale": 0.42, "bubbleScale": 0.6})["scale"], 0.42)

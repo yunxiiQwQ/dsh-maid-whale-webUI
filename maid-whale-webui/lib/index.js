@@ -1430,6 +1430,13 @@ const here = dirname(fileURLToPath(import.meta.url));
 const packageRoot = [resolve(here, ".."), resolve(here, "..", "..")].find((root) => existsSync(resolve(root, "runtime", "helper.py"))) ?? resolve(here, "..");
 const defaultHelperPath = resolve(packageRoot, "runtime", "helper.py");
 const bundledHelperPath = resolve(packageRoot, "runtime", "bin", "win32-x64", "dsw-drool-helper.exe");
+const DURABLE_MESSAGE_KINDS = /* @__PURE__ */ new Set([
+	CompanionMessageKind.HELLO,
+	CompanionMessageKind.STATE,
+	CompanionMessageKind.TASK,
+	CompanionMessageKind.TASKS,
+	CompanionMessageKind.CONFIG
+]);
 function isWsl() {
 	if (process.platform !== "linux") return false;
 	try {
@@ -1455,6 +1462,10 @@ function defaultCmdExe({ wslpath = defaultWslPath, fileExists = existsSync } = {
 function defaultWslPath(...args) {
 	return execFileSync("wslpath", args, { encoding: "utf8" }).trim();
 }
+function cmdExecutableCommand(path) {
+	if (path.includes("\"")) throw new TypeError("Windows helper path cannot contain a quote");
+	return `""${path}""`;
+}
 function resolveHelperLaunch({ platform, isWslEnv, bundledPath, helperPath, pythonEnv, headless = false, fileExists = existsSync, windowsPath = toWindowsPath, cmdExe = defaultCmdExe }) {
 	if (platform === "win32" && fileExists(bundledPath)) return {
 		command: bundledPath,
@@ -1464,8 +1475,9 @@ function resolveHelperLaunch({ platform, isWslEnv, bundledPath, helperPath, pyth
 		command: cmdExe(),
 		args: [
 			"/d",
+			"/s",
 			"/c",
-			windowsPath(bundledPath)
+			cmdExecutableCommand(windowsPath(bundledPath))
 		]
 	};
 	const command = pythonEnv || (platform === "win32" ? "py" : "python3");
@@ -1591,16 +1603,10 @@ var HelperProcess = class {
 	}
 	send(message) {
 		this.#remember(message);
+		if (this.stopping || this.restartSuppressed) return;
 		const line = encodeMessage(message);
 		if (!this.child || !this.spawned || !this.child.stdin.writable || this.child.stdin.destroyed) {
-			if (!this.hasEverSpawned || ![
-				CompanionMessageKind.HELLO,
-				CompanionMessageKind.STATE,
-				CompanionMessageKind.TASK,
-				CompanionMessageKind.TASKS,
-				CompanionMessageKind.PULSE,
-				CompanionMessageKind.CONFIG
-			].includes(message.kind)) this.queue.push(line);
+			if (!DURABLE_MESSAGE_KINDS.has(message.kind)) this.#enqueue(line);
 			return;
 		}
 		this.child.stdin.write(line);
@@ -1628,6 +1634,12 @@ var HelperProcess = class {
 		if (message.kind === CompanionMessageKind.TASKS) this.snapshot.set("tasks", encodeMessage(message));
 		if (message.kind === CompanionMessageKind.CONFIG) this.snapshot.set("config", encodeMessage(message));
 	}
+	#enqueue(line) {
+		const limit = Math.max(0, this.options.maxQueuedMessages ?? 64);
+		if (limit === 0) return;
+		this.queue.push(line);
+		if (this.queue.length > limit) this.queue.splice(0, this.queue.length - limit);
+	}
 	#flushSnapshot() {
 		const child = this.child;
 		if (!this.spawned || !child?.stdin.writable || child.stdin.destroyed) return;
@@ -1646,17 +1658,13 @@ var HelperProcess = class {
 			const reply = JSON.parse(line);
 			if (reply?.protocolVersion === 1 && reply.kind === CompanionMessageKind.READY) {
 				if (this.spawned) return;
-				const firstSpawn = !this.hasEverSpawned;
 				this.hasEverSpawned = true;
 				this.spawned = true;
 				this.startFailures = 0;
 				this.lastPongAt = Date.now();
 				this.#clearStartupTimer();
-				if (firstSpawn) this.#flushQueue();
-				else {
-					this.#flushSnapshot();
-					this.#flushQueue();
-				}
+				this.#flushSnapshot();
+				this.#flushQueue();
 				this.#startHeartbeat();
 				if (this.stopping) this.#endInput(this.child);
 				return;
@@ -1701,6 +1709,7 @@ var HelperProcess = class {
 		const maxFailures = this.options.maxStartFailures ?? 5;
 		if (this.startFailures >= maxFailures) {
 			this.restartSuppressed = true;
+			this.queue.length = 0;
 			this.logger.error?.(`companion helper failed to start ${this.startFailures} times; giving up (${reason})`);
 			return;
 		}

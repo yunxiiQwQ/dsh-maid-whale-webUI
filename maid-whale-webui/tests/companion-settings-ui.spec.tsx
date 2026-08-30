@@ -10,6 +10,12 @@ interface PendingResponse {
 
 let root: Root | undefined
 
+function enabledCheckbox(container: HTMLElement): HTMLInputElement {
+  const input = container.querySelector<HTMLInputElement>('input[type="checkbox"]')
+  if (!input) throw new Error('enabled checkbox was not rendered')
+  return input
+}
+
 afterEach(async () => {
   if (root) {
     await act(async () => root?.unmount())
@@ -50,24 +56,26 @@ describe('companion settings UI writes', () => {
       },
     } as never)
     await vi.waitFor(() => expect(Card).toBeTypeOf('function'))
+    const RegisteredCard = Card
+    if (!RegisteredCard) throw new Error('settings card was not registered')
 
     const container = document.createElement('div')
     document.body.append(container)
     root = createRoot(container)
     await act(async () => {
-      root?.render(React.createElement(Card!))
+      root?.render(React.createElement(RegisteredCard))
       await Promise.resolve()
     })
     await vi.waitFor(() => expect(container.textContent).toContain('启用鲸鱼桌宠'))
 
-    let enabled = container.querySelector<HTMLInputElement>('input[type="checkbox"]')!
+    let enabled = enabledCheckbox(container)
     await act(async () => {
       enabled.click()
       await Promise.resolve()
     })
     expect(patches).toEqual([{ enabled: false }])
 
-    enabled = container.querySelector<HTMLInputElement>('input[type="checkbox"]')!
+    enabled = enabledCheckbox(container)
     await act(async () => {
       enabled.click()
       await Promise.resolve()
@@ -84,7 +92,7 @@ describe('companion settings UI writes', () => {
       await Promise.resolve()
     })
 
-    enabled = container.querySelector<HTMLInputElement>('input[type="checkbox"]')!
+    enabled = enabledCheckbox(container)
     await act(async () => {
       enabled.click()
       await Promise.resolve()

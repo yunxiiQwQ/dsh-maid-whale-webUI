@@ -20,13 +20,7 @@ const output = result.stdout.trim()
 const parsed = JSON.parse(output)
 const pack = Array.isArray(parsed) ? parsed[0] : parsed
 const paths = (pack?.files ?? []).map((file) => String(file.path).replace(/^package\//, ''))
-const forbidden = [
-  /(^|\/)__pycache__(\/|$)/,
-  /\.pyc$/,
-  /\.js\.map$/,
-  /^runtime\/tests\//,
-  /^preview\/bilibili-cover/,
-]
+const forbidden = [/(^|\/)__pycache__(\/|$)/, /\.pyc$/, /\.js\.map$/, /^runtime\/tests\//, /^preview\/bilibili-cover/]
 const violations = paths.filter((path) => forbidden.some((pattern) => pattern.test(path)))
 if (violations.length > 0) {
   throw new Error(`Forbidden package contents:\n${violations.map((path) => `- ${path}`).join('\n')}`)

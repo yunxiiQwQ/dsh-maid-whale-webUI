@@ -125,8 +125,7 @@ export function mobileBundle(id: string, entry: string): UserConfig {
     sourcemap: true,
     clean: false,
     // Fully self-contained: no externals, no module table.
-    external: [],
-    noExternal: [/.*/],
+    deps: { neverBundle: [], alwaysBundle: [/.*/], onlyBundle: false },
     define: {
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV ?? 'production'),
       'import.meta.env.MODE': JSON.stringify(process.env.NODE_ENV ?? 'production'),
@@ -195,7 +194,7 @@ function clientLibraryConfig(
     // from this repo's install; its built declarations carry .ts-suffixed
     // relative imports rolldown cannot follow, so the import must stay
     // external (the same stance as the peer APIs above).
-    external: ['@deepseek-ai/cordis', ...extraExternal],
+    deps: { neverBundle: ['@deepseek-ai/cordis', ...extraExternal], onlyBundle: false },
     ...overrides,
   }
 }
@@ -216,7 +215,11 @@ function clientConfig(id: string, entry: string): UserConfig {
     // must carry the TS/TSX mapping consumed by browser profiling tools.
     sourcemap: true,
     clean: false,
-    external: [...CLIENT_EXTERNALS],
+    deps: {
+      neverBundle: [...CLIENT_EXTERNALS],
+      alwaysBundle: (id: string) => (CLIENT_EXTERNALS.includes(id) ? undefined : true),
+      onlyBundle: false,
+    },
     // Browser bundles inline node-idiom deps (zustand/immer read
     // process.env.NODE_ENV; zustand's esm build also probes
     // import.meta.env.MODE, which a CJS output cannot carry — rolldown flags
@@ -237,7 +240,6 @@ function clientConfig(id: string, entry: string): UserConfig {
     // every non-shared dep). A require() the table cannot answer is a
     // guaranteed runtime throw, so the rule is the table list itself: no
     // opinion for table entries (external above wins), bundle everything else.
-    noExternal: (id: string) => (CLIENT_EXTERNALS.includes(id) ? undefined : true),
     plugins: [
       {
         // Bundle purity gate (build-time mirror of the module-edge rules):

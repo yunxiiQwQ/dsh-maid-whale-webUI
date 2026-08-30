@@ -8,5 +8,7 @@ node_modules/
 AGENTS.md
 **/AGENTS.md
 .build/
+coverage/
+.coverage
 __pycache__/
 *.pyc

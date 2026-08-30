@@ -1,7 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const { bridges, MockBridge } = vi.hoisted(() => {
-  const instances: Array<{ start: ReturnType<typeof vi.fn>; send: ReturnType<typeof vi.fn>; stop: ReturnType<typeof vi.fn> }> = []
+  const instances: Array<{
+    start: ReturnType<typeof vi.fn>
+    send: ReturnType<typeof vi.fn>
+    stop: ReturnType<typeof vi.fn>
+  }> = []
   class Bridge {
     start = vi.fn()
     send = vi.fn()
@@ -70,10 +74,7 @@ describe('companion host lifecycle', () => {
       throw new Error('bad event')
     })
     expect(() => listeners.get('session/event')?.({}, {})).not.toThrow()
-    expect(logger.error).toHaveBeenCalledWith(
-      'maid-whale companion failed to handle session event',
-      expect.any(Error),
-    )
+    expect(logger.error).toHaveBeenCalledWith('maid-whale companion failed to handle session event', expect.any(Error))
 
     watchListener?.({ enabled: false })
     expect(bridges[0].stop).toHaveBeenCalledWith('settings-change')
