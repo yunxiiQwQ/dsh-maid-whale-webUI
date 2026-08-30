@@ -5,6 +5,7 @@ node_modules/
 .tmp-*
 .claude/
 .worktrees/
+docs/superpowers/
 AGENTS.md
 **/AGENTS.md
 .build/
