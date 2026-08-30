@@ -1,18 +1,21 @@
 /**
  * Settings card for the desktop companion, rebranded from the dsh-dafeiyu
  * client bundle (MIT). Written with createElement (no JSX) to match the client
- * bundling preset. React is loaded lazily at registration time: the skin must
- * never depend on the platform module table resolving react, and the card is
- * purely decorative — if DSH ever changes the slot contract or react is
- * unavailable, it must fail quietly instead of failing the whole WebUI load.
+ * bundling preset. React is a DSH platform module and must remain a static
+ * import so the closure bundle resolves it through the injected module table;
+ * a browser-native dynamic import cannot resolve the bare `react` specifier.
+ * Slot failures stay isolated to the optional card.
  */
 import type { Context } from '@deepseek-ai/cordis'
+import * as React from 'react'
 import type * as ReactTypes from 'react'
 import { writeCompanionConfig } from './config-writes.ts'
 
 const CONFIG_ENDPOINT = '/plugins/maid-whale-webui/config'
 const SLOT_NAME = 'settings.plugin.item'
-const SLOT_KEY = 'maid-whale-webui-companion'
+// Keyed settings cards are dispatched by the Host settings namespace. Keep
+// this value identical to settings.register(...) in src/index.ts.
+const SLOT_KEY = 'maid-whale-webui'
 
 interface CompanionConfig {
   enabled?: boolean
@@ -320,27 +323,21 @@ interface SlotsContext {
 
 /** Register the companion settings card; react and slot failures stay local to this card. */
 export function registerCompanionSettingsCard(ctx: Context): void {
-  void Promise.resolve(import('react'))
-    .then((React) => {
-      const slotsCtx = ctx as unknown as SlotsContext
-      const { CompanionCard } = createCardModule(React)
-      const registerCard = () => {
-        try {
-          slotsCtx.slots?.register?.(
-            { name: SLOT_NAME, key: SLOT_KEY, id: SLOT_KEY, order: 30, inject: () => ({}) },
-            CompanionCard,
-          )
-        } catch (error) {
-          console.error('[maid-whale-webui] failed to register companion settings card:', error)
-        }
-      }
-      try {
-        slotsCtx.slots?.inject?.(SLOT_NAME, registerCard)
-      } catch (error) {
-        console.error('[maid-whale-webui] failed to inject settings slot:', error)
-      }
-    })
-    .catch((error) => {
-      console.error('[maid-whale-webui] companion settings card skipped (react unavailable):', error)
-    })
+  const slotsCtx = ctx as unknown as SlotsContext
+  const { CompanionCard } = createCardModule(React)
+  const registerCard = () => {
+    try {
+      slotsCtx.slots?.register?.(
+        { name: SLOT_NAME, key: SLOT_KEY, id: SLOT_KEY, order: 30, inject: () => ({}) },
+        CompanionCard,
+      )
+    } catch (error) {
+      console.error('[maid-whale-webui] failed to register companion settings card:', error)
+    }
+  }
+  try {
+    slotsCtx.slots?.inject?.(SLOT_NAME, registerCard)
+  } catch (error) {
+    console.error('[maid-whale-webui] failed to inject settings slot:', error)
+  }
 }

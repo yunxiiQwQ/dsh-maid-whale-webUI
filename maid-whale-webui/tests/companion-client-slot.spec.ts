@@ -35,13 +35,15 @@ function slotsHarness() {
 }
 
 describe('companion settings card slot registration', () => {
-  it('registers the card under the plugin-namespaced slot key once react resolves', async () => {
+  it('registers the card synchronously through the DSH platform React module', () => {
     const { ctx, registrations, injectedSlots } = slotsHarness()
     registerCompanionSettingsCard(ctx as never)
-    expect(registrations).toHaveLength(0)
-    await vi.waitFor(() => expect(registrations).toHaveLength(1))
+    expect(registrations).toHaveLength(1)
     expect(injectedSlots).toEqual(['settings.plugin.item'])
-    expect(registrations[0].options.key).toBe('maid-whale-webui-companion')
+    // The settings UI dispatches this keyed slot by the Host settings
+    // namespace, so the browser card must use the exact namespace registered
+    // by src/index.ts.
+    expect(registrations[0].options.key).toBe('maid-whale-webui')
     expect(typeof registrations[0].component).toBe('function')
   })
 
