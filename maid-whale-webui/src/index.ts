@@ -10,7 +10,7 @@ import { CompanionReducer } from './host/companion-reducer.js'
 import { HelperProcess } from './host/helper-process.js'
 import { CompanionMessageKind, CompanionState, createMessage } from './host/protocol.js'
 
-const PKG_VERSION = '0.1.0'
+const PKG_VERSION = '0.1.1'
 
 export const name = '@yunxii/dsh-client-ui-skin-maid-whale-webui'
 // The companion is built on session events, and mounting requires the settings

@@ -1,7 +1,7 @@
 {
   "name": "@yunxii/dsh-client-ui-skin-maid-whale-webui",
   "description": "Cloud-paper DeepSeek skin for the DSH web GUI with the deepseek-drool character as a quiet page-edge mascot",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "main": "lib/index.js",
   "exports": {

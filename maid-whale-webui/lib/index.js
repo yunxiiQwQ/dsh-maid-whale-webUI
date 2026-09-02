@@ -1742,7 +1742,7 @@ var HelperProcess = class {
 * starts with DSH, keeps rendering while the WebUI is minimized, and exits on
 * host shutdown.
 */
-const PKG_VERSION = "0.1.0";
+const PKG_VERSION = "0.1.1";
 const name = "@yunxii/dsh-client-ui-skin-maid-whale-webui";
 const inject = ["sessions", "settings"];
 const CONFIG_ENDPOINT = "/plugins/maid-whale-webui/config";
