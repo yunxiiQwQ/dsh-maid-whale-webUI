@@ -56,7 +56,7 @@ The theme applies automatically and the companion appears when DSH starts. If th
 git pull
 
 # Uninstall: fully exit DSH first
-dsh plugin --profile web remove @dsh-external/dsh-client-ui-skin-maid-whale-webui
+dsh plugin --profile web remove @yunxii/dsh-client-ui-skin-maid-whale-webui
 ```
 
 ## Pet Actions and Triggers

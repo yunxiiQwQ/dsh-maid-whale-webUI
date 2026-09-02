@@ -1,8 +1,7 @@
 {
-  "name": "@dsh-external/dsh-client-ui-skin-maid-whale-webui",
+  "name": "@yunxii/dsh-client-ui-skin-maid-whale-webui",
   "description": "Cloud-paper DeepSeek skin for the DSH web GUI with the deepseek-drool character as a quiet page-edge mascot",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
   "main": "lib/index.js",
   "exports": {
@@ -39,6 +38,19 @@
     "test:python": "py -3 -m unittest discover -s runtime/tests -t ."
   },
   "license": "BSD-3-Clause",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yunxiiQwQ/dsh-maid-whale-webUI.git",
+    "directory": "maid-whale-webui"
+  },
+  "homepage": "https://github.com/yunxiiQwQ/dsh-maid-whale-webUI#readme",
+  "bugs": {
+    "url": "https://github.com/yunxiiQwQ/dsh-maid-whale-webUI/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "packageManager": "pnpm@11.21.0",
   "peerDependencies": {
     "@deepseek-ai/cordis": "^4.0.1"
@@ -106,9 +118,6 @@
     "requirements.txt",
     "requirements-build.txt",
     "requirements-test.txt"
-  ],
-  "cpu": [
-    "x64"
   ],
   "engines": {
     "node": ">=22.19"

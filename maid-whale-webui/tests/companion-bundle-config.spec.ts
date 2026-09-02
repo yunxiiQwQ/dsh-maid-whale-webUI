@@ -8,7 +8,7 @@ describe('companion bundle defaults', () => {
       insert: Array<{ name: string; config: { enabled: boolean; scale: number; bubbleScale: number } }>
     }>
     expect(patch[0].insert[0]).toMatchObject({
-      name: '@dsh-external/dsh-client-ui-skin-maid-whale-webui',
+      name: '@yunxii/dsh-client-ui-skin-maid-whale-webui',
       config: { enabled: true, scale: 0.6552, bubbleScale: 0.78 },
     })
   })

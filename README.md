@@ -56,7 +56,7 @@ dsh --profile web
 git pull
 
 # 卸载：先完全退出 DSH
-dsh plugin --profile web remove @dsh-external/dsh-client-ui-skin-maid-whale-webui
+dsh plugin --profile web remove @yunxii/dsh-client-ui-skin-maid-whale-webui
 ```
 
 ## Pet 动作和触发

@@ -3,13 +3,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import {
-  HelperProcess,
-  defaultCommand,
-  isWsl,
-  resolveHelperLaunch,
-  shouldUseBundledHelper,
-} from '../src/host/helper-process.js'
+import { HelperProcess, isWsl, resolveHelperLaunch } from '../src/host/helper-process.js'
 import { CompanionMessageKind, CompanionState, createMessage } from '../src/host/protocol.js'
 
 const fakeNodeHelper = [
@@ -31,11 +25,33 @@ async function waitFor(predicate: () => boolean, timeoutMs = 8000): Promise<void
 }
 
 describe('helper process launch resolution', () => {
-  it('exposes WSL detection helpers without throwing', () => {
+  it('detects WSL without throwing', () => {
     expect(typeof isWsl()).toBe('boolean')
-    expect(typeof shouldUseBundledHelper()).toBe('boolean')
-    expect(typeof defaultCommand()).toBe('string')
-    expect(typeof defaultCommand(true)).toBe('string')
+  })
+
+  it('does not auto-launch an unprovisioned Python helper on ordinary Linux', () => {
+    const launch = resolveHelperLaunch({
+      platform: 'linux',
+      isWslEnv: false,
+      bundledPath: '/app/runtime/bin/win32-x64/dsw-drool-helper.exe',
+      helperPath: '/app/runtime/helper.py',
+      pythonEnv: undefined,
+      fileExists: () => true,
+    })
+    expect(launch).toBeUndefined()
+  })
+
+  it('does not launch the bundled x64 helper on Windows ARM64', () => {
+    const launch = resolveHelperLaunch({
+      platform: 'win32',
+      arch: 'arm64',
+      isWslEnv: false,
+      bundledPath: 'C:/app/runtime/bin/win32-x64/dsw-drool-helper.exe',
+      helperPath: 'C:/app/runtime/helper.py',
+      pythonEnv: undefined,
+      fileExists: () => true,
+    })
+    expect(launch).toBeUndefined()
   })
 
   it('prefers the bundled executable on win32 when it exists', () => {
@@ -58,7 +74,7 @@ describe('helper process launch resolution', () => {
       helperPath: 'C:/app/runtime/helper.py',
       pythonEnv: undefined,
       fileExists: () => false,
-    })
+    })!
     expect(launch.command).toBe('py')
     // defaultArgs keys off the REAL process platform (vendored behavior), so
     // the '-3' launcher flag only appears when the suite itself runs on win32.
@@ -77,7 +93,7 @@ describe('helper process launch resolution', () => {
       fileExists: () => true,
       windowsPath: (path: string) => `C:\\${path}`,
       powerShellExe: () => 'C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe',
-    })
+    })!
     expect(launch.command).toBe('C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe')
     expect(launch.args).toEqual([
       '-NoLogo',
@@ -101,7 +117,7 @@ describe('helper process launch resolution', () => {
       fileExists: () => true,
       windowsPath: () => 'C:\\Whale & echo INJECTED\\helper.exe',
       powerShellExe: () => 'C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe',
-    })
+    })!
     expect(launch.args.join(' ')).not.toContain('INJECTED')
     expect(launch.env).toEqual({ DSH_DAFEIYU_HELPER_EXE: 'C:\\Whale & echo INJECTED\\helper.exe' })
   })
@@ -122,7 +138,7 @@ describe('helper process launch resolution', () => {
         fileExists: () => true,
         windowsPath: () => script,
         powerShellExe: () => 'C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe',
-      })
+      })!
       const result = spawnSync(launch.command, launch.args, {
         encoding: 'utf8',
         env: { ...process.env, ...launch.env },

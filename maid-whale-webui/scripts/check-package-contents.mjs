@@ -1,4 +1,5 @@
 import { spawnSync } from 'node:child_process'
+import { readFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -19,10 +20,13 @@ if (result.status !== 0) {
 const output = result.stdout.trim()
 const parsed = JSON.parse(output)
 const pack = Array.isArray(parsed) ? parsed[0] : parsed
-const paths = (pack?.files ?? []).map((file) => String(file.path).replace(/^package\//, ''))
-const forbidden = [/(^|\/)__pycache__(\/|$)/, /\.pyc$/, /\.js\.map$/, /^runtime\/tests\//, /^preview\/bilibili-cover/]
-const violations = paths.filter((path) => forbidden.some((pattern) => pattern.test(path)))
-if (violations.length > 0) {
-  throw new Error(`Forbidden package contents:\n${violations.map((path) => `- ${path}`).join('\n')}`)
+const paths = (pack?.files ?? []).map((file) => String(file.path).replace(/^package\//, '')).sort()
+const manifest = JSON.parse(readFileSync(resolve(packageRoot, 'package.json'), 'utf8'))
+const expected = ['package.json', ...(manifest.files ?? [])].sort()
+const missing = expected.filter((path) => !paths.includes(path))
+const unexpected = paths.filter((path) => !expected.includes(path))
+if (missing.length > 0 || unexpected.length > 0) {
+  const details = [...missing.map((path) => `- missing: ${path}`), ...unexpected.map((path) => `- unexpected: ${path}`)]
+  throw new Error(`Package contents differ from package.json files:\n${details.join('\n')}`)
 }
 console.log(`Package contents verified: ${paths.length} files`)

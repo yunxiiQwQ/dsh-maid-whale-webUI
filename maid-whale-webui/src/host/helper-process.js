@@ -38,10 +38,6 @@ function isWsl() {
   }
 }
 
-function shouldUseBundledHelper() {
-  return (process.platform === 'win32' || isWsl()) && existsSync(bundledHelperPath)
-}
-
 function toWindowsPath(path) {
   return execFileSync('wslpath', ['-w', path], { encoding: 'utf8' }).trim()
 }
@@ -65,6 +61,7 @@ function defaultWslPath(...args) {
 
 function resolveHelperLaunch({
   platform,
+  arch = process.arch,
   isWslEnv,
   bundledPath,
   helperPath,
@@ -74,10 +71,11 @@ function resolveHelperLaunch({
   windowsPath = toWindowsPath,
   powerShellExe = defaultPowerShellExe,
 }) {
-  if (platform === 'win32' && fileExists(bundledPath)) {
+  const supportsBundledHelper = arch === 'x64' && (platform === 'win32' || (platform === 'linux' && isWslEnv))
+  if (platform === 'win32' && supportsBundledHelper && fileExists(bundledPath)) {
     return { command: bundledPath, args: [] }
   }
-  if (platform === 'linux' && isWslEnv && !headless && fileExists(bundledPath)) {
+  if (platform === 'linux' && isWslEnv && supportsBundledHelper && !headless && fileExists(bundledPath)) {
     // npm archives created on Windows store ordinary files as 0644. Launching
     // the EXE directly from WSL can therefore fail with EACCES. PowerShell
     // opens the Windows path without relying on the Linux executable bit and
@@ -89,6 +87,7 @@ function resolveHelperLaunch({
       env: { DSH_DAFEIYU_HELPER_EXE: windowsPath(bundledPath) },
     }
   }
+  if (!supportsBundledHelper && !pythonEnv) return undefined
   const command = pythonEnv || (platform === 'win32' ? 'py' : 'python3')
   return { command, args: defaultArgs(command, helperPath) }
 }
@@ -102,10 +101,6 @@ function defaultLaunch(headless = false) {
     pythonEnv: process.env.DSH_DAFEIYU_PYTHON,
     headless,
   })
-}
-
-function defaultCommand(headless = false) {
-  return defaultLaunch(headless).command
 }
 
 function defaultArgs(command, helperPath) {
@@ -124,7 +119,6 @@ export class HelperProcess {
     this.queue = []
     this.snapshot = new Map()
     this.spawned = false
-    this.hasEverSpawned = false
     this.stopping = false
     this.restartSuppressed = false
     this.startFailures = 0
@@ -146,6 +140,11 @@ export class HelperProcess {
       const launch = this.options.command
         ? { command: this.options.command, args: defaultArgs(this.options.command, helperPath) }
         : defaultLaunch(headless)
+      if (!launch) {
+        this.restartSuppressed = true
+        this.logger.info?.('companion helper is disabled on this platform')
+        return undefined
+      }
       const command = launch.command
       const args = this.options.args || launch.args
       const extraArgs = []
@@ -287,7 +286,6 @@ export class HelperProcess {
       const reply = JSON.parse(line)
       if (reply?.protocolVersion === 1 && reply.kind === CompanionMessageKind.READY) {
         if (this.spawned) return
-        this.hasEverSpawned = true
         this.spawned = true
         this.startFailures = 0
         this.lastPongAt = Date.now()
@@ -374,10 +372,8 @@ export {
   defaultHelperPath,
   defaultArgs,
   defaultPowerShellExe,
-  defaultCommand,
   defaultLaunch,
   isWsl,
   resolveHelperLaunch,
-  shouldUseBundledHelper,
   toWindowsPath,
 }

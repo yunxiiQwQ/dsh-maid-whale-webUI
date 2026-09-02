@@ -2,7 +2,7 @@
 # plugin roster and seeds the desktop companion's default settings.
 - insert:
     - id: ui-skin-maid-whale-webui
-      name: '@dsh-external/dsh-client-ui-skin-maid-whale-webui'
+      name: '@yunxii/dsh-client-ui-skin-maid-whale-webui'
       config:
         enabled: true
         scale: 0.6552

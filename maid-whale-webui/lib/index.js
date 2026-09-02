@@ -1462,12 +1462,13 @@ function defaultPowerShellExe({ wslpath = defaultWslPath, fileExists = existsSyn
 function defaultWslPath(...args) {
 	return execFileSync("wslpath", args, { encoding: "utf8" }).trim();
 }
-function resolveHelperLaunch({ platform, isWslEnv, bundledPath, helperPath, pythonEnv, headless = false, fileExists = existsSync, windowsPath = toWindowsPath, powerShellExe = defaultPowerShellExe }) {
-	if (platform === "win32" && fileExists(bundledPath)) return {
+function resolveHelperLaunch({ platform, arch = process.arch, isWslEnv, bundledPath, helperPath, pythonEnv, headless = false, fileExists = existsSync, windowsPath = toWindowsPath, powerShellExe = defaultPowerShellExe }) {
+	const supportsBundledHelper = arch === "x64" && (platform === "win32" || platform === "linux" && isWslEnv);
+	if (platform === "win32" && supportsBundledHelper && fileExists(bundledPath)) return {
 		command: bundledPath,
 		args: []
 	};
-	if (platform === "linux" && isWslEnv && !headless && fileExists(bundledPath)) return {
+	if (platform === "linux" && isWslEnv && supportsBundledHelper && !headless && fileExists(bundledPath)) return {
 		command: powerShellExe(),
 		args: [
 			"-NoLogo",
@@ -1478,6 +1479,7 @@ function resolveHelperLaunch({ platform, isWslEnv, bundledPath, helperPath, pyth
 		],
 		env: { DSH_DAFEIYU_HELPER_EXE: windowsPath(bundledPath) }
 	};
+	if (!supportsBundledHelper && !pythonEnv) return void 0;
 	const command = pythonEnv || (platform === "win32" ? "py" : "python3");
 	return {
 		command,
@@ -1507,7 +1509,6 @@ var HelperProcess = class {
 		this.queue = [];
 		this.snapshot = /* @__PURE__ */ new Map();
 		this.spawned = false;
-		this.hasEverSpawned = false;
 		this.stopping = false;
 		this.restartSuppressed = false;
 		this.startFailures = 0;
@@ -1526,6 +1527,11 @@ var HelperProcess = class {
 				command: this.options.command,
 				args: defaultArgs(this.options.command, helperPath)
 			} : defaultLaunch(headless);
+			if (!launch) {
+				this.restartSuppressed = true;
+				this.logger.info?.("companion helper is disabled on this platform");
+				return;
+			}
 			const command = launch.command;
 			const args = this.options.args || launch.args;
 			const extraArgs = [];
@@ -1657,7 +1663,6 @@ var HelperProcess = class {
 			const reply = JSON.parse(line);
 			if (reply?.protocolVersion === 1 && reply.kind === CompanionMessageKind.READY) {
 				if (this.spawned) return;
-				this.hasEverSpawned = true;
 				this.spawned = true;
 				this.startFailures = 0;
 				this.lastPongAt = Date.now();
@@ -1738,7 +1743,7 @@ var HelperProcess = class {
 * host shutdown.
 */
 const PKG_VERSION = "0.1.0";
-const name = "@dsh-external/dsh-client-ui-skin-maid-whale-webui";
+const name = "@yunxii/dsh-client-ui-skin-maid-whale-webui";
 const inject = ["sessions", "settings"];
 const CONFIG_ENDPOINT = "/plugins/maid-whale-webui/config";
 const Config = Schema.object({

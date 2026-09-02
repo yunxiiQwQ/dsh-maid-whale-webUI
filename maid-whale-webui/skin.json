@@ -8,7 +8,7 @@
   "tags": ["deepseek", "cloud", "paper", "whale", "mascot"],
   "accent": "#5aa7d8",
   "bodyAttr": "data-dsh-deepseek-workshop",
-  "package": "@dsh-external/dsh-client-ui-skin-maid-whale-webui",
+  "package": "@yunxii/dsh-client-ui-skin-maid-whale-webui",
   "wiring": {
     "id": "ui-skin-maid-whale-webui",
     "bundleWired": false
